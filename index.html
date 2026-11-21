@@ -3,130 +3,244 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Atelier — MFM 2027 Preparation</title>
+<title>The Atelier · MFM 2027</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#f6f1e7;--paper2:#efe7d6;--ink:#1c1a17;--soft:#6b645a;--rule:#d9cfbb;--chalk:#c2372b;--sage:#4f6b4a;--gold:#b08a3e}
+:root{
+  --indigo:#1f2b5c; --indigo-2:#2c3c7a; --indigo-soft:#e7e9f4;
+  --madder:#b5432c; --madder-soft:#f6e3dd;
+  --turmeric:#d49a1a; --turmeric-soft:#f8edd2;
+  --sage:#4f7058; --sage-soft:#e3ece4;
+  --paper:#f6f3ec; --card:#fffdf9; --ink:#1a1c22; --muted:#6a6a72; --line:#e4ded2; --line-2:#d6cfc0;
+  --r:14px; --shadow:0 1px 0 rgba(26,28,34,.04), 0 8px 24px -12px rgba(26,28,34,.12);
+}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--paper);color:var(--ink);font-family:Karla,Georgia,sans-serif;font-size:16px}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;background-image:radial-gradient(rgba(0,0,0,.05) 1px,transparent 1px);background-size:3px 3px;z-index:0}
-.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:28px 28px 80px}
-h1,h2,h3,.serif{font-family:Fraunces,Georgia,serif;font-weight:500;letter-spacing:-.01em}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 "Hanken Grotesk",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
+button{font:inherit;cursor:pointer}
 .hidden{display:none!important}
-.mast{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--ink);padding-bottom:10px}
-.mast .name{font-family:Fraunces,serif;font-size:28px}
-.mast .name i{color:var(--chalk);font-style:italic}
-.mast .meta{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
-.stitch{height:0;border-top:2px dashed var(--rule);margin:26px 0}
-/* lock */
-#lock{min-height:86vh;display:flex;align-items:center;justify-content:center}
-.lockcard{width:min(440px,92vw);text-align:center}
-.lockcard h1{font-size:44px;margin:0 0 4px;line-height:1.05}
-.lockcard h1 em{color:var(--chalk)}
-.lockcard p{color:var(--soft);margin:0 0 26px}
-.field{display:flex;border:1px solid var(--ink);background:#fffdf8}
-.field input{flex:1;border:0;background:transparent;padding:14px 16px;font:inherit;font-size:17px;outline:none}
-.field button{border:0;background:var(--ink);color:var(--paper);padding:0 22px;font:inherit;font-weight:700;letter-spacing:.06em;cursor:pointer}
-.err{color:var(--chalk);margin-top:10px;font-size:14px;min-height:20px}
-/* hero */
-.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:34px;margin-top:30px;align-items:stretch}
-.count{position:relative}
-.count .big{font-family:Fraunces,serif;font-size:clamp(90px,15vw,168px);line-height:.85;font-weight:300}
-.count .big b{font-weight:700;color:var(--chalk)}
-.count .lbl{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin-top:10px}
-.count .tape{margin-top:22px;height:14px;background:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 10px);position:relative;opacity:.85}
-.count .tape span{position:absolute;top:-6px;width:3px;height:26px;background:var(--chalk)}
-.next{background:var(--ink);color:var(--paper);padding:26px 26px 22px;position:relative;overflow:hidden}
-.next::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border:1px dashed rgba(246,241,231,.35);border-radius:50%}
-.next .k{font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:.7}
-.next h2{font-size:30px;margin:8px 0 6px}
-.next .when{opacity:.85;margin-bottom:18px}
-.btn{display:inline-block;border:1px solid currentColor;padding:11px 18px;text-decoration:none;font-weight:700;letter-spacing:.05em;font-size:14px;cursor:pointer;background:transparent;color:inherit}
-.btn.fill{background:var(--chalk);border-color:var(--chalk);color:#fff}
-.btn+.btn{margin-left:8px}
-.note{font-size:13px;opacity:.75;margin-top:14px;line-height:1.5}
-/* timetable */
-.sec-h{display:flex;justify-content:space-between;align-items:baseline}
-.sec-h h3{font-size:24px;margin:0}
-.sec-h span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
-.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:16px}
-.phase{border-top:3px solid var(--ink);padding-top:10px}
-.phase .pn{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
-.phase h4{font-family:Fraunces,serif;font-weight:500;font-size:19px;margin:4px 0 4px}
-.phase p{margin:0 0 10px;color:var(--soft);font-size:14px;line-height:1.45}
-.row{display:grid;grid-template-columns:80px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--rule);font-size:15px}
-.row .d{font-family:Fraunces,serif;font-size:15px}
-.row .d small{display:block;font-family:Karla;font-size:11px;color:var(--soft);letter-spacing:.1em;text-transform:uppercase}
-.pill{font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--rule);color:var(--soft);white-space:nowrap}
-.pill.today{border-color:var(--chalk);color:var(--chalk);font-weight:700}
-.pill.done{background:var(--sage);border-color:var(--sage);color:#fff}
-/* results */
-.results{margin-top:14px}
-.res{display:grid;grid-template-columns:1fr 120px;gap:20px;padding:16px 0;border-bottom:1px solid var(--rule)}
-.res h4{margin:0 0 8px;font-family:Fraunces,serif;font-weight:500;font-size:19px}
-.bars{display:grid;grid-template-columns:150px 1fr 54px;gap:6px 10px;font-size:13px;align-items:center}
-.bar{height:8px;background:var(--paper2);position:relative}
-.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ink)}
-.score{font-family:Fraunces,serif;font-size:40px;text-align:right;line-height:1}
-.score small{display:block;font-family:Karla;font-size:12px;color:var(--soft)}
-.empty{color:var(--soft);font-style:italic;padding:14px 0}
-.tools{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:14px}
-.tool{border:1px solid var(--ink);padding:18px;text-decoration:none;display:block;background:#fffdf8;transition:transform .15s ease, box-shadow .15s ease}
-.tool:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
-.tool b{font-family:Fraunces,serif;font-weight:500;font-size:19px;display:block;margin-bottom:4px}
-.tool span{color:var(--soft);font-size:14px}
-.reveal{opacity:0;transform:translateY(10px);animation:rv .6s ease forwards}
-@keyframes rv{to{opacity:1;transform:none}}
-#analysisView{background:#fffdf8;border:1px solid var(--ink);padding:24px;margin-top:20px}
-@media (max-width:760px){.hero,.phases,.tools{grid-template-columns:1fr}.res{grid-template-columns:1fr}.score{text-align:left}}
+.serif{font-family:Newsreader,Georgia,serif}
+/* ---------- lock ---------- */
+#lock{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}
+.lock-art{background:var(--indigo);color:#f3efe6;position:relative;overflow:hidden;padding:56px;display:flex;flex-direction:column;justify-content:space-between}
+.weave{position:absolute;inset:0;opacity:.18;background:
+  repeating-linear-gradient(0deg,transparent 0 10px,rgba(255,255,255,.55) 10px 11px),
+  repeating-linear-gradient(90deg,transparent 0 10px,rgba(255,255,255,.35) 10px 11px)}
+.lock-art .brand{position:relative;display:flex;align-items:center;gap:12px;font-weight:600;letter-spacing:.02em}
+.lock-art h1{position:relative;font:500 52px/1.05 Newsreader,serif;margin:0;max-width:12ch}
+.lock-art h1 em{color:var(--turmeric);font-style:italic}
+.lock-art p{position:relative;max-width:42ch;opacity:.8;margin:14px 0 0}
+.lock-form{display:flex;align-items:center;justify-content:center;padding:40px}
+.lock-form .box{width:min(380px,100%)}
+.lock-form h2{font:500 30px/1.2 Newsreader,serif;margin:0 0 6px}
+.lock-form .sub{color:var(--muted);margin:0 0 24px}
+label.f{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.input{width:100%;padding:13px 14px;border:1px solid var(--line-2);border-radius:10px;background:var(--card);font:inherit;font-size:16px;outline:none}
+.input:focus{border-color:var(--indigo-2);box-shadow:0 0 0 4px var(--indigo-soft)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:10px 16px;font-weight:600;text-decoration:none;font-size:14px;transition:transform .12s ease, background .12s ease}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--indigo);color:#fff}
+.btn-primary:hover{background:var(--indigo-2)}
+.btn-accent{background:var(--madder);color:#fff}
+.btn-ghost{background:transparent;border-color:var(--line-2);color:var(--ink)}
+.btn-ghost:hover{background:#fff}
+.btn-block{width:100%;justify-content:center;padding:13px}
+.err{color:var(--madder);font-size:14px;min-height:20px;margin-top:10px}
+/* ---------- shell ---------- */
+#app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+aside{background:var(--indigo);color:#e9e6f2;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+aside .weave{opacity:.08}
+.side-brand{position:relative;padding:22px 22px 18px;display:flex;align-items:center;gap:12px}
+.mark{width:34px;height:34px;border-radius:9px;background:var(--turmeric);display:grid;place-items:center;flex:none}
+.side-brand b{display:block;font:600 18px Newsreader,serif;color:#fff;letter-spacing:.01em}
+.side-brand span{font-size:12px;opacity:.65}
+nav{position:relative;padding:8px 12px;flex:1}
+.nav-h{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.5;padding:14px 12px 6px}
+.nav-a{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;text-decoration:none;color:#dcd9ea;font-weight:500;margin:2px 0}
+.nav-a svg{width:18px;height:18px;flex:none;opacity:.85}
+.nav-a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-a.on{background:#fff;color:var(--indigo)}
+.nav-a.on svg{opacity:1}
+.side-foot{position:relative;padding:14px 16px 20px;border-top:1px solid rgba(255,255,255,.1);font-size:13px}
+.side-foot .who{display:flex;align-items:center;gap:10px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--madder);color:#fff;display:grid;place-items:center;font-weight:700}
+.side-foot button{background:none;border:0;color:#cfcce0;padding:0;margin-left:auto;font-size:12px;text-decoration:underline}
+main{min-width:0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 36px 0}
+.top h1{font:500 30px/1.15 Newsreader,serif;margin:0}
+.top .crumb{color:var(--muted);font-size:13px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--madder);display:inline-block}
+.page{padding:22px 36px 60px;max-width:1240px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px}
+.card h3{font:600 13px "Hanken Grotesk";letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-7{grid-column:span 7}.span-6{grid-column:span 6}.span-5{grid-column:span 5}.span-4{grid-column:span 4}.span-3{grid-column:span 3}
+.fade{animation:fade .45s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* overview */
+.hello{font:500 26px/1.2 Newsreader,serif;margin:0 0 4px}
+.hello-sub{color:var(--muted);margin:0 0 20px}
+.next{background:linear-gradient(160deg,var(--indigo) 0%,#26346d 100%);color:#f1eee6;border:0;position:relative;overflow:hidden}
+.next .weave{opacity:.07}
+.next h3{color:#c9c6dc}
+.next .title{position:relative;font:500 34px/1.1 Newsreader,serif;margin:0 0 6px}
+.next .meta{position:relative;opacity:.85;margin-bottom:16px}
+.pills{position:relative;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.pill{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff}
+.next .actions{position:relative;display:flex;flex-wrap:wrap;gap:8px}
+.next .btn-ghost{color:#fff;border-color:rgba(255,255,255,.3)}
+.next .btn-ghost:hover{background:rgba(255,255,255,.08)}
+.next .btn-light{background:#fff;color:var(--indigo)}
+.check{position:relative;margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14);font-size:13px;display:grid;gap:6px;opacity:.9}
+.check div{display:flex;gap:8px;align-items:flex-start}
+.ring-wrap{display:flex;align-items:center;gap:22px}
+.ring-wrap .big{font:500 56px/1 Newsreader,serif}
+.ring-wrap .big small{font:500 15px "Hanken Grotesk";color:var(--muted);margin-left:4px}
+.phase-line{display:flex;gap:4px;margin-top:16px}
+.phase-line div{flex:1;height:6px;border-radius:4px;background:var(--line)}
+.phase-line div.on{background:var(--turmeric)}
+.phase-line div.done{background:var(--sage)}
+.phase-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+.stat .v{font:500 32px/1 Newsreader,serif;margin:2px 0 4px}
+.stat .l{font-size:13px;color:var(--muted)}
+.stat .k{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.agenda{display:grid;gap:2px}
+.ag{display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.ag:last-child{border-bottom:0}
+.ag .d{text-align:center;line-height:1.1}
+.ag .d b{display:block;font:500 22px Newsreader,serif}
+.ag .d span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ag .t{font-weight:600}
+.ag .s{font-size:13px;color:var(--muted)}
+.tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px;white-space:nowrap}
+.tag.mock{background:var(--indigo-soft);color:var(--indigo)}
+.tag.review{background:var(--turmeric-soft);color:#8a5f00}
+.tag.today{background:var(--madder);color:#fff}
+.tag.done{background:var(--sage-soft);color:var(--sage)}
+.tag.wait{background:var(--turmeric-soft);color:#8a5f00}
+.tag.locked{background:#eeebe4;color:var(--muted)}
+.cov{display:grid;gap:12px}
+.cov-row{display:grid;grid-template-columns:150px 1fr 58px;gap:12px;align-items:center;font-size:14px}
+.bar{height:8px;border-radius:6px;background:#eeeae1;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px;background:var(--indigo-2)}
+/* mocks list */
+.toolbar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.seg{border:1px solid var(--line-2);background:var(--card);border-radius:999px;padding:7px 14px;font-weight:600;font-size:13px}
+.seg.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mrow{display:grid;grid-template-columns:54px 1.4fr 1fr 1fr auto;gap:16px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.mrow:last-child{border-bottom:0}
+.num{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font:600 17px Newsreader,serif;background:var(--indigo-soft);color:var(--indigo)}
+.num.p2{background:var(--turmeric-soft);color:#8a5f00}.num.p3{background:var(--madder-soft);color:var(--madder)}
+.mrow .tt{font-weight:600}
+.mrow .ss{font-size:13px;color:var(--muted)}
+.mrow .act{display:flex;gap:8px;justify-content:flex-end;align-items:center}
+.list{padding:0;overflow:hidden}
+/* calendar */
+.cal-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.cal h4{font:500 20px Newsreader,serif;margin:0 0 10px}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-g .h{font-size:11px;text-align:center;color:var(--muted);font-weight:700;padding-bottom:4px}
+.cell{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;position:relative;background:#f8f6f0}
+.cell.empty{background:transparent}
+.cell.past{color:#b7b2a6}
+.cell.mock{background:var(--indigo);color:#fff;font-weight:700}
+.cell.review{background:var(--turmeric-soft)}
+.cell.rest{background:var(--sage-soft)}
+.cell.exam{background:var(--madder);color:#fff;font-weight:700}
+.cell.today{outline:2px solid var(--madder);outline-offset:1px}
+.cell small{font-size:9px;line-height:1;margin-top:2px;opacity:.85}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
+/* empty */
+.empty{display:flex;gap:24px;align-items:center}
+.empty svg{flex:none}
+.empty h4{font:500 22px Newsreader,serif;margin:0 0 6px}
+.empty p{margin:0;color:var(--muted);max-width:60ch}
+/* syllabus */
+.sec-card h4{font:500 20px Newsreader,serif;margin:0}
+.sec-card .meta{font-size:13px;color:var(--muted);margin:2px 0 14px}
+.topic{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.topic:last-child{border-bottom:0}
+.dots{display:flex;gap:3px}
+.dots i{width:7px;height:7px;border-radius:50%;background:#e6e1d6}
+.dots i.on{background:var(--indigo-2)}
+.nt{font-size:11px;color:var(--muted);font-weight:600}
+/* notes / guide */
+.prose{max-width:76ch}
+.prose h4{font:500 21px Newsreader,serif;margin:22px 0 6px}
+.prose h4:first-child{margin-top:0}
+.prose p,.prose li{color:#33353d}
+.prose ul{padding-left:20px}
+.rule{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.rule:last-child{border-bottom:0}
+.rule b{font-weight:700}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line-2);padding:8px 10px}
+table.t td{border-bottom:1px solid var(--line);padding:10px}
+.legend5{display:grid;gap:8px}
+.legend5 div{display:flex;gap:10px;align-items:center;font-size:14px}
+.sw{width:28px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;border:1px solid #999;color:#222;background:#e5e5e5;flex:none}
+.sw.na{background:#d63a2f;color:#fff;border-radius:0 0 12px 12px;border-color:#a12a22}
+.sw.a{background:#3a9a3a;color:#fff;border-radius:12px 12px 0 0;border-color:#2b742b}
+.sw.mr{background:#6c3fa0;color:#fff;border-radius:50%;border-color:#4e2c75}
+.callout{background:var(--turmeric-soft);border-radius:12px;padding:14px 16px;font-size:14px}
+/* performance */
+.chart text{font:12px "Hanken Grotesk";fill:var(--muted)}
+/* mobile */
+.mob-nav{display:none}
+@media (max-width:980px){
+  #lock{grid-template-columns:1fr}.lock-art{min-height:42vh;padding:32px}.lock-art h1{font-size:38px}
+  #app{grid-template-columns:1fr}
+  aside{display:none}
+  .top{padding:18px 18px 0;flex-wrap:wrap;align-items:flex-start}.page{padding:16px 18px 90px}
+  .grid>*{grid-column:span 12!important}
+  .cal-wrap{grid-template-columns:1fr}
+  .mrow{grid-template-columns:46px 1fr;gap:10px}.mrow .hide-m{display:none}.mrow .act{grid-column:1/-1;justify-content:flex-start}
+  .mob-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--indigo);padding:8px 6px calc(8px + env(safe-area-inset-bottom));justify-content:space-around;z-index:10}
+  .mob-nav a{color:#cfcce0;text-decoration:none;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .mob-nav a.on{color:#fff}
+  .mob-nav svg{width:20px;height:20px}
+  .rule{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="mast"><div class="name">The <i>Atelier</i></div><div class="meta">MFM · NIFT 2027 · Preparation</div></div>
 
-  <section id="lock"><div class="lockcard">
-    <h1 class="serif">Hello, <em>Raina</em>.</h1>
-    <p>Your mock tests, timetable and analysis live here.</p>
-    <div class="field"><input id="pw" type="password" placeholder="Password" autocomplete="current-password"><button id="go">Enter</button></div>
+<!-- ============ LOCK ============ -->
+<section id="lock">
+  <div class="lock-art"><div class="weave"></div>
+    <div class="brand"><div class="mark"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M2 5h14M2 9h14M2 13h14M5 2v14M9 2v14M13 2v14" stroke="#1f2b5c" stroke-width="1.6"/></svg></div>The Atelier</div>
+    <div><h1>Preparation for <em>MFM 2027</em>, one mock at a time.</h1>
+      <p>Timed mock tests in the real exam format, a schedule built around the 10 January GAT, and an honest read of where you stand after every attempt.</p></div>
+    <div style="position:relative;font-size:13px;opacity:.6">NIFT Entrance Examination · Master of Fashion Management</div>
+  </div>
+  <div class="lock-form"><div class="box">
+    <h2>Welcome back, Raina</h2><p class="sub">Enter your password to open your study space.</p>
+    <label class="f" for="pw">Password</label>
+    <input class="input" id="pw" type="password" autocomplete="current-password">
+    <div style="height:14px"></div>
+    <button class="btn btn-primary btn-block" id="go">Open my Atelier</button>
     <div class="err" id="err"></div>
-  </div></section>
+  </div></div>
+</section>
 
-  <main id="app" class="hidden">
-    <section class="hero">
-      <div class="count reveal">
-        <div class="big"><b id="days">--</b> days</div>
-        <div class="lbl" id="countLbl">to the GAT · Sunday, 10 January 2027</div>
-        <div class="tape"><span id="tapeMark" style="left:0"></span></div>
-      </div>
-      <div class="next reveal" style="animation-delay:.12s" id="nextCard"></div>
-    </section>
-
-    <div class="stitch"></div>
-    <section class="reveal" style="animation-delay:.2s">
-      <div class="sec-h"><h3>Your results</h3><span>Updated after each review</span></div>
-      <div class="results" id="results"></div>
-      <div id="analysisView" class="hidden"></div>
-    </section>
-
-    <div class="stitch"></div>
-    <section class="reveal" style="animation-delay:.28s">
-      <div class="sec-h"><h3>Mock timetable</h3><span id="ttMeta"></span></div>
-      <div class="phases" id="phases"></div>
-    </section>
-
-    <div class="stitch"></div>
-    <section class="reveal" style="animation-delay:.36s">
-      <div class="sec-h"><h3>Before your first mock</h3><span>Do these once</span></div>
-      <div class="tools">
-        <a class="tool" href="check.html"><b>System check</b><span>Camera, microphone, full screen, saving and connection. Run this on the laptop you will test on.</span></a>
-        <a class="tool" href="mocks/MFM-DEMO.html"><b>Interface practice</b><span>An 8-question, 15-minute demo of the exam screen. Start code: <b>DEMO</b>. Use it to learn SAVE &amp; NEXT, marking and the palette.</span></a>
-      </div>
-    </section>
+<!-- ============ APP ============ -->
+<div id="app" class="hidden">
+  <aside><div class="weave"></div>
+    <div class="side-brand"><div class="mark"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M2 5h14M2 9h14M2 13h14M5 2v14M9 2v14M13 2v14" stroke="#1f2b5c" stroke-width="1.6"/></svg></div><div><b>The Atelier</b><span>MFM 2027 preparation</span></div></div>
+    <nav id="nav"></nav>
+    <div class="side-foot"><div class="who"><div class="avatar">R</div><div><div style="color:#fff;font-weight:600">Raina</div><div style="opacity:.6;font-size:12px">Candidate · MFM</div></div><button id="logout">Lock</button></div></div>
+  </aside>
+  <main>
+    <div class="top"><div><div class="crumb" id="crumb"></div><h1 id="ptitle"></h1></div><div class="chip"><i></i><span id="cd"></span></div></div>
+    <div class="page" id="page"></div>
   </main>
+  <div class="mob-nav" id="mobnav"></div>
 </div>
+
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -134,53 +248,195 @@ const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 async function decrypt(pw, blob){
   const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);
   const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b64(blob.salt),iterations:blob.iter,hash:"SHA-256"},base,{name:"AES-GCM",length:256},false,["decrypt"]);
-  const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(blob.iv)},key,b64(blob.ct));
-  return JSON.parse(new TextDecoder().decode(pt));
+  return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(blob.iv)},key,b64(blob.ct))));
 }
-const EXAM=new Date("2027-01-10T09:00:00+05:30");
-const fmtD=d=>new Date(d+"T00:00:00+05:30").toLocaleDateString("en-IN",{day:"numeric",month:"short"});
-const dow=d=>new Date(d+"T00:00:00+05:30").toLocaleDateString("en-IN",{weekday:"short"});
+const EXAM=new Date("2027-01-10T09:00:00+05:30"), START=new Date("2026-11-21T00:00:00+05:30");
 const todayIST=()=>new Date(Date.now()+5.5*3600e3).toISOString().slice(0,10);
+const D=d=>new Date(d+"T00:00:00+05:30");
+const fmt=(d,o)=>D(d).toLocaleDateString("en-IN",o);
+const addDays=(d,n)=>{const x=D(d);x.setDate(x.getDate()+n);return new Date(x.getTime()+5.5*3600e3).toISOString().slice(0,10)};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let DATA=null;
+
+/* ---------- icons ---------- */
+const I={
+ overview:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ mocks:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+ schedule:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+ performance:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ syllabus:'<path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/>',
+ notes:'<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>',
+ guide:'<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/>',
+ check:'<path d="M4 12.5l5 5L20 6.5"/>',
+ play:'<path d="M7 4l13 8-13 8z"/>'
+};
+const icon=(k,s="currentColor")=>`<svg viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
+const PAGES=[["overview","Overview","Study"],["mocks","Mock tests","Study"],["schedule","Schedule","Study"],["performance","Performance","Progress"],["syllabus","Syllabus map","Progress"],["notes","How answers are judged","Learn"],["guide","Exam guide","Learn"]];
+
+/* ---------- unlock ---------- */
 async function unlock(pw){
   try{
     const blob=await fetch("data/portal.json?ts="+Date.now(),{cache:"no-store"}).then(r=>r.json()).catch(()=>JSON.parse(localStorage.getItem("atelier:blob")||"null"));
-    DATA=await decrypt(pw, blob);
-    try{localStorage.setItem("atelier:blob",JSON.stringify(blob));sessionStorage.setItem("atelier:pw",pw);}catch(e){}
-    render();
-  }catch(e){ $("err").textContent="That password didn't open it. Try again."; }
+    DATA=await decrypt(pw,blob);
+    try{localStorage.setItem("atelier:blob",JSON.stringify(blob));sessionStorage.setItem("atelier:pw",pw)}catch(e){}
+    $("lock").classList.add("hidden"); $("app").classList.remove("hidden"); route();
+  }catch(e){ $("err").textContent="That password didn't work. Check it and try again."; }
 }
 $("go").onclick=()=>unlock($("pw").value);
 $("pw").addEventListener("keydown",e=>{if(e.key==="Enter")unlock($("pw").value)});
+$("logout").onclick=()=>{try{sessionStorage.removeItem("atelier:pw")}catch(e){} location.hash=""; location.reload();};
 try{const p=sessionStorage.getItem("atelier:pw"); if(p) unlock(p);}catch(e){}
+window.addEventListener("hashchange",()=>DATA&&route());
 
-function render(){
-  $("lock").classList.add("hidden"); $("app").classList.remove("hidden");
-  const days=Math.max(0,Math.ceil((EXAM-Date.now())/864e5)); $("days").textContent=days;
-  const start=new Date("2026-11-21T00:00:00+05:30"); const pct=Math.min(100,Math.max(0,(Date.now()-start)/(EXAM-start)*100));
-  $("tapeMark").style.left=pct+"%";
-  const t=todayIST(); const mocks=DATA.mocks;
-  const next=mocks.find(m=>!m.result && m.date>=t) || null;
-  const nc=$("nextCard");
-  if(next){
-    const isToday=next.date===t;
-    nc.innerHTML='<div class="k">'+(isToday?"Today":"Next mock")+'</div><h2>'+next.title+'</h2><div class="when">'+dow(next.date)+', '+fmtD(next.date)+' · 3 hours · 150 questions</div>'+
-      (next.file && next.released ? '<a class="btn fill" href="mocks/'+next.file+'">Open the test</a>' : '<span class="btn" style="opacity:.6;cursor:default">Opens on the day</span>')+
-      '<div class="note">Choose any 3-hour slot in the day. Sit at a desk, close other tabs, keep water nearby. Daksh will send your start code when you are ready to begin.</div>';
-  } else nc.innerHTML='<div class="k">Next mock</div><h2>Rest &amp; revise</h2><div class="when">No mock scheduled right now.</div>';
-  // results
-  const done=mocks.filter(m=>m.result);
-  $("results").innerHTML = done.length ? done.map(m=>{
-    const r=m.result; const bars=r.sections.map(s=>'<div>'+s.name+'</div><div class="bar"><i style="width:'+Math.max(0,s.net/s.max*100)+'%"></i></div><div>'+s.net+'/'+s.max+'</div>').join("");
-    return '<div class="res"><div><h4>'+m.title+' · '+fmtD(m.date)+'</h4><div class="bars">'+bars+'</div>'+(m.analysis?'<p><a href="#" data-a="'+m.id+'">Read your analysis →</a></p>':'')+'</div><div class="score">'+r.net+'<small>out of '+r.max+'</small></div></div>';
-  }).join("") : '<div class="empty">Your first scores will appear here after Mock 1 is reviewed.</div>';
-  document.querySelectorAll("[data-a]").forEach(a=>a.onclick=e=>{e.preventDefault();const m=mocks.find(x=>x.id===a.dataset.a);const v=$("analysisView");v.innerHTML=m.analysis;v.classList.remove("hidden");v.scrollIntoView({behavior:"smooth"});});
-  // timetable
-  $("ttMeta").textContent=mocks.length+" full mocks";
-  $("phases").innerHTML=DATA.phases.map((p,i)=>'<div class="phase"><div class="pn">Phase '+(i+1)+'</div><h4>'+p.name+'</h4><p>'+p.blurb+'</p>'+
-    mocks.filter(m=>m.phase===i+1).map(m=>{const st=m.result?'<span class="pill done">'+m.result.net+'</span>':(m.date===t?'<span class="pill today">Today</span>':'<span class="pill">'+(m.date<t?"Pending":"Upcoming")+'</span>');
-      return '<div class="row"><div class="d">'+fmtD(m.date)+'<small>'+dow(m.date)+'</small></div><div>'+m.title+(m.focus?'<br><small style="color:var(--soft)">'+m.focus+'</small>':'')+'</div>'+st+'</div>';}).join("")+'</div>').join("");
+/* ---------- status helpers ---------- */
+function localState(m){ try{ return JSON.parse(localStorage.getItem("mfm:MFM-"+m.id+":state")||"null"); }catch(e){ return null; } }
+function status(m){
+  const t=todayIST(), ls=localState(m);
+  if(m.result) return {k:"done",label:"Reviewed"};
+  if(ls&&ls.submitted) return {k:"wait",label:"Submitted · awaiting review"};
+  if(ls&&ls.startedAt) return {k:"today",label:"In progress"};
+  if(m.date===t && m.released) return {k:"today",label:"Open today"};
+  if(m.date<t) return {k:"locked",label:"Missed"};
+  return {k:"mock",label:"Scheduled"};
 }
+const done=()=>DATA.mocks.filter(m=>m.result);
+const nextMock=()=>DATA.mocks.find(m=>!m.result && !(localState(m)||{}).submitted && m.date>=todayIST());
+const daysLeft=()=>Math.max(0,Math.ceil((EXAM-Date.now())/864e5));
+function phaseOf(d){ return d<"2026-12-01"?1:d<"2026-12-26"?2:3; }
+
+/* ---------- router ---------- */
+function route(){
+  const key=(location.hash.slice(1)||"overview"); const p=PAGES.find(x=>x[0]===key)||PAGES[0];
+  let groups={}; PAGES.forEach(x=>(groups[x[2]]=groups[x[2]]||[]).push(x));
+  $("nav").innerHTML=Object.entries(groups).map(([g,items])=>`<div class="nav-h">${g}</div>`+items.map(x=>`<a class="nav-a ${x[0]===p[0]?"on":""}" href="#${x[0]}">${icon(x[0])}${x[1]}</a>`).join("")).join("")+
+    `<div class="nav-h">Before a mock</div><a class="nav-a" href="check.html">${icon("check")}System check</a><a class="nav-a" href="mocks/MFM-DEMO.html">${icon("play")}Interface practice</a>`;
+  $("mobnav").innerHTML=PAGES.slice(0,5).map(x=>`<a class="${x[0]===p[0]?"on":""}" href="#${x[0]}">${icon(x[0])}${x[1].split(" ")[0]}</a>`).join("");
+  $("crumb").textContent=p[2]; $("ptitle").textContent=p[1];
+  $("cd").textContent=daysLeft()+" days to the GAT · Sun 10 Jan";
+  $("page").innerHTML=`<div class="fade">${R[p[0]]()}</div>`;
+  (H[p[0]]||(()=>{}))(); window.scrollTo(0,0);
+}
+
+/* ---------- pages ---------- */
+const R={};
+R.overview=()=>{
+  const n=nextMock(), d=done(), t=todayIST();
+  const hr=new Date(Date.now()+5.5*3600e3).getUTCHours(); const greet=hr<12?"Good morning":hr<17?"Good afternoon":"Good evening";
+  const elapsed=Math.min(1,Math.max(0,(Date.now()-START)/(EXAM-START)));
+  const ph=phaseOf(t);
+  const nextCard=n?`<div class="card next span-7"><div class="weave"></div><h3>${n.date===t?"Today":"Next mock"}</h3>
+      <div class="title">${esc(n.title)}</div><div class="meta">${fmt(n.date,{weekday:"long",day:"numeric",month:"long"})} · 180 minutes · 150 questions</div>
+      <div class="pills"><span class="pill">English 50</span><span class="pill">Quant 20</span><span class="pill">Reasoning 25</span><span class="pill">GK 25</span><span class="pill">Case study 30</span></div>
+      <div class="actions">${n.released?`<a class="btn btn-light" href="mocks/${n.file}">Open the test</a>`:`<span class="btn btn-ghost" style="opacity:.7;cursor:default">Opens on ${fmt(n.date,{day:"numeric",month:"short"})}</span>`}
+        <a class="btn btn-ghost" href="check.html">System check</a><a class="btn btn-ghost" href="mocks/MFM-DEMO.html">Practice the interface</a></div>
+      <div class="check"><div>${icon("check","#d49a1a").replace("<svg","<svg width=16 height=16")} Pick any 3-hour slot on the day. A desk, Chrome, charger plugged in, phone away.</div>
+      <div>${icon("check","#d49a1a").replace("<svg","<svg width=16 height=16")} Daksh sends your start code when you say you're ready. The clock starts when you click "I am ready to begin".</div></div></div>`
+    :`<div class="card next span-7"><div class="weave"></div><h3>Next mock</h3><div class="title">Nothing scheduled</div><div class="meta">Use the time to review your last analysis.</div></div>`;
+  const best=d.length?Math.max(...d.map(m=>m.result.net)):null;
+  const acc=d.length?Math.round(100*d.reduce((a,m)=>a+m.result.correct,0)/Math.max(1,d.reduce((a,m)=>a+m.result.attempted,0))):null;
+  const tiles=[["Mocks done",`${d.length}<small style="font:500 15px Hanken Grotesk;color:var(--muted)"> / ${DATA.mocks.length}</small>`,"Full-length, timed"],
+    ["Best score",best===null?"—":best.toFixed(2),best===null?"After Mock 1 is reviewed":"Out of 150"],
+    ["Accuracy",acc===null?"—":acc+"%",acc===null?"Correct ÷ attempted":"Across all mocks"],
+    ["Topics met",`${covered()}<small style="font:500 15px Hanken Grotesk;color:var(--muted)"> / ${totalTopics()}</small>`,"From the syllabus map"]];
+  const ag=[]; for(let i=0;i<7&&ag.length<6;i++){ const dd=addDays(t,i); const m=DATA.mocks.find(x=>x.date===dd); const prev=DATA.mocks.find(x=>x.date===addDays(dd,-1));
+    if(m) ag.push([dd,m.title,"Full mock · 3 hours","mock",i===0?"Today":"Mock"]);
+    else if(prev) ag.push([dd,"Review "+prev.title,"Go through the analysis and worked solutions","review","Review"]);
+    else if(dd==="2027-01-08"||dd==="2027-01-09") ag.push([dd,"Rest","Light revision only","review","Rest"]); }
+  return `<p class="hello">${greet}, Raina.</p><p class="hello-sub">${d.length?`You've completed ${d.length} of ${DATA.mocks.length} mocks.`:`Your first full mock is ${n?fmt(n.date,{weekday:"long"}):"coming up"}. Everything below fills in as you go.`}</p>
+  <div class="grid">${nextCard}
+    <div class="card span-5"><h3>Countdown</h3><div class="ring-wrap">${ring(elapsed)}<div><div class="big">${daysLeft()}<small>days</small></div><div style="color:var(--muted)">until the GAT on Sunday, 10 January 2027</div></div></div>
+      <div class="phase-line"><div class="${ph>1?"done":"on"}"></div><div class="${ph>2?"done":ph===2?"on":""}"></div><div class="${ph===3?"on":""}"></div></div>
+      <div class="phase-labels"><span>Find your level</span><span>Build &amp; sharpen</span><span>Exam rhythm</span></div></div>
+    ${tiles.map(x=>`<div class="card span-3 stat"><div class="k">${x[0]}</div><div class="v">${x[1]}</div><div class="l">${x[2]}</div></div>`).join("")}
+    <div class="card span-6"><h3>This week</h3><div class="agenda">${ag.length?ag.map(a=>`<div class="ag"><div class="d"><b>${fmt(a[0],{day:"numeric"})}</b><span>${fmt(a[0],{weekday:"short"})}</span></div><div><div class="t">${esc(a[1])}</div><div class="s">${a[2]}</div></div><span class="tag ${a[4]==="Today"?"today":a[3]}">${a[4]}</span></div>`).join(""):'<div class="s" style="color:var(--muted)">No mocks this week.</div>'}</div></div>
+    <div class="card span-6"><h3>Syllabus coverage</h3><div class="cov">${DATA.syllabus.map(s=>{const c=s.topics.filter(x=>x.seen>0).length;return `<div class="cov-row"><span>${s.name}</span><div class="bar"><i style="width:${100*c/s.topics.length}%"></i></div><span style="text-align:right;color:var(--muted)">${c}/${s.topics.length}</span></div>`}).join("")}</div>
+      <p style="font-size:13px;color:var(--muted);margin:14px 0 0">Topics you've met in reviewed mocks. <a href="#syllabus">See the full map →</a></p></div>
+  </div>`;
+};
+function ring(f){const r=34,c=2*Math.PI*r;return `<svg width="88" height="88" viewBox="0 0 88 88"><circle cx="44" cy="44" r="${r}" fill="none" stroke="#eeeae1" stroke-width="8"/><circle cx="44" cy="44" r="${r}" fill="none" stroke="#d49a1a" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-f)}" transform="rotate(-90 44 44)"/><text x="44" y="49" text-anchor="middle" style="font:600 14px Hanken Grotesk;fill:#1a1c22">${Math.round(f*100)}%</text></svg>`;}
+const covered=()=>DATA.syllabus.reduce((a,s)=>a+s.topics.filter(x=>x.seen>0).length,0);
+const totalTopics=()=>DATA.syllabus.reduce((a,s)=>a+s.topics.length,0);
+
+let mockFilter="all";
+R.mocks=()=>`<div class="toolbar">${[["all","All mocks"],["upcoming","Upcoming"],["done","Completed"]].map(f=>`<button class="seg ${mockFilter===f[0]?"on":""}" data-f="${f[0]}">${f[1]}</button>`).join("")}</div>
+  <div class="card list">${DATA.mocks.filter(m=>mockFilter==="all"||(mockFilter==="done"?(m.result||(localState(m)||{}).submitted):!(m.result||(localState(m)||{}).submitted))).map(m=>{const s=status(m);const n=+m.id.slice(1);
+   const act=m.result&&m.analysis?`<a class="btn btn-ghost" href="#performance" data-an="${m.id}">Analysis</a>`:(s.k==="today"&&m.released?`<a class="btn btn-primary" href="mocks/${m.file}">${s.label==="In progress"?"Resume":"Open test"}</a>`:"");
+   return `<div class="mrow"><div class="num ${m.phase===2?"p2":m.phase===3?"p3":""}">${n}</div><div><div class="tt">${esc(m.title)}</div><div class="ss">${m.focus?esc(m.focus):(["","Find your level","Build & sharpen","Exam rhythm"][m.phase])}</div></div>
+   <div class="hide-m"><div class="tt" style="font-weight:500">${fmt(m.date,{weekday:"short",day:"numeric",month:"short"})}</div><div class="ss">150 Q · 180 min</div></div>
+   <div class="hide-m">${m.result?`<div class="tt">${m.result.net.toFixed(2)} <span class="ss">/ 150</span></div><div class="ss">${m.result.correct} right · ${m.result.wrong} wrong</div>`:'<div class="ss">—</div>'}</div>
+   <div class="act"><span class="tag ${s.k}">${s.label}</span>${act}</div></div>`;}).join("")}</div>`;
+const H={};
+H.mocks=()=>document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{mockFilter=b.dataset.f;route();});
+
+R.schedule=()=>{
+  const months=[[2026,10],[2026,11],[2027,0]], t=todayIST();
+  const kind=d=>{ if(d==="2027-01-10")return["exam","GAT"]; const m=DATA.mocks.find(x=>x.date===d); if(m)return["mock","M"+(+m.id.slice(1))];
+    if(DATA.mocks.find(x=>addDays(x.date,1)===d))return["review","review"]; if(d==="2027-01-08"||d==="2027-01-09")return["rest","rest"]; return["",""]; };
+  return `<div class="card"><div class="cal-wrap">${months.map(([y,mo])=>{const first=new Date(Date.UTC(y,mo,1)); const days=new Date(Date.UTC(y,mo+1,0)).getUTCDate(); const lead=(first.getUTCDay()+6)%7;
+    let cells=""; for(let i=0;i<lead;i++)cells+='<div class="cell empty"></div>';
+    for(let d=1;d<=days;d++){const ds=`${y}-${String(mo+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;const [k,l]=kind(ds);cells+=`<div class="cell ${k} ${ds<t&&!k?"past":""} ${ds===t?"today":""}">${d}${l&&k!=="review"&&k!=="rest"?`<small>${l}</small>`:""}</div>`;}
+    return `<div class="cal"><h4>${first.toLocaleDateString("en-IN",{month:"long",year:"numeric",timeZone:"UTC"})}</h4><div class="cal-g">${["M","T","W","T","F","S","S"].map(x=>`<div class="h">${x}</div>`).join("")}${cells}</div></div>`;}).join("")}</div>
+    <div class="legend"><span><i style="background:var(--indigo)"></i>Full mock</span><span><i style="background:var(--turmeric-soft)"></i>Review day</span><span><i style="background:var(--sage-soft)"></i>Rest</span><span><i style="background:var(--madder)"></i>Exam day</span><span><i style="outline:2px solid var(--madder);background:#fff"></i>Today</span></div></div>
+  <div class="grid" style="margin-top:18px">${DATA.phases.map((p,i)=>`<div class="card span-4"><h3>Phase ${i+1}</h3><div class="serif" style="font-size:21px;margin-bottom:6px">${esc(p.name)}</div><div style="color:var(--muted);font-size:14px">${esc(p.blurb)}</div></div>`).join("")}</div>`;
+};
+
+R.performance=()=>{
+  const d=done();
+  if(!d.length) return `<div class="card"><div class="empty">${emptyArt()}<div><h4>Your performance will appear here</h4><p>After each mock is reviewed you'll see your score trend, how each section is going, where your time went, and how your guessing is working under negative marking. It starts with Mock 1.</p></div></div></div>
+   <div class="grid" style="margin-top:18px">${["Score trend|Net score after −0.25 per wrong answer, mock by mock.","Section balance|Marks gained and lost in each of the five sections.","Time map|Minutes spent per section against the plan in the Exam guide.","Error types|Concept gaps, careless slips and time-pressure errors, from your review."].map(x=>{const [a,b]=x.split("|");return `<div class="card span-3"><h3>${a}</h3><div style="color:var(--muted);font-size:14px">${b}</div></div>`}).join("")}</div>`;
+  const W=680,Hh=220,pad=36,max=150; const pts=d.map((m,i)=>[pad+(W-2*pad)*(d.length===1?.5:i/(d.length-1)),Hh-pad-(Hh-2*pad)*m.result.net/max]);
+  const line=`<svg class="chart" viewBox="0 0 ${W} ${Hh}" width="100%">${[0,50,100,150].map(v=>{const y=Hh-pad-(Hh-2*pad)*v/max;return `<line x1="${pad}" x2="${W-pad}" y1="${y}" y2="${y}" stroke="#eeeae1"/><text x="${pad-8}" y="${y+4}" text-anchor="end">${v}</text>`}).join("")}
+    <polyline fill="none" stroke="#2c3c7a" stroke-width="2.5" points="${pts.map(p=>p.join(",")).join(" ")}"/>${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="#fff" stroke="#2c3c7a" stroke-width="2.5"/><text x="${p[0]}" y="${Hh-10}" text-anchor="middle">M${+d[i].id.slice(1)}</text>`).join("")}</svg>`;
+  const last=d[d.length-1];
+  return `<div class="grid"><div class="card span-8"><h3>Score trend</h3>${line}</div>
+    <div class="card span-4"><h3>Latest · ${esc(last.title)}</h3><div class="stat"><div class="v">${last.result.net.toFixed(2)}</div><div class="l">${last.result.correct} correct · ${last.result.wrong} wrong · ${last.result.attempted} attempted</div></div></div>
+    <div class="card span-12"><h3>Sections · ${esc(last.title)}</h3><table class="t"><tr><th>Section</th><th>Net</th><th>Attempted</th><th>Accuracy</th><th>Time</th><th style="width:30%"></th></tr>${last.result.sections.map(s=>`<tr><td>${s.name}</td><td>${s.net.toFixed(2)} / ${s.max}</td><td>${s.att}</td><td>${s.att?Math.round(100*s.correct/s.att):0}%</td><td>${s.min} min</td><td><div class="bar"><i style="width:${Math.max(0,100*s.net/s.max)}%"></i></div></td></tr>`).join("")}</table></div>
+    ${last.analysis?`<div class="card span-12 prose" id="an">${last.analysis}</div>`:""}</div>`;
+};
+function emptyArt(){return `<svg width="120" height="96" viewBox="0 0 120 96"><rect x="6" y="10" width="108" height="78" rx="10" fill="#fff" stroke="#e4ded2"/><path d="M22 70 L44 52 L62 60 L84 34 L100 40" fill="none" stroke="#d49a1a" stroke-width="3" stroke-linecap="round" stroke-dasharray="4 6"/><circle cx="84" cy="34" r="5" fill="#1f2b5c"/></svg>`;}
+
+R.syllabus=()=>`<p style="color:var(--muted);margin:0 0 18px;max-width:70ch">Every topic the MFM GAT has tested in the last five papers. Each filled dot is one question you've answered in a reviewed mock. Topics you haven't met yet are planned into the coming mocks.</p>
+  <div class="grid">${DATA.syllabus.map(s=>{const c=s.topics.filter(x=>x.seen>0).length;return `<div class="card span-6 sec-card"><h4>${s.name}</h4><div class="meta">${s.count} questions in the paper · ${c} of ${s.topics.length} topics tested so far</div>
+   ${s.topics.map(tp=>`<div class="topic"><span>${tp.name}</span>${tp.seen?`<span class="dots">${Array.from({length:Math.min(tp.seen,8)},()=>'<i class="on"></i>').join("")}</span>`:'<span class="nt">Not yet tested</span>'}</div>`).join("")}</div>`}).join("")}</div>`;
+
+R.notes=()=>`<div class="grid" style="align-items:start"><div class="card span-8 prose">
+  <h4>Why this page exists</h4><p>Some questions have one answer the exam accepts, even when another looks arguable. The papers draw on the same SSC and Bank-style question banks your coaching uses, so the rules below are the ones those banks apply. Learn them as rules, not opinions.</p>
+  <h4>Course of action</h4>
+  <div class="rule"><b>Accept</b><span>A practical step that solves or reduces the stated problem. Two independent sensible steps can both follow.</span></div>
+  <div class="rule"><b>Reject</b><span>Extreme or sweeping steps ("all", "immediately close", "ban completely"), punishment without need, or anything that doesn't address the problem.</span></div>
+  <h4>Assumptions</h4>
+  <div class="rule"><b>Usually implicit</b><span>The purpose behind a notice, advertisement or appeal: that people will read it, respond, or want what's offered.</span></div>
+  <div class="rule"><b>Not implicit</b><span>Anything with "only", "all", "every", "best" or "definitely"; a restatement of the statement; a comparison with something not mentioned.</span></div>
+  <h4>Conclusions and inferences</h4>
+  <div class="rule"><b>Stay inside</b><span>Use only what the statement says. Words like "always", "all" and "definitely" usually break a conclusion. A rule or law implies people are expected to follow it.</span></div>
+  <h4>Arguments</h4>
+  <div class="rule"><b>Strong</b><span>Important and directly related to the question, whether it says yes or no.</span></div>
+  <div class="rule"><b>Weak</b><span>Trivial, emotional, or resting on "only", "until", "unless".</span></div>
+  <h4>Decision-making (eligibility) sets</h4>
+  <div class="rule"><b>Method</b><span>Check every criterion literally. Look at the exceptions only for the criterion the candidate fails. If no exception covers it, reject.</span></div>
+  <h4>English: the exam's grammar rules</h4>
+  <ul><li><i>forbade … to</i>, never <i>forbade … not to</i>. <i>Despite</i>, never <i>despite of</i>.</li><li><i>Hardly / scarcely … when</i>; <i>no sooner … than</i>.</li><li><i>Better than any <b>other</b></i> when comparing within a group. <i>Inspired <b>by</b></i>, not <i>from</i>.</li><li>Synonyms in a sentence: pick the meaning the sentence forces, not the first dictionary sense.</li><li>Fill in the blanks are usually decided by collocation: <i>take issue</i>, <i>the jury is still out</i>.</li></ul>
+  <h4>Business communication</h4>
+  <ul><li>Choose the option that is polite, specific and owns the problem. Never blame the courier or the customer.</li><li>Match the brand: a premium brand talks craft and longevity, never discounts.</li><li>Memo = internal. Press release = media, with the most important facts first (inverted pyramid). Notice = put up for everyone to read.</li><li>"Dear Sir/Madam" goes with "Yours faithfully"; a named person goes with "Yours sincerely".</li></ul>
+</div>
+<div class="card span-4"><h3>Negative marking, in numbers</h3><p style="margin-top:0">+1 for right, −0.25 for wrong.</p>
+  <table class="t"><tr><th>You can rule out</th><th>Expected marks from a guess</th></tr><tr><td>Nothing (pure guess)</td><td>+0.06</td></tr><tr><td>1 option</td><td>+0.17</td></tr><tr><td>2 options</td><td>+0.38</td></tr></table>
+  <p class="callout" style="margin-top:14px">Guess when you can rule out at least one option. Blind guesses barely pay and add noise to your score.</p></div>
+</div>`;
+
+R.guide=()=>`<div class="grid">
+ <div class="card span-7"><h3>The paper</h3><table class="t"><tr><th>Section</th><th>Questions</th><th>Suggested time</th></tr>
+  <tr><td>Communication Ability &amp; English Comprehension</td><td>50</td><td>45 min</td></tr><tr><td>Quantitative Ability</td><td>20</td><td>30 min</td></tr>
+  <tr><td>Analytical &amp; Logical Ability</td><td>25</td><td>35 min</td></tr><tr><td>General Knowledge &amp; Current Affairs</td><td>25</td><td>15 min</td></tr>
+  <tr><td>Case Study (Section B)</td><td>30</td><td>40 min</td></tr><tr><td><b>Total</b></td><td><b>150</b></td><td><b>165 + 15 min buffer</b></td></tr></table>
+  <p style="color:var(--muted);font-size:14px;margin:12px 0 0">Computer-based, 180 minutes, one timer. You can move freely between sections. +1 for a correct answer, −0.25 for a wrong one, 0 if left blank.</p></div>
+ <div class="card span-5"><h3>The question palette</h3><div class="legend5">
+  <div><span class="sw">1</span>Not visited</div><div><span class="sw na">2</span>Visited, not answered</div><div><span class="sw a">3</span>Answered</div>
+  <div><span class="sw mr">4</span>Marked for review, not answered</div><div><span class="sw mr" style="box-shadow:inset 0 0 0 0 #fff;position:relative">5<i style="position:absolute;right:-3px;bottom:-3px;width:10px;height:10px;border-radius:50%;background:#3a9a3a;border:2px solid #fff"></i></span>Answered and marked. <b>This is evaluated.</b></div></div>
+  <p class="callout" style="margin-top:14px">An option you click is not saved until you press <b>SAVE &amp; NEXT</b>. Moving away without saving loses it.</p></div>
+ <div class="card span-6 prose"><h4>Mock-day routine</h4><ul><li>Run the <a href="check.html">system check</a> on the same laptop, in Chrome.</li><li>Close every other tab and app. Silence your phone and keep it out of reach.</li><li>Tell Daksh you're ready. He sends the start code.</li><li>If anything goes wrong, reopen the test link. Your answers are saved, and the clock keeps running while it's closed.</li></ul></div>
+ <div class="card span-6 prose"><h4>Exam day · 10 January 2027</h4><ul><li>GAT is computer-based, in the morning shift. The admit card is expected about a week before.</li><li>Carry the admit card, an original photo ID and anything else the admit card lists.</li><li>Reach early. Read the on-screen instructions; the interface is the one you've practised here.</li><li>Check the NTA NIFT page for official updates: exams.nta.nic.in/niftee</li></ul></div>
+</div>`;
 if("serviceWorker" in navigator && location.protocol!=="file:") navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
 </body>
