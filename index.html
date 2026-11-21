@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Atelier — MFM 2027 Preparation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f6f1e7;--paper2:#efe7d6;--ink:#1c1a17;--soft:#6b645a;--rule:#d9cfbb;--chalk:#c2372b;--sage:#4f6b4a;--gold:#b08a3e}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:Karla,Georgia,sans-serif;font-size:16px}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;background-image:radial-gradient(rgba(0,0,0,.05) 1px,transparent 1px);background-size:3px 3px;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:28px 28px 80px}
+h1,h2,h3,.serif{font-family:Fraunces,Georgia,serif;font-weight:500;letter-spacing:-.01em}
+a{color:inherit}
+.hidden{display:none!important}
+.mast{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--ink);padding-bottom:10px}
+.mast .name{font-family:Fraunces,serif;font-size:28px}
+.mast .name i{color:var(--chalk);font-style:italic}
+.mast .meta{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.stitch{height:0;border-top:2px dashed var(--rule);margin:26px 0}
+/* lock */
+#lock{min-height:86vh;display:flex;align-items:center;justify-content:center}
+.lockcard{width:min(440px,92vw);text-align:center}
+.lockcard h1{font-size:44px;margin:0 0 4px;line-height:1.05}
+.lockcard h1 em{color:var(--chalk)}
+.lockcard p{color:var(--soft);margin:0 0 26px}
+.field{display:flex;border:1px solid var(--ink);background:#fffdf8}
+.field input{flex:1;border:0;background:transparent;padding:14px 16px;font:inherit;font-size:17px;outline:none}
+.field button{border:0;background:var(--ink);color:var(--paper);padding:0 22px;font:inherit;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.err{color:var(--chalk);margin-top:10px;font-size:14px;min-height:20px}
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:34px;margin-top:30px;align-items:stretch}
+.count{position:relative}
+.count .big{font-family:Fraunces,serif;font-size:clamp(90px,15vw,168px);line-height:.85;font-weight:300}
+.count .big b{font-weight:700;color:var(--chalk)}
+.count .lbl{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin-top:10px}
+.count .tape{margin-top:22px;height:14px;background:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 10px);position:relative;opacity:.85}
+.count .tape span{position:absolute;top:-6px;width:3px;height:26px;background:var(--chalk)}
+.next{background:var(--ink);color:var(--paper);padding:26px 26px 22px;position:relative;overflow:hidden}
+.next::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border:1px dashed rgba(246,241,231,.35);border-radius:50%}
+.next .k{font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:.7}
+.next h2{font-size:30px;margin:8px 0 6px}
+.next .when{opacity:.85;margin-bottom:18px}
+.btn{display:inline-block;border:1px solid currentColor;padding:11px 18px;text-decoration:none;font-weight:700;letter-spacing:.05em;font-size:14px;cursor:pointer;background:transparent;color:inherit}
+.btn.fill{background:var(--chalk);border-color:var(--chalk);color:#fff}
+.btn+.btn{margin-left:8px}
+.note{font-size:13px;opacity:.75;margin-top:14px;line-height:1.5}
+/* timetable */
+.sec-h{display:flex;justify-content:space-between;align-items:baseline}
+.sec-h h3{font-size:24px;margin:0}
+.sec-h span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:16px}
+.phase{border-top:3px solid var(--ink);padding-top:10px}
+.phase .pn{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.phase h4{font-family:Fraunces,serif;font-weight:500;font-size:19px;margin:4px 0 4px}
+.phase p{margin:0 0 10px;color:var(--soft);font-size:14px;line-height:1.45}
+.row{display:grid;grid-template-columns:80px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--rule);font-size:15px}
+.row .d{font-family:Fraunces,serif;font-size:15px}
+.row .d small{display:block;font-family:Karla;font-size:11px;color:var(--soft);letter-spacing:.1em;text-transform:uppercase}
+.pill{font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--rule);color:var(--soft);white-space:nowrap}
+.pill.today{border-color:var(--chalk);color:var(--chalk);font-weight:700}
+.pill.done{background:var(--sage);border-color:var(--sage);color:#fff}
+/* results */
+.results{margin-top:14px}
+.res{display:grid;grid-template-columns:1fr 120px;gap:20px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.res h4{margin:0 0 8px;font-family:Fraunces,serif;font-weight:500;font-size:19px}
+.bars{display:grid;grid-template-columns:150px 1fr 54px;gap:6px 10px;font-size:13px;align-items:center}
+.bar{height:8px;background:var(--paper2);position:relative}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ink)}
+.score{font-family:Fraunces,serif;font-size:40px;text-align:right;line-height:1}
+.score small{display:block;font-family:Karla;font-size:12px;color:var(--soft)}
+.empty{color:var(--soft);font-style:italic;padding:14px 0}
+.tools{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:14px}
+.tool{border:1px solid var(--ink);padding:18px;text-decoration:none;display:block;background:#fffdf8;transition:transform .15s ease, box-shadow .15s ease}
+.tool:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+.tool b{font-family:Fraunces,serif;font-weight:500;font-size:19px;display:block;margin-bottom:4px}
+.tool span{color:var(--soft);font-size:14px}
+.reveal{opacity:0;transform:translateY(10px);animation:rv .6s ease forwards}
+@keyframes rv{to{opacity:1;transform:none}}
+#analysisView{background:#fffdf8;border:1px solid var(--ink);padding:24px;margin-top:20px}
+@media (max-width:760px){.hero,.phases,.tools{grid-template-columns:1fr}.res{grid-template-columns:1fr}.score{text-align:left}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><div class="name">The <i>Atelier</i></div><div class="meta">MFM · NIFT 2027 · Preparation</div></div>
+
+  <section id="lock"><div class="lockcard">
+    <h1 class="serif">Hello, <em>Raina</em>.</h1>
+    <p>Your mock tests, timetable and analysis live here.</p>
+    <div class="field"><input id="pw" type="password" placeholder="Password" autocomplete="current-password"><button id="go">Enter</button></div>
+    <div class="err" id="err"></div>
+  </div></section>
+
+  <main id="app" class="hidden">
+    <section class="hero">
+      <div class="count reveal">
+        <div class="big"><b id="days">--</b> days</div>
+        <div class="lbl" id="countLbl">to the GAT · Sunday, 10 January 2027</div>
+        <div class="tape"><span id="tapeMark" style="left:0"></span></div>
+      </div>
+      <div class="next reveal" style="animation-delay:.12s" id="nextCard"></div>
+    </section>
+
+    <div class="stitch"></div>
+    <section class="reveal" style="animation-delay:.2s">
+      <div class="sec-h"><h3>Your results</h3><span>Updated after each review</span></div>
+      <div class="results" id="results"></div>
+      <div id="analysisView" class="hidden"></div>
+    </section>
+
+    <div class="stitch"></div>
+    <section class="reveal" style="animation-delay:.28s">
+      <div class="sec-h"><h3>Mock timetable</h3><span id="ttMeta"></span></div>
+      <div class="phases" id="phases"></div>
+    </section>
+
+    <div class="stitch"></div>
+    <section class="reveal" style="animation-delay:.36s">
+      <div class="sec-h"><h3>Before your first mock</h3><span>Do these once</span></div>
+      <div class="tools">
+        <a class="tool" href="check.html"><b>System check</b><span>Camera, microphone, full screen, saving and connection. Run this on the laptop you will test on.</span></a>
+        <a class="tool" href="mocks/MFM-DEMO.html"><b>Interface practice</b><span>An 8-question, 15-minute demo of the exam screen. Start code: <b>DEMO</b>. Use it to learn SAVE &amp; NEXT, marking and the palette.</span></a>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function decrypt(pw, blob){
+  const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);
+  const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b64(blob.salt),iterations:blob.iter,hash:"SHA-256"},base,{name:"AES-GCM",length:256},false,["decrypt"]);
+  const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(blob.iv)},key,b64(blob.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+const EXAM=new Date("2027-01-10T09:00:00+05:30");
+const fmtD=d=>new Date(d+"T00:00:00+05:30").toLocaleDateString("en-IN",{day:"numeric",month:"short"});
+const dow=d=>new Date(d+"T00:00:00+05:30").toLocaleDateString("en-IN",{weekday:"short"});
+const todayIST=()=>new Date(Date.now()+5.5*3600e3).toISOString().slice(0,10);
+let DATA=null;
+async function unlock(pw){
+  try{
+    const blob=await fetch("data/portal.json?ts="+Date.now(),{cache:"no-store"}).then(r=>r.json()).catch(()=>JSON.parse(localStorage.getItem("atelier:blob")||"null"));
+    DATA=await decrypt(pw, blob);
+    try{localStorage.setItem("atelier:blob",JSON.stringify(blob));sessionStorage.setItem("atelier:pw",pw);}catch(e){}
+    render();
+  }catch(e){ $("err").textContent="That password didn't open it. Try again."; }
+}
+$("go").onclick=()=>unlock($("pw").value);
+$("pw").addEventListener("keydown",e=>{if(e.key==="Enter")unlock($("pw").value)});
+try{const p=sessionStorage.getItem("atelier:pw"); if(p) unlock(p);}catch(e){}
+
+function render(){
+  $("lock").classList.add("hidden"); $("app").classList.remove("hidden");
+  const days=Math.max(0,Math.ceil((EXAM-Date.now())/864e5)); $("days").textContent=days;
+  const start=new Date("2026-11-21T00:00:00+05:30"); const pct=Math.min(100,Math.max(0,(Date.now()-start)/(EXAM-start)*100));
+  $("tapeMark").style.left=pct+"%";
+  const t=todayIST(); const mocks=DATA.mocks;
+  const next=mocks.find(m=>!m.result && m.date>=t) || null;
+  const nc=$("nextCard");
+  if(next){
+    const isToday=next.date===t;
+    nc.innerHTML='<div class="k">'+(isToday?"Today":"Next mock")+'</div><h2>'+next.title+'</h2><div class="when">'+dow(next.date)+', '+fmtD(next.date)+' · 3 hours · 150 questions</div>'+
+      (next.file && next.released ? '<a class="btn fill" href="mocks/'+next.file+'">Open the test</a>' : '<span class="btn" style="opacity:.6;cursor:default">Opens on the day</span>')+
+      '<div class="note">Choose any 3-hour slot in the day. Sit at a desk, close other tabs, keep water nearby. Daksh will send your start code when you are ready to begin.</div>';
+  } else nc.innerHTML='<div class="k">Next mock</div><h2>Rest &amp; revise</h2><div class="when">No mock scheduled right now.</div>';
+  // results
+  const done=mocks.filter(m=>m.result);
+  $("results").innerHTML = done.length ? done.map(m=>{
+    const r=m.result; const bars=r.sections.map(s=>'<div>'+s.name+'</div><div class="bar"><i style="width:'+Math.max(0,s.net/s.max*100)+'%"></i></div><div>'+s.net+'/'+s.max+'</div>').join("");
+    return '<div class="res"><div><h4>'+m.title+' · '+fmtD(m.date)+'</h4><div class="bars">'+bars+'</div>'+(m.analysis?'<p><a href="#" data-a="'+m.id+'">Read your analysis →</a></p>':'')+'</div><div class="score">'+r.net+'<small>out of '+r.max+'</small></div></div>';
+  }).join("") : '<div class="empty">Your first scores will appear here after Mock 1 is reviewed.</div>';
+  document.querySelectorAll("[data-a]").forEach(a=>a.onclick=e=>{e.preventDefault();const m=mocks.find(x=>x.id===a.dataset.a);const v=$("analysisView");v.innerHTML=m.analysis;v.classList.remove("hidden");v.scrollIntoView({behavior:"smooth"});});
+  // timetable
+  $("ttMeta").textContent=mocks.length+" full mocks";
+  $("phases").innerHTML=DATA.phases.map((p,i)=>'<div class="phase"><div class="pn">Phase '+(i+1)+'</div><h4>'+p.name+'</h4><p>'+p.blurb+'</p>'+
+    mocks.filter(m=>m.phase===i+1).map(m=>{const st=m.result?'<span class="pill done">'+m.result.net+'</span>':(m.date===t?'<span class="pill today">Today</span>':'<span class="pill">'+(m.date<t?"Pending":"Upcoming")+'</span>');
+      return '<div class="row"><div class="d">'+fmtD(m.date)+'<small>'+dow(m.date)+'</small></div><div>'+m.title+(m.focus?'<br><small style="color:var(--soft)">'+m.focus+'</small>':'')+'</div>'+st+'</div>';}).join("")+'</div>').join("");
+}
+if("serviceWorker" in navigator && location.protocol!=="file:") navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>

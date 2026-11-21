@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System check — The Atelier</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f6f1e7;color:#1c1a17;font-family:Karla,Arial,sans-serif}
+.w{max-width:720px;margin:0 auto;padding:30px 24px}
+h1{font-family:Fraunces,serif;font-weight:500;font-size:34px;margin:0 0 6px}
+p{color:#6b645a}
+.item{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #d9cfbb}
+.dot{width:22px;height:22px;border-radius:50%;background:#d9cfbb;margin-top:2px}
+.ok .dot{background:#4f6b4a}.bad .dot{background:#c2372b}.warn .dot{background:#b08a3e}
+.item b{display:block}.item span{font-size:14px;color:#6b645a}
+video{width:220px;border:1px solid #1c1a17;margin-top:8px;transform:scaleX(-1)}
+button{border:1px solid #1c1a17;background:#1c1a17;color:#f6f1e7;padding:12px 18px;font:inherit;font-weight:700;cursor:pointer}
+.sum{margin-top:20px;font-family:Fraunces,serif;font-size:22px}
+a{color:inherit}
+</style>
+</head>
+<body><div class="w">
+<h1>System check</h1>
+<p>Run this on the MacBook you will use for the mocks, in Google Chrome. It takes about 20 seconds. Allow the camera and microphone when Chrome asks.</p>
+<button id="run">Run the check</button>
+<div id="list"></div>
+<div class="sum" id="sum"></div>
+<p><a href="./">← Back to the Atelier</a></p>
+</div>
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycby6ANR4jyen5qqs67UZ2db-G8LG1HEEL5JXi-9QLwkLcy9_olGSinf31fN8Vdu6vPE/exec", KEY = "pj4ASDY_GvyQ-7xq1534QBXY";
+const L=document.getElementById("list");
+function add(state,title,detail){const d=document.createElement("div");d.className="item "+state;d.innerHTML='<div class="dot"></div><div><b>'+title+'</b><span>'+detail+'</span></div>';L.appendChild(d);return d;}
+document.getElementById("run").onclick=async()=>{
+  L.innerHTML="";let bad=0,warn=0;
+  const ua=navigator.userAgent; const chrome=/Chrome\//.test(ua)&&!/Edg\//.test(ua)&&!/OPR\//.test(ua);
+  if(chrome) add("ok","Browser","Google Chrome detected."); else {warn++;add("warn","Browser","Please use Google Chrome for the mocks.");}
+  try{localStorage.setItem("chk","1");localStorage.removeItem("chk");add("ok","Saving answers","This browser can save your answers as you go.");}catch(e){bad++;add("bad","Saving answers","Saving is blocked. Don't use an Incognito/Private window, and check that Chrome isn't blocking site data.");}
+  if(window.crypto&&crypto.subtle) add("ok","Secure unlock","Question papers can be unlocked here."); else {bad++;add("bad","Secure unlock","This browser can't unlock the question papers.");}
+  try{const s=await navigator.mediaDevices.getUserMedia({video:true,audio:true});const d=add("ok","Camera & microphone","Both working.");const v=document.createElement("video");v.autoplay=true;v.muted=true;v.srcObject=s;d.children[1].appendChild(v);setTimeout(()=>s.getTracks().forEach(t=>t.stop()),6000);}
+  catch(e){warn++;add("warn","Camera & microphone","Not allowed. Click the camera icon in the address bar, choose Allow, then run the check again.");}
+  if(document.documentElement.requestFullscreen) add("ok","Full screen","Supported. The test opens in full screen."); else {warn++;add("warn","Full screen","Not supported in this browser.");}
+  if(!navigator.onLine){bad++;add("bad","Internet","You are offline.");}
+  try{const t0=Date.now();const r=await fetch(ENDPOINT+"?action=ping").then(r=>r.json());
+    if(r.ok){const p=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({kind:"start",mockId:"SYSCHECK",attemptId:"check-"+Date.now(),rev:1,sentAt:Date.now(),key:KEY,candidate:"Raina",data:{startedAt:Date.now(),endAt:Date.now(),rev:1,ans:{},proctor:{}}})}).then(r=>r.json());
+      if(p.ok) add("ok","Connection to your mentor","Results upload is working ("+(Date.now()-t0)+" ms)."); else {bad++;add("bad","Connection to your mentor","Server reached, but saving failed.");}}
+    else {bad++;add("bad","Connection to your mentor","Server did not respond correctly.");}
+  }catch(e){bad++;add("bad","Connection to your mentor","Couldn't reach the results server. Check your internet. If this keeps failing, tell Daksh.");}
+  document.getElementById("sum").textContent = bad? "Fix the red items before your mock." : warn? "Ready, with warnings above." : "All set. You're ready for your mock.";
+};
+</script>
+</body></html>
