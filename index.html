@@ -202,6 +202,12 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .op.key{background:var(--sage-soft);border-color:#b9d0bd}.op.mine{background:var(--madder-soft);border-color:#e6b9ad}.op.key.mine{background:var(--sage-soft)}
 .op small{font-weight:700;margin-left:8px;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
 .qnote{background:var(--turmeric-soft);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+.fx{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.fx-i{border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.fx-i h4{margin:0 0 2px;font:600 16px Hanken Grotesk}.fx-i .sub{font-size:12px;color:var(--muted);margin-bottom:8px}
+.fx-i p{margin:6px 0;font-size:14px}.fx-i .lbl{display:block;font:700 11px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.chip{display:inline-block;font:600 11px Hanken Grotesk;padding:2px 8px;border-radius:99px;letter-spacing:.03em}
+.c-strong{background:var(--sage-soft);color:#2f5537}.c-mixed{background:var(--turmeric-soft);color:#7a5600}.c-weak{background:var(--madder-soft);color:#8a2b1a}.c-left{background:#ecebe6;color:#55534c}
+@media(max-width:760px){.fx{grid-template-columns:1fr}}
 .qcard .sol{margin-top:12px;padding:12px 14px;background:#f2f4fa;border-left:4px solid var(--indigo,#1f2b5c);border-radius:0 10px 10px 0;font-size:14.5px;line-height:1.6;color:#22242b}
 .qcard .sol .lbl,.qnote .lbl{display:block;font:700 11px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo,#1f2b5c);margin-bottom:4px}
 .qnote .lbl{color:#8a6500}
@@ -378,8 +384,11 @@ R.overview=()=>{
    :(wls&&wls.submitted)?`<div class="card span-12 warm"><div class="wt"><b>Warm-up done</b>Thanks. Your answers reached Daksh. You're set for the real thing.</div></div>`
    :`<div class="card span-12 warm"><div class="wt"><b>${w.date===t?"Today: ":""}${esc(w.title)}</b>${w.minutes} minutes · ${w.questions} questions from all five sections, at real-paper level. It doesn't count towards your scores. It's a full dress rehearsal, so tomorrow nothing is new.</div>
     <div class="actions" style="margin:0"><a class="btn btn-primary" href="#walkthrough">Read the walkthrough</a>${w.released?`<a class="btn btn-ghost" href="mocks/${w.file}">${wls&&wls.startedAt?"Resume the warm-up":"Open the warm-up"}</a>`:""}</div></div>`;
+  const pr=(DATA.practice||[]).slice().reverse().slice(0,3).map(x=>{const ls=localState(x)||{}; const parent=x.for?((DATA.mocks.find(m=>m.id===x.for)||{}).title||(DATA.warmup&&DATA.warmup.id===x.for?"the warm-up":x.for)):"";
+    const act=x.review?`<a class="btn btn-primary" href="#review/${x.id}">Read the feedback</a><a class="btn btn-ghost" href="mocks/${x.file}">See your answers</a>`:`<a class="btn btn-primary" href="mocks/${x.file}">${ls.submitted?"See your score and solutions":ls.startedAt?"Resume":"Start the practice set"}</a>`;
+    return `<div class="card span-12 warm"><div class="wt"><b>${esc(x.title)}${parent?` · after ${esc(parent)}`:""}</b>${x.questions} questions · ${x.minutes} minutes · built from the topics your last test showed you need most: ${esc((x.topics||[]).join(", "))}.${!x.review&&!ls.submitted?` Start code: <b style="letter-spacing:1px">${esc(x.code)}</b>`:""} Your score, the key and full solutions appear the moment you submit.</div><div class="actions" style="margin:0">${act}</div></div>`;}).join("");
   return `<p class="hello">${greet}, Raina.</p><p class="hello-sub">${d.length?`You've completed ${d.length} of ${DATA.mocks.length} mocks.`:`Your first full mock is ${n?fmt(n.date,{weekday:"long"}):"coming up"}. Everything below fills in as you go.`}</p>
-  <div class="grid">${warm}${nextCard}
+  <div class="grid">${pr}${warm}${nextCard}
     <div class="card span-5"><h3>Countdown</h3><div class="ring-wrap">${ring(elapsed)}<div><div class="big">${daysLeft()}<small>days</small></div><div style="color:var(--muted)">until the GAT on Sunday, 10 January 2027</div></div></div>
       <div class="phase-line"><div class="${ph>1?"done":"on"}"></div><div class="${ph>2?"done":ph===2?"on":""}"></div><div class="${ph===3?"on":""}"></div></div>
       <div class="phase-labels"><span>Find your level</span><span>Build &amp; sharpen</span><span>Exam rhythm</span></div></div>
@@ -462,6 +471,8 @@ R.notes=()=>`<div class="grid" style="align-items:start"><div class="card span-8
 </div>`;
 
 /* ---------- analysis (one attempt) ---------- */
+const SECN={CAEC:"English",QA:"Quant",ALA:"Reasoning",GKCA:"GK",CS:"Case study"};
+const STAT={strong:"Strong",mixed:"Mixed",weak:"Needs work",left:"Not answered yet",untested:"Not tested"};
 const TAGS={concept:"Rule or method to learn",slip:"Small slip",gap:"New fact",time:"Didn't get to it",interface:"Test screen"};
 const SECC={CAEC:"#1f2b5c",QA:"#b5432c",ALA:"#4f7058",GKCA:"#d49a1a",CS:"#7a5c8e"};
 const mmss=s=>s>=60?`${Math.floor(s/60)}m ${String(s%60).padStart(2,"0")}s`:`${s}s`;
@@ -496,10 +507,19 @@ function reviewHTML(a){
     <div class="axis"><span>0 min</span><span>${Math.round(a.duration/2)} min</span><span>${a.duration} min</span></div>
     <div class="legend-s">${a.sections.map(s=>`<span style="--c:${SECC[s.id]}">${s.name}</span>`).join("")}</div></div>
   <div class="card span-12"><h3>What went well</h3><ul style="margin:0;padding-left:18px">${a.strengths.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ul></div>
+  ${a.focus&&a.focus.length?`<div class="card span-12"><h3>Topics to focus on next</h3><p style="margin:0 0 12px;color:#33353d;font-size:14px">Picked from every test you've taken so far: the topics where a real paper has the most marks for you to gain. "Marks at stake" is roughly how many marks per paper the topic is worth to you right now.</p><div class="fx">${a.focus.map(f=>`<div class="fx-i"><h4>${esc(f.name)}</h4><div class="sub">${esc(SECN[f.sec]||f.sec)} · about ${f.weight} questions per paper · <b>${f.stake.toFixed(1)} marks at stake</b> <span class="chip c-${f.status}">${STAT[f.status]}</span></div>
+      <p><span class="lbl">What we saw</span>${esc(f.seen?f.seen+" ":"")}${esc(f.evidence)}</p>
+      <p><span class="lbl">What to do</span>${esc(f.do)}</p>
+      ${f.material&&f.material.length?`<p><span class="lbl">In your material</span>${f.material.map(esc).join("; ")}</p>`:""}
+      ${f.method?`<p><span class="lbl">Method to use</span>${esc(f.method)}</p>`:""}</div>`).join("")}</div>
+      ${a.practice?`<div class="actions" style="margin:14px 0 0"><a class="btn btn-primary" href="${esc(a.practice.href)}">Open your practice set: ${esc(a.practice.title)}</a></div>`:""}</div>`:""}
   ${a.workon&&a.workon.length?`<div class="card span-12"><h3>What to work on</h3><div class="wo">${a.workon.map(w=>`<div class="wo-i"><h4>${esc(w.title)}</h4><p><span class="lbl">What we saw</span>${esc(w.seen)}</p><p><span class="lbl">What to try</span>${esc(w.do)}</p></div>`).join("")}</div></div>`:""}
   ${plan}
   ${a.habits&&a.habits.length?`<div class="card span-12"><h3>Good habits to build</h3><ul style="margin:0;padding-left:18px">${a.habits.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ul></div>`:""}
   ${a.actions&&a.actions.length?`<div class="card span-12"><h3>Next steps</h3><ol style="margin:0;padding-left:18px">${a.actions.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ol></div>`:""}
+  ${a.topics&&a.topics.length?`<div class="card span-12"><h3>Topic by topic</h3><div style="overflow-x:auto"><table class="t" style="min-width:600px"><tr><th>Topic</th><th>Section</th><th>This test (right · wrong · left)</th><th>All tests so far</th><th></th></tr>
+      ${a.topics.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(SECN[t.sec]||t.sec)}</td><td>${t.here.right} · ${t.here.wrong} · ${t.here.left}</td><td>${t.all.right} of ${t.all.right+t.all.wrong} right${t.all.left?`, ${t.all.left} left`:""}</td><td><span class="chip c-${t.status}">${STAT[t.status]}</span></td></tr>`).join("")}</table></div>
+      <p style="font-size:13px;color:var(--muted);margin:10px 0 0">With only a few questions per topic so far, treat these as early signals. They firm up with every test.</p></div>`:""}
   <div class="card span-12"><h3>Where the marks went</h3><div class="etype">${["concept","slip","gap","time"].map(k=>`<div><b>${tags[k]||0}</b><span>${TAGS[k]}</span></div>`).join("")}</div>
     <p style="font-size:13px;color:var(--muted);margin:10px 0 0">The questions you got wrong or left, sorted by why. Each one is explained in the question cards below.</p></div>
   <div class="card span-12"><h3>Question by question</h3><div class="toolbar">${[["all","All"],["wrong","Wrong"],["blank","Left"],["right","Right"]].map(f=>`<button class="seg ${revFilter===f[0]?"on":""}" data-rf="${f[0]}">${f[1]} (${f[0]==="all"?a.questions.length:a.questions.filter(q=>q.res===f[0]).length})</button>`).join("")}</div><div id="qlist"></div></div>
