@@ -29,6 +29,29 @@ button{font-family:inherit;cursor:pointer}
 .timer.low b{color:var(--red)}
 /* generic panels */
 .page{max-width:1000px;margin:20px auto;padding:0 16px}
+/* instant results */
+.rs-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.rs-tiles div{border:1px solid var(--line);padding:10px 12px;background:#f8fafd}
+.rs-tiles b{display:block;font-size:22px;color:var(--navy)}
+.rs-tiles span{font-size:12px;color:#555}
+.rs-f{margin:14px 0 8px;display:flex;gap:6px;flex-wrap:wrap}
+.rs-f button{border:1px solid var(--line);background:#fff;padding:6px 10px;font-size:12px;font-weight:bold}
+.rs-f button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.rq{border:1px solid var(--line);margin:10px 0;padding:12px 14px;background:#fff}
+.rq-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:#555;margin-bottom:6px}
+.rq-h .q{font-weight:bold;color:var(--navy);font-size:14px}
+.rq-h .r{margin-left:auto;font-weight:bold;padding:2px 8px;border-radius:2px;color:#fff}
+.r-right{background:var(--green)} .r-wrong{background:var(--red)} .r-left{background:#8a8a8a}
+.rq-t{white-space:pre-wrap;line-height:1.55;margin-bottom:8px}
+.rq-o{padding:5px 8px;margin:3px 0;border:1px solid #e3e3e3;border-radius:2px}
+.rq-o.key{background:#e5f4e5;border-color:var(--green);font-weight:bold}
+.rq-o.bad{background:#fde2e0;border-color:var(--red)}
+.rq-o small{float:right;font-weight:bold}
+.rq-s{margin-top:10px;padding:10px 12px;background:#fff8e1;border-left:4px solid #e0a800;line-height:1.6}
+.rq-s .lbl{display:block;font-size:11px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#8a6500;margin-bottom:4px}
+.rq-p{margin:16px 0 6px;padding:10px 12px;background:#f3f6fb;border:1px solid var(--line);white-space:pre-wrap;line-height:1.55;font-size:13px}
+.rs-sec{font-size:12px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin:18px 0 4px}
+@media(max-width:640px){.rs-tiles{grid-template-columns:repeat(2,1fr)}}
 .box{border:1px solid var(--line);padding:18px 22px;background:#fff}
 .box h2{margin:0 0 12px;font-size:18px;color:var(--navy)}
 .btn{border:1px solid #999;background:#fff;padding:8px 14px;font-size:13px;font-weight:bold;border-radius:2px}
@@ -184,6 +207,11 @@ ol.ins li{margin:6px 0;line-height:1.5}
   <p id="dWhy"></p>
   <table class="sum" id="dSum"></table>
   <div id="upStatus" class="warnbar hidden"></div>
+  <div id="rsBox" class="hidden"><h2 style="margin-top:18px">Your score</h2><div class="rs-tiles" id="rsTiles"></div>
+    <table class="sum" id="rsSec"></table>
+    <p style="font-size:13px;color:#555">+1 for a right answer, −0.25 for a wrong one, 0 if left. Detailed feedback from your mentor follows on the portal.</p>
+    <h2 style="margin-top:18px">Answer key and full solutions</h2><div class="rs-f" id="rsF"></div><div id="rsList"></div></div>
+  <p id="rsNone" class="hidden" style="font-size:13px;color:#555">The answer key and solutions open with your start code, which this browser doesn't have. They'll be on your feedback page in the portal.</p>
   <p><b>Send your results to your mentor.</b> A results file has been downloaded. If you cannot find it, click the button below, or copy the results code and send it.</p>
   <button class="btn primary" id="dlBtn">Download results file again</button>
   <button class="btn" id="copyBtn">Copy results code</button>
@@ -197,7 +225,7 @@ ol.ins li{margin:6px 0;line-height:1.5}
 
 <script>
 "use strict";
-const MOCK = {"mockId": "MFM-DEMO", "title": "MFM GAT – Interface Practice (Demo)", "durationMin": 15, "candidate": "Raina", "sections": [{"id": "CAEC", "name": "Communication Ability and English Comprehension", "part": "Sec A"}, {"id": "QA", "name": "Quantitative Ability", "part": "Sec A"}, {"id": "ALA", "name": "Analytical and Logical Ability", "part": "Sec A"}, {"id": "GKCA", "name": "General Knowledge and Current Affairs", "part": "Sec A"}, {"id": "CS", "name": "Case Study", "part": "Sec B"}], "secOf": {"D01": "CAEC", "D02": "CAEC", "D03": "QA", "D04": "ALA", "D05": "GKCA", "D06": "CS", "D07": "CS", "D08": "CS"}, "endpoint": null, "syncKey": "", "swPath": "../sw.js", "practice": true, "salt": "cE4gbsAoe0pLSyWyg8lubw==", "iv": "eoyKgQUgRzEdCVw2", "ct": "AfQWItehb/2UjG/V6yPCjhHZTGRyvXukGVlWtNzO3V5dxc1np1WUeEqi6z1bYGHfVByX/8Uwk3dFoDzD7vhjUF4GS+RLxse7/ZkeinzAByfGLhuWkevgOeqpbInHuk3ekBJdhLCGLC+Q92zfhIcluSPMYh0qgRh9sqBYsb7y+NpR/0xjhre091X+70gS+CjlDgdMSfpXuDGWXPqACNopl7ILGiWrgYxh22Ba9mwMbq8p7iOuTk+kw0v06H8GeKuZhIZUDlgO/zIXXvi+E69eEDDjMtJSfa1cbMlvLbzeO3dNWIzJRU35znGkkDomzFpxQvWq7hDXakVBd0bHpZBPakz2AxBxIAKIuqE/ioE7lTlk/KT1D8DzxWcS2WWn5ecSMBtuSsC8Yx6gTQCW9IjpKkHBFym3AgMhaXfwxhVRIDjcEXp3p1+xbIapfB35fFbxdU9T4G0xP9Mr9eoi/E7Rl+pAD6+aeOqaoL/+Cr1+KOLUZba2xCr8rRM9Rp62AcScBQe9A4giaBWPDu/u57kcfTpUTH8NYDYcLe1gv8qzNpuYoDWPSUNXaVG4I0Cv1U/Pg3ULYZBmo8IUrY1Zjqr3NGU9UHVcU6+UIgF0TjSt4SNZM1nFHSfJTeBlBxB7GB7Fk3hGjHdzuFitbhb7f9jP8pt/hxiv/zm/B/X1oO3/6mTWudtMsmdO/zVs/aQAJK3/gWzDjdh4PbBSyD/pYip7+KaATDr/4wGV2BZn4gTwFGkNKKhGBiG5OA6IygIqFotsrNCsB9jFudEFc+ElNbwT4KQq41ou6BGOtzOKwRc0xInoYoY+kubilWqlO0R3snUQuM7DxKgTrTHz24nuyn6BefCOBCjYi6Gs7UwJxUEtEwVSff8uAa7QLi5Idbt5Z9Muv3wmxlFh3wuyFURbbEa9baxRSLo3dK3IVpzlBShvi84H6wbdUDH1id28KjyYHkHt432wNyWCawxp72WW5EtwAI1CWmJDU5anu6dHNc5vyetwkurxKOpm0e/CPsMSGKEfUpGWOUf9hQFnAnrH/qOq377OalxZpOlJviLXQFJ2f0JgNEvRHvmNxrHOEFTM49+yle/RRxhQ3VJNbsXSlKsVwA6erUJMIKGdMsWtq1CCCQdAEg60PhR5Kg+SB66ZMYfwo2T6cJqwUkkYV9quM65xRNiuHTdsoZAHDXaej7fJYzrxJDN7AXb4ddIrzHqLtz4cNxBDkJtoYxZ1JxjHSWk4y7L5/vROvkBT2nuvCuKtJinQl2pWbZTwG077urHpyeeSNMn6y1Acr6DjKE4f7+zPyxw5jgvBMMH1oDGVCMMMhFoWcVV9uXNCo07Dke9/9xLfU+95vIdnA/wnMx4HF/19uM6H6+3yv85AMvwKI9wpiuIQY1FQfWBjCse2jLX/qflbEGOzjQR6aHG4ByF0NzivHPtigOx8vIuB1swJLCFiUmWy1YG6RQ5mnFdR1yS+9LeuOYHyubhlsEhu9GnINgkndtkyTny7flIbb71S1YqsoL2iRMyN/XY280FhEBxmCAgDsGF8re9VptnonZ+T/luk1E+rFYB4DWD1SCsmtI9i7gpfbJ/l0AOUugfu8vM//aV0aywQrUovORH2Yw6XCoJQGxbMteMCRpqYQilAyoBkTR84AKv2nHpY833Ws5iSmkO2ivdeL8wTUn0jGey72tRcnYNikFPsoROlP+jLi7xd2/PmDVteg5OaSVGFia4sFhlEVtvvPwFDQejdgd2Y9+0ggs8N5XNlSAmDSelB7ksBPP2FjcqZdgLPZYJInU8NyF6Z8lqr+sm/nhTvz6THKO0eVCQMqgGt40xvkr9SfrM6cKC5ILuEwhXQg5a9BEPKPCXZDmaEhho2HZqS7k8J8W/V6o9dIOfRf9/iGgoWpihiSSMYC+6UvktwisWGZpoyzJi+VFOx1EW5SSyKDJdPfFkCMjWUv1D8J/wRMWU1TXruM9C6te64NJAzypoBvIAQFomkIA4ZUPTcYxjh+5jbZ9+hQ8Zo4euoSgLEnvPejQ+y+h8Ed5MEO2ehxZFja6Jsz4BSSXUdhPsQwJc/OWD+Ooj4XSFUFY8A2NFN6DUMpKqqcAE50dcCLHPaEqkLCu6+4VjyI2W70wT3YmIHvKfIG8OuPYQPPcgAb0HQvPRKEnCZjHyBGmVOUdK7OveNki2UlWMV0aI8Jh4vSrDhtqNcbKnFmq2aBdMghZprlMDoD4P0y1DXnm7On+ML3NeHicgB4dgo+JMwGBBVBHmz4/5e2FGDlG2xURtGgkgkKzlLtKAbOVL5Ekx9KSYQD5gymaedq+847BiEYoVHhFr4AmDZOUu1iBvWFhYzRFxM8L3X9CJzZ8R4qPgUHZDp1zE8pCG/qQF9Dzn2ZTp7eNL0chFwZxQT2eVPOgv3qieuirG5dux5fRVyUbw9h9M9Y41K1s6sDofml0/u6l7P31frxgyfpZqItcDcePiinRwFEZmt9PJ1sd+jiBzGZvWLCnvAiXTCmdxFjZjK/5iH4pIIu2BiPa03rRqWcbXFPaPcM9vFx56ZpfNIRFV+nq3jupzVpZmaBF/lZRhKjpTjRXE0y8CaClRCFo4vdZ4X5MJLI9/SKX57RdJ5gtKK8zFpoOUHjATakgrJs8V2BUuXW/aYPSywaGdGrgPKVUfle021xnT2AnUJc2owG3FRsK7/0gEki0c4ZA5j9/QU14n1hxwlIRsJn/4ovL/VteLHCpy9Rj7utccF7q2NQpcjA7B1hzOvD+DkhstZ4iG68gnVZkiCbYnVaWG3hSh4JUGvnCmPvpe4JEdkciUpfzu97MlBGsapyiZTEMHDVH8q57JzLJq8ZnLiJZqEl2SsKscs+fsmBaZa+WFbuENx3HwxcXyAEwSGqKu0PXmPLUuASrtfp8tHtydR2LMesx4brO+Gobi6oIjznwn97dnhy2EICf7v3fq0I+qg3Mne6fUuGHqwTH9s1xT3RHzX", "iter": 200000};
+const MOCK = {"mockId": "MFM-DEMO", "title": "MFM GAT – Interface Practice (Demo)", "durationMin": 15, "candidate": "Raina", "sections": [{"id": "CAEC", "name": "Communication Ability and English Comprehension", "part": "Sec A"}, {"id": "QA", "name": "Quantitative Ability", "part": "Sec A"}, {"id": "ALA", "name": "Analytical and Logical Ability", "part": "Sec A"}, {"id": "GKCA", "name": "General Knowledge and Current Affairs", "part": "Sec A"}, {"id": "CS", "name": "Case Study", "part": "Sec B"}], "secOf": {"D01": "CAEC", "D02": "CAEC", "D03": "QA", "D04": "ALA", "D05": "GKCA", "D06": "CS", "D07": "CS", "D08": "CS"}, "endpoint": null, "syncKey": "", "swPath": "../sw.js", "practice": true, "salt": "okcQPZcS66FPuZDTnlwENQ==", "iv": "OfosSb8yJd/SZl0V", "ct": "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", "iter": 200000, "sol": {"salt": "OvpYmBKoG1o9667CLMNoog==", "iv": "NlnrlsdzogBl1/D1", "ct": "blqEV0l1P9rZX0NH3mvlkLHSB4xUfbpYAONcTXC0lswMscvkxICCmK8HtFtzZp/bDlcgOIoxGoSPmL4+F6Zapt1qfWfymyJPqtP4eBNMgcSTtmODCjnwpcb6K2o4/iwkGZGxxxL312uaNnYfAKn405w90R1lXv06EsUmcQxaLaLEj3kzJezPp1XzozeH9ptx+UDEls3b5+6WMQs4ToowrAZgdBVvITE9a0oBzuEnJHU9yFjFG4b/8R0cfCI9OCSrF0nyNzQ2bas3UkwYJMTPuxPoTKF4TwQDHQDybOhwFrxNWbaSJ8EOpfkBFxkg1f+vHdQeXy6+TDyPgEJ+MP7qurnIGirK7l33ORY/Np95RHlmjBueapKYx3vrs8Z0EDF3r1gImjUyKQeL2fm+iskdBt6NKNC7PveTgGGYSTYRE4C1LdbZhM0DC4faMK8pGlWE/+1579eHsXdhNFTjnldB/85xMtMBzY+7GOzUwilUUfw8z8Xax0HQvC1/aRdeHYPbxWZJzTb/9b3T/Yi+3/Eu/SbZMIfXSYEjB5cu9EecBjRpKumCgYAuGybkMqf3e3GnHMi4+azMAgDfcvpnsJVw7eiXvVqVNw978YTtlnCie1/DzDXyz22R/yVZJFAGFLjcsl2MT8UaWwNl75JpAP5PZM0efgZAW7JxQ7FeMcameH0+vN4+kd4M0qMMvLAOYdhsBK+RD+Y8mPAB7LPtVZ4GRhRVNEIu6xND39z41KlBqkmUeRIjq9kYJkPBTRACqYyLro1IPL40AHqZOdMJwhGBqBVDk5MN/Ymzm+GhFeryY+oej/ZH7x3lUhot5Feh1f3Iu/6hQ+G1Xvfh3/KDop1BJz4LltjvaTklGoxDx11wg55xa6ucHnL25jEDk+5wxYHpPBgpUNloFYSJtOiv0JPUOELc/ePIwN+RRJf6tMhKsnRdYW+7/Wt3y4Zurlv2y2o+o7qoRiUIps2QxxrRWxbZNGQ55QcFiFaXuf+dU/AFUrruI4k08xtbqw==", "iter": 200000}};
 const ENGINE_VERSION = "1.0.0";
 const $ = id => document.getElementById(id);
 const KEY = MOCK ? "mfm:" + MOCK.mockId + ":state" : "mfm:none";
@@ -417,6 +445,44 @@ function downloadResults(){
     ev("download"); persist();
   } catch(e){ toast("Download failed. Please copy the results code instead."); }
 }
+async function decryptSol(code){
+  const enc = new TextEncoder(), X = MOCK.sol;
+  const base = await crypto.subtle.importKey("raw", enc.encode(normCode(code) + "|SOL"), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey({name:"PBKDF2", salt:b64ToBytes(X.salt), iterations:X.iter, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64ToBytes(X.iv)}, key, b64ToBytes(X.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+let RSF = "all";
+async function showResults(){
+  if (!MOCK.sol) return;
+  let K = null;
+  try { if (S.code){ if (!P) P = await decryptPaper(S.code); K = await decryptSol(S.code); } } catch(e){ K = null; }
+  if (!K || !P){ $("rsNone").classList.remove("hidden"); return; }
+  const esc2 = t => String(t).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+  const qs = P.items.map((it, i) => { const a = S.ans[it.id]; const k = K.key[it.id];
+    return {n:i+1, it, a, k, res: a==null ? "left" : (a===k ? "right" : "wrong"), secs: Math.round((S.tq[it.id]||0)/1000)}; });
+  const C = qs.filter(q=>q.res==="right").length, W = qs.filter(q=>q.res==="wrong").length, L = qs.length-C-W;
+  const used = Math.round((Math.min(S.submittedAt, S.endAt) - S.startedAt)/60000);
+  $("rsTiles").innerHTML = [["Score", (C-0.25*W).toFixed(2)+" / "+qs.length], ["Right · wrong · left", C+" · "+W+" · "+L],
+    ["Accuracy", (C+W? Math.round(100*C/(C+W)) : 0)+"%"], ["Time taken", used+" of "+MOCK.durationMin+" min"]].map(x=>"<div><span>"+x[0]+"</span><b>"+x[1]+"</b></div>").join("");
+  let rows = '<tr><th>Section</th><th>Score</th><th>Right</th><th>Wrong</th><th>Left</th><th>Time spent</th></tr>';
+  MOCK.sections.forEach(s => { const q = qs.filter(x=>x.it.section===s.id); if (!q.length) return; const c=q.filter(x=>x.res==="right").length, w=q.filter(x=>x.res==="wrong").length;
+    rows += '<tr><td style="text-align:left">'+s.name+'</td><td>'+(c-0.25*w).toFixed(2)+' / '+q.length+'</td><td>'+c+'</td><td>'+w+'</td><td>'+(q.length-c-w)+'</td><td>'+Math.round(q.reduce((t,x)=>t+x.secs,0)/60)+' min</td></tr>'; });
+  $("rsSec").innerHTML = rows;
+  const mm = s => s>=60 ? Math.floor(s/60)+"m "+String(s%60).padStart(2,"0")+"s" : s+"s";
+  const list = () => { let cur=null, shown=new Set(), h="";
+    qs.filter(q => RSF==="all" || q.res===RSF).forEach(q => {
+      if (q.it.section!==cur){ cur=q.it.section; h += '<div class="rs-sec">'+esc2((MOCK.sections.find(s=>s.id===cur)||{}).name||cur)+'</div>'; }
+      const pid = q.it.passageId; if (pid && !shown.has(pid) && P.passages[pid]){ shown.add(pid); const ps=P.passages[pid]; h += '<div class="rq-p"><b>'+esc2(ps.title||"Passage")+'</b>\n'+ps.text+'</div>'; }
+      h += '<div class="rq"><div class="rq-h"><span class="q">Q'+q.n+'</span><span>'+esc2(K.topic[q.it.id]||"")+'</span><span>· '+mm(q.secs)+'</span><span class="r r-'+q.res+'">'+({right:"Right",wrong:"Wrong",left:"Left"})[q.res]+'</span></div>'
+        + '<div class="rq-t">'+q.it.text+'</div>'
+        + q.it.options.map((o,k)=>'<div class="rq-o'+(k===q.k?" key":"")+(k===q.a&&k!==q.k?" bad":"")+'">'+(k+1)+'. '+o+(k===q.k?'<small style="color:var(--green)">Correct answer</small>':'')+(k===q.a&&k!==q.k?'<small style="color:var(--red)">Your answer</small>':'')+(k===q.a&&k===q.k?'<small style="color:var(--green)">Your answer ✓</small>':'')+'</div>').join("")
+        + '<div class="rq-s"><span class="lbl">Solution · answer '+(q.k+1)+'</span>'+(K.expl[q.it.id]||"")+'</div></div>'; });
+    $("rsList").innerHTML = h || '<p style="color:#555">Nothing here.</p>'; };
+  $("rsF").innerHTML = [["all","All"],["wrong","Wrong"],["left","Left"],["right","Right"]].map(f=>'<button data-f="'+f[0]+'" class="'+(RSF===f[0]?"on":"")+'">'+f[1]+' ('+(f[0]==="all"?qs.length:qs.filter(q=>q.res===f[0]).length)+')</button>').join("");
+  $("rsF").querySelectorAll("button").forEach(b => b.onclick = () => { RSF=b.dataset.f; $("rsF").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b)); list(); });
+  list(); $("rsBox").classList.remove("hidden"); document.body.classList.remove("noselect");
+}
 function showDone(first){
   show("scrDone"); $("timerBox").classList.add("hidden");
   const why = {manual:"You submitted the test.", timeout:"Time is over. Your test was submitted automatically.", timeout_closed:"The test time ran out while the test was closed. Your saved responses were submitted automatically."};
@@ -428,6 +494,7 @@ function showDone(first){
   upStatus();
   if (MOCK.practice){ $("practiceBox").classList.remove("hidden"); $("retakeBtn").onclick = () => { try { localStorage.removeItem(KEY); } catch(e){} location.reload(); }; }
   if (first && !MOCK.practice) downloadResults();
+  showResults();
 }
 $("dlBtn").onclick = downloadResults;
 $("copyBtn").onclick = async () => {

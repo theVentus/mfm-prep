@@ -202,6 +202,9 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .op.key{background:var(--sage-soft);border-color:#b9d0bd}.op.mine{background:var(--madder-soft);border-color:#e6b9ad}.op.key.mine{background:var(--sage-soft)}
 .op small{font-weight:700;margin-left:8px;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
 .qnote{background:var(--turmeric-soft);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+.qcard .sol{margin-top:12px;padding:12px 14px;background:#f2f4fa;border-left:4px solid var(--indigo,#1f2b5c);border-radius:0 10px 10px 0;font-size:14.5px;line-height:1.6;color:#22242b}
+.qcard .sol .lbl,.qnote .lbl{display:block;font:700 11px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo,#1f2b5c);margin-bottom:4px}
+.qnote .lbl{color:#8a6500}
 .qcard details{margin-top:8px}.qcard summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--indigo-2)}.qcard .ex{font-size:14px;color:#33353d;margin-top:6px;white-space:pre-wrap}
 .pas{background:#fbf8f0;border-left:3px solid var(--turmeric);border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:14px;white-space:pre-wrap}
 .tag.right{background:var(--sage-soft);color:var(--sage)}.tag.wrong{background:var(--madder-soft);color:var(--madder)}.tag.blank{background:#eeebe4;color:var(--muted)}
@@ -512,8 +515,8 @@ function qlistHTML(a){
     return h+`<div class="qcard"><div class="qh"><b>Q${q.n}</b><span>${esc(q.topic)}</span><span>·</span><span>${mmss(q.secs)}</span><span style="flex:1"></span>${q.tag?`<span class="tag t-${q.tag}">${TAGS[q.tag]}</span>`:""}<span class="tag ${q.res}">${res}</span></div>
       <div class="qt">${q.text}</div>
       ${q.options.map((o,k)=>`<div class="op ${k===q.key?"key":""} ${k===q.yours?"mine":""}">${k+1}. ${o}${k===q.key?"<small style='color:var(--sage)'>Correct</small>":""}${k===q.yours&&k!==q.key?"<small style='color:var(--madder)'>Your answer</small>":""}${k===q.yours&&k===q.key?"<small style='color:var(--sage)'>Your answer</small>":""}</div>`).join("")}
-      ${q.note?`<div class="qnote">${esc(q.note)}</div>`:""}
-      <details><summary>Full solution</summary><div class="ex">${q.expl}</div></details></div>`;}).join("")||`<p style="color:var(--muted)">Nothing here.</p>`;
+      ${q.note?`<div class="qnote"><span class="lbl">Note for you</span>${esc(q.note)}</div>`:""}
+      <div class="sol"><span class="lbl">Full solution · answer ${q.key+1}</span>${q.expl}</div></div>`;}).join("")||`<p style="color:var(--muted)">Nothing here.</p>`;
 }
 function bindReview(a){
   $("qlist").innerHTML=qlistHTML(a);
