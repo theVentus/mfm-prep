@@ -187,6 +187,10 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .sw.a{background:#3a9a3a;color:#fff;border-radius:12px 12px 0 0;border-color:#2b742b}
 .sw.mr{background:#6c3fa0;color:#fff;border-radius:50%;border-color:#4e2c75}
 .callout{background:var(--turmeric-soft);border-radius:12px;padding:14px 16px;font-size:14px}
+.warm{display:flex;gap:22px;align-items:center;flex-wrap:wrap;border-left:4px solid var(--turmeric)}.warm .wt{flex:1;min-width:260px}.warm .wt b{font:500 22px Newsreader,serif;display:block;margin-bottom:4px}
+.steps{counter-reset:st;display:grid;gap:18px}.step{display:grid;grid-template-columns:46px 1fr;gap:16px}.step:before{counter-increment:st;content:counter(st);width:38px;height:38px;border-radius:50%;background:var(--indigo);color:#fff;display:grid;place-items:center;font:600 16px Hanken Grotesk}
+.step h4{font:500 21px Newsreader,serif;margin:4px 0 6px}.step p,.step li{color:#33353d;margin:0 0 6px}.step ul{padding-left:20px;margin:6px 0}
+.shot{display:block;width:100%;max-width:760px;border:1px solid var(--line);border-radius:10px;margin:10px 0 4px;box-shadow:0 6px 24px rgba(20,24,40,.08)}.cap{font-size:13px;color:var(--muted)}
 /* performance */
 .chart text{font:12px "Hanken Grotesk";fill:var(--muted)}
 /* mobile */
@@ -267,11 +271,12 @@ const I={
  syllabus:'<path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/>',
  notes:'<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>',
  guide:'<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/>',
+ walkthrough:'<path d="M5 4h14v16H5z"/><path d="M9 8h6M9 12h6M9 16h3"/><path d="M15 15l2 2 3-4"/>',
  check:'<path d="M4 12.5l5 5L20 6.5"/>',
  play:'<path d="M7 4l13 8-13 8z"/>'
 };
 const icon=(k,s="currentColor")=>`<svg viewBox="0 0 24 24" fill="none" stroke="${s}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
-const PAGES=[["overview","Overview","Study"],["mocks","Mock tests","Study"],["schedule","Schedule","Study"],["performance","Performance","Progress"],["syllabus","Syllabus map","Progress"],["notes","How answers are judged","Learn"],["guide","Exam guide","Learn"]];
+const PAGES=[["overview","Overview","Study"],["mocks","Mock tests","Study"],["schedule","Schedule","Study"],["performance","Performance","Progress"],["syllabus","Syllabus map","Progress"],["walkthrough","Walkthrough","Learn"],["notes","How answers are judged","Learn"],["guide","Exam guide","Learn"]];
 
 /* ---------- unlock ---------- */
 async function unlock(pw){
@@ -342,8 +347,12 @@ R.overview=()=>{
     if(m) ag.push([dd,m.title,"Full mock · 3 hours","mock",i===0?"Today":"Mock"]);
     else if(prev) ag.push([dd,"Review "+prev.title,"Go through the analysis and worked solutions","review","Review"]);
     else if(dd==="2027-01-08"||dd==="2027-01-09") ag.push([dd,"Rest","Light revision only","review","Rest"]); }
+  const w=DATA.warmup, wls=w?localState(w):null;
+  const warm=!w?"":(wls&&wls.submitted)?`<div class="card span-12 warm"><div class="wt"><b>Warm-up done</b>Thanks. Your answers reached Daksh. You're set for the real thing.</div></div>`
+   :`<div class="card span-12 warm"><div class="wt"><b>${w.date===t?"Today: ":""}${esc(w.title)}</b>${w.minutes} minutes · ${w.questions} questions from all five sections. It doesn't count towards your scores. It's a dress rehearsal of the real flow, so tomorrow nothing is new.</div>
+    <div class="actions" style="margin:0"><a class="btn btn-primary" href="#walkthrough">Read the walkthrough</a>${w.released?`<a class="btn btn-ghost" href="mocks/${w.file}">${wls&&wls.startedAt?"Resume the warm-up":"Open the warm-up"}</a>`:""}</div></div>`;
   return `<p class="hello">${greet}, Raina.</p><p class="hello-sub">${d.length?`You've completed ${d.length} of ${DATA.mocks.length} mocks.`:`Your first full mock is ${n?fmt(n.date,{weekday:"long"}):"coming up"}. Everything below fills in as you go.`}</p>
-  <div class="grid">${nextCard}
+  <div class="grid">${warm}${nextCard}
     <div class="card span-5"><h3>Countdown</h3><div class="ring-wrap">${ring(elapsed)}<div><div class="big">${daysLeft()}<small>days</small></div><div style="color:var(--muted)">until the GAT on Sunday, 10 January 2027</div></div></div>
       <div class="phase-line"><div class="${ph>1?"done":"on"}"></div><div class="${ph>2?"done":ph===2?"on":""}"></div><div class="${ph===3?"on":""}"></div></div>
       <div class="phase-labels"><span>Find your level</span><span>Build &amp; sharpen</span><span>Exam rhythm</span></div></div>
@@ -423,6 +432,22 @@ R.notes=()=>`<div class="grid" style="align-items:start"><div class="card span-8
   <table class="t"><tr><th>You can rule out</th><th>Expected marks from a guess</th></tr><tr><td>Nothing (pure guess)</td><td>+0.06</td></tr><tr><td>1 option</td><td>+0.17</td></tr><tr><td>2 options</td><td>+0.38</td></tr></table>
   <p class="callout" style="margin-top:14px">Guess when you can rule out at least one option. Blind guesses barely pay and add noise to your score.</p></div>
 </div>`;
+
+R.walkthrough=()=>{const w=DATA.warmup||{minutes:36,questions:30,file:"",title:"Warm-up test"};
+const img=(f,c)=>`<img class="shot" src="img/walkthrough/${f}" alt="${c}" loading="lazy"><div class="cap">${c}</div>`;
+return `<p style="color:var(--muted);margin:0 0 18px;max-width:72ch">How a mock works here, start to finish. The screenshots are from the practice test, so nothing in them is from your mocks. Do this once with the warm-up today and tomorrow's Mock 1 will feel routine.</p>
+<div class="card"><div class="steps">
+ <div class="step"><div><h4>Set up</h4><ul><li>Use your MacBook, in <b>Google Chrome</b> (a normal window, not Incognito). Plug in the charger.</li><li>Close other tabs and apps. Phone on silent, out of reach.</li><li>Run the <a href="check.html">system check</a> once. Allow the camera and microphone when Chrome asks. Everything should turn green.</li></ul></div></div>
+ <div class="step"><div><h4>Open the test and enter the start code</h4><p>Open the test from the Overview page. Message Daksh that you're ready; he'll send the start code. The code only unlocks the paper, so the clock hasn't started yet.</p>${img("1-code.jpg","The sign-in screen. Type the code exactly as sent (capitals or not, either works).")}</div></div>
+ <div class="step"><div><h4>Read the instructions, then begin</h4><p>The camera turns on (a small live preview appears at the top right). Tick the box and click <b>I am ready to begin</b>. <b>Your time starts now</b>, and the test goes full screen.</p>${img("2-instructions.jpg","Bottom of the instructions page. The yellow bar confirms the camera and microphone are on.")}</div></div>
+ <div class="step"><div><h4>Answer with SAVE &amp; NEXT</h4><ul><li>Click an option, then <b>SAVE &amp; NEXT</b>. Clicking an option alone does not save it.</li><li><b>SAVE &amp; MARK FOR REVIEW</b> saves and flags it (purple with a green dot). <b>It still counts.</b></li><li><b>MARK FOR REVIEW &amp; NEXT</b> flags it without saving an answer (plain purple). It doesn't count unless you come back and save an answer.</li><li>Section tabs along the top; the palette on the right jumps to any question in that section.</li></ul>${img("3-exam.jpg","The answer screen. Palette colours: green answered, red seen but not answered, purple marked for review.")}</div></div>
+ <div class="step"><div><h4>Passages and cases</h4><p>Reading passages and case studies open in a split view: text on the left, the question on the right. The passage stays put while you move through its questions.</p>${img("4-passage.jpg","A case-study question in split view.")}</div></div>
+ <div class="step"><div><h4>Submit</h4><p>Press <b>SUBMIT</b> (bottom right). A summary shows what you've answered in each section; check it, then <b>Yes, Submit</b>. If the timer runs out, the test submits itself.</p>${img("5-submit.jpg","The summary before final submission.")}</div></div>
+ <div class="step"><div><h4>After you submit</h4><p>Your answers go to Daksh automatically, and a results file downloads on your Mac as a backup. Keep it until Daksh confirms he has your results.</p>${img("6-done.jpg","The confirmation screen. In real mocks there's no Retake button.")}</div></div>
+ <div class="step"><div><h4>If something goes wrong</h4><ul><li><b>Laptop shuts, browser closes, or you hit refresh:</b> reopen the same test link. You'll be asked to resume; every saved answer is still there. The clock keeps running while it's closed.</li><li><b>Internet drops:</b> keep going. Answers save on the laptop and upload when the connection returns.</li><li><b>Anything else:</b> message Daksh. Don't start a new attempt; the server only accepts the first one.</li></ul></div></div>
+</div></div>
+<div class="card" style="margin-top:18px"><h3>Today's warm-up</h3><p style="margin:0">${w.minutes} minutes, ${w.questions} questions from all five sections, marked +1 / −0.25 like the real paper. Try a few deliberately: save one answer, mark one for review, change one with CLEAR, and press Esc once to see what happens when you leave full screen. Then submit and tell Daksh.</p>
+${w.released?`<div class="actions"><a class="btn btn-primary" href="mocks/${w.file}">Open the warm-up</a><a class="btn btn-ghost" href="check.html">System check first</a></div>`:""}</div>`;};
 
 R.guide=()=>`<div class="grid">
  <div class="card span-7"><h3>The paper</h3><table class="t"><tr><th>Section</th><th>Questions</th><th>Suggested time</th></tr>
