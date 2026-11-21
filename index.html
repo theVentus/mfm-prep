@@ -187,6 +187,26 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .sw.a{background:#3a9a3a;color:#fff;border-radius:12px 12px 0 0;border-color:#2b742b}
 .sw.mr{background:#6c3fa0;color:#fff;border-radius:50%;border-color:#4e2c75}
 .callout{background:var(--turmeric-soft);border-radius:12px;padding:14px 16px;font-size:14px}
+/* analysis page */
+.an-head h2{font:500 30px/1.2 Newsreader,serif;margin:0 0 10px}.an-head p{margin:0 0 8px;color:#33353d;max-width:78ch}.an-meta{font-size:13px;color:var(--muted)}
+.tv{position:relative;height:10px;border-radius:6px;background:#eeeae1}.tv i{position:absolute;left:0;top:0;height:100%;border-radius:6px;background:var(--indigo-2)}.tv i.over{background:var(--madder)}.tv b{position:absolute;top:-4px;width:2px;height:18px;background:var(--ink)}
+.strip{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}.strip div{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden}
+.c-CAEC{background:#1f2b5c}.c-QA{background:#b5432c}.c-ALA{background:#4f7058}.c-GKCA{background:#d49a1a}.c-CS{background:#7a5c8e}
+.axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+.legend-s{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}.legend-s span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.etype{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.qcard .qt,.qcard .op{overflow-wrap:anywhere}.qcard svg{max-width:100%;height:auto}.etype div{border:1px solid var(--line);border-radius:12px;padding:12px}.etype b{font:500 26px Newsreader,serif;display:block}.etype span{font-size:13px;color:var(--muted)}
+.qcard{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;background:#fff}
+.qcard .qh{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:8px}.qcard .qh b{color:var(--ink)}
+.qcard .qt{white-space:pre-wrap;margin-bottom:10px}.qcard .op{padding:7px 10px;border-radius:8px;margin:3px 0;font-size:14px;border:1px solid transparent}
+.op.key{background:var(--sage-soft);border-color:#b9d0bd}.op.mine{background:var(--madder-soft);border-color:#e6b9ad}.op.key.mine{background:var(--sage-soft)}
+.op small{font-weight:700;margin-left:8px;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+.qnote{background:var(--turmeric-soft);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+.qcard details{margin-top:8px}.qcard summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--indigo-2)}.qcard .ex{font-size:14px;color:#33353d;margin-top:6px;white-space:pre-wrap}
+.pas{background:#fbf8f0;border-left:3px solid var(--turmeric);border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:14px;white-space:pre-wrap}
+.tag.right{background:var(--sage-soft);color:var(--sage)}.tag.wrong{background:var(--madder-soft);color:var(--madder)}.tag.blank{background:#eeebe4;color:var(--muted)}
+.tag.t-concept{background:var(--indigo-soft);color:var(--indigo)}.tag.t-slip{background:var(--turmeric-soft);color:#8a5f00}.tag.t-gap{background:#efe6f4;color:#6a4a7d}.tag.t-time{background:#eeebe4;color:#555}
+@media(max-width:760px){.etype{grid-template-columns:repeat(2,1fr)}}
+
 .warm{display:flex;gap:22px;align-items:center;flex-wrap:wrap;border-left:4px solid var(--turmeric)}.warm .wt{flex:1;min-width:260px}.warm .wt b{font:500 22px Newsreader,serif;display:block;margin-bottom:4px}
 .steps{counter-reset:st;display:grid;gap:18px}.step{display:grid;grid-template-columns:46px 1fr;gap:16px}.step:before{counter-increment:st;content:counter(st);width:38px;height:38px;border-radius:50%;background:var(--indigo);color:#fff;display:grid;place-items:center;font:600 16px Hanken Grotesk}
 .step h4{font:500 21px Newsreader,serif;margin:4px 0 6px}.step p,.step li{color:#33353d;margin:0 0 6px}.step ul{padding-left:20px;margin:6px 0}
@@ -260,7 +280,7 @@ const D=d=>new Date(d+"T00:00:00+05:30");
 const fmt=(d,o)=>D(d).toLocaleDateString("en-IN",o);
 const addDays=(d,n)=>{const x=D(d);x.setDate(x.getDate()+n);return new Date(x.getTime()+5.5*3600e3).toISOString().slice(0,10)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let DATA=null;
+let DATA=null, PW=null; const REV={};
 
 /* ---------- icons ---------- */
 const I={
@@ -282,7 +302,7 @@ const PAGES=[["overview","Overview","Study"],["mocks","Mock tests","Study"],["sc
 async function unlock(pw){
   try{
     const blob=await fetch("data/portal.json?ts="+Date.now(),{cache:"no-store"}).then(r=>r.json()).catch(()=>JSON.parse(localStorage.getItem("atelier:blob")||"null"));
-    DATA=await decrypt(pw,blob);
+    DATA=await decrypt(pw,blob); PW=pw;
     try{localStorage.setItem("atelier:blob",JSON.stringify(blob));sessionStorage.setItem("atelier:pw",pw)}catch(e){}
     $("lock").classList.add("hidden"); $("app").classList.remove("hidden"); route();
   }catch(e){ $("err").textContent="That password didn't work. Check it and try again."; }
@@ -311,13 +331,15 @@ function phaseOf(d){ return d<"2026-12-01"?1:d<"2026-12-26"?2:3; }
 
 /* ---------- router ---------- */
 function route(){
-  const key=(location.hash.slice(1)||"overview"); const p=PAGES.find(x=>x[0]===key)||PAGES[0];
+  const key=(location.hash.slice(1)||"overview"); const rv=key.startsWith("review/")?key.slice(7):null;
+  const p=rv?["performance","Analysis","Progress"]:(PAGES.find(x=>x[0]===key)||PAGES[0]);
   let groups={}; PAGES.forEach(x=>(groups[x[2]]=groups[x[2]]||[]).push(x));
   $("nav").innerHTML=Object.entries(groups).map(([g,items])=>`<div class="nav-h">${g}</div>`+items.map(x=>`<a class="nav-a ${x[0]===p[0]?"on":""}" href="#${x[0]}">${icon(x[0])}${x[1]}</a>`).join("")).join("")+
     `<div class="nav-h">Before a mock</div><a class="nav-a" href="check.html">${icon("check")}System check</a><a class="nav-a" href="mocks/MFM-DEMO.html">${icon("play")}Interface practice</a>`;
   $("mobnav").innerHTML=PAGES.slice(0,5).map(x=>`<a class="${x[0]===p[0]?"on":""}" href="#${x[0]}">${icon(x[0])}${x[1].split(" ")[0]}</a>`).join("");
   $("crumb").textContent=p[2]; $("ptitle").textContent=p[1];
   $("cd").textContent=daysLeft()+" days to the GAT · Sun 10 Jan";
+  if(rv){ renderReview(rv); window.scrollTo(0,0); return; }
   $("page").innerHTML=`<div class="fade">${R[p[0]]()}</div>`;
   (H[p[0]]||(()=>{}))(); window.scrollTo(0,0);
 }
@@ -348,7 +370,8 @@ R.overview=()=>{
     else if(prev) ag.push([dd,"Review "+prev.title,"Go through the analysis and worked solutions","review","Review"]);
     else if(dd==="2027-01-08"||dd==="2027-01-09") ag.push([dd,"Rest","Light revision only","review","Rest"]); }
   const w=DATA.warmup, wls=w?localState(w):null;
-  const warm=!w?"":(wls&&wls.submitted)?`<div class="card span-12 warm"><div class="wt"><b>Warm-up done</b>Thanks. Your answers reached Daksh. You're set for the real thing.</div></div>`
+  const warm=!w?"":w.review?`<div class="card span-12 warm"><div class="wt"><b>Your warm-up analysis is ready</b>${w.review.net.toFixed(2)} out of ${w.questions} · ${w.review.correct} right, ${w.review.wrong} wrong, ${w.review.blank} not answered. Read it before Mock 1, especially "Do this next".</div><div class="actions" style="margin:0"><a class="btn btn-primary" href="#review/${w.id}">See the analysis</a></div></div>`
+   :(wls&&wls.submitted)?`<div class="card span-12 warm"><div class="wt"><b>Warm-up done</b>Thanks. Your answers reached Daksh. You're set for the real thing.</div></div>`
    :`<div class="card span-12 warm"><div class="wt"><b>${w.date===t?"Today: ":""}${esc(w.title)}</b>${w.minutes} minutes · ${w.questions} questions from all five sections, at real-paper level. It doesn't count towards your scores. It's a full dress rehearsal, so tomorrow nothing is new.</div>
     <div class="actions" style="margin:0"><a class="btn btn-primary" href="#walkthrough">Read the walkthrough</a>${w.released?`<a class="btn btn-ghost" href="mocks/${w.file}">${wls&&wls.startedAt?"Resume the warm-up":"Open the warm-up"}</a>`:""}</div></div>`;
   return `<p class="hello">${greet}, Raina.</p><p class="hello-sub">${d.length?`You've completed ${d.length} of ${DATA.mocks.length} mocks.`:`Your first full mock is ${n?fmt(n.date,{weekday:"long"}):"coming up"}. Everything below fills in as you go.`}</p>
@@ -369,7 +392,7 @@ const totalTopics=()=>DATA.syllabus.reduce((a,s)=>a+s.topics.length,0);
 let mockFilter="all";
 R.mocks=()=>`<div class="toolbar">${[["all","All mocks"],["upcoming","Upcoming"],["done","Completed"]].map(f=>`<button class="seg ${mockFilter===f[0]?"on":""}" data-f="${f[0]}">${f[1]}</button>`).join("")}</div>
   <div class="card list">${DATA.mocks.filter(m=>mockFilter==="all"||(mockFilter==="done"?(m.result||(localState(m)||{}).submitted):!(m.result||(localState(m)||{}).submitted))).map(m=>{const s=status(m);const n=+m.id.slice(1);
-   const act=m.result&&m.analysis?`<a class="btn btn-ghost" href="#performance" data-an="${m.id}">Analysis</a>`:(s.k==="today"&&m.released?`<a class="btn btn-primary" href="mocks/${m.file}">${s.label==="In progress"?"Resume":"Open test"}</a>`:"");
+   const act=m.result?`<a class="btn btn-ghost" href="#review/${m.id}">Analysis</a>`:(s.k==="today"&&m.released?`<a class="btn btn-primary" href="mocks/${m.file}">${s.label==="In progress"?"Resume":"Open test"}</a>`:"");
    return `<div class="mrow"><div class="num ${m.phase===2?"p2":m.phase===3?"p3":""}">${n}</div><div><div class="tt">${esc(m.title)}</div><div class="ss">${m.focus?esc(m.focus):(["","Find your level","Build & sharpen","Exam rhythm"][m.phase])}</div></div>
    <div class="hide-m"><div class="tt" style="font-weight:500">${fmt(m.date,{weekday:"short",day:"numeric",month:"short"})}</div><div class="ss">150 Q · 180 min</div></div>
    <div class="hide-m">${m.result?`<div class="tt">${m.result.net.toFixed(2)} <span class="ss">/ 150</span></div><div class="ss">${m.result.correct} right · ${m.result.wrong} wrong</div>`:'<div class="ss">—</div>'}</div>
@@ -391,7 +414,8 @@ R.schedule=()=>{
 
 R.performance=()=>{
   const d=done();
-  if(!d.length) return `<div class="card"><div class="empty">${emptyArt()}<div><h4>Your performance will appear here</h4><p>After each mock is reviewed you'll see your score trend, how each section is going, where your time went, and how your guessing is working under negative marking. It starts with Mock 1.</p></div></div></div>
+  const wr=DATA.warmup&&DATA.warmup.review?`<div class="card warm" style="margin-bottom:18px"><div class="wt"><b>Warm-up · ${DATA.warmup.review.net.toFixed(2)} / ${DATA.warmup.questions}</b>Practice run. It isn't counted in your mock scores.</div><div class="actions" style="margin:0"><a class="btn btn-primary" href="#review/${DATA.warmup.id}">Open the analysis</a></div></div>`:"";
+  if(!d.length) return wr+`<div class="card"><div class="empty">${emptyArt()}<div><h4>Your performance will appear here</h4><p>After each mock is reviewed you'll see your score trend, how each section is going, where your time went, and how your guessing is working under negative marking. It starts with Mock 1.</p></div></div></div>
    <div class="grid" style="margin-top:18px">${["Score trend|Net score after −0.25 per wrong answer, mock by mock.","Section balance|Marks gained and lost in each of the five sections.","Time map|Minutes spent per section against the plan in the Exam guide.","Error types|Concept gaps, careless slips and time-pressure errors, from your review."].map(x=>{const [a,b]=x.split("|");return `<div class="card span-3"><h3>${a}</h3><div style="color:var(--muted);font-size:14px">${b}</div></div>`}).join("")}</div>`;
   const W=680,Hh=220,pad=36,max=150; const pts=d.map((m,i)=>[pad+(W-2*pad)*(d.length===1?.5:i/(d.length-1)),Hh-pad-(Hh-2*pad)*m.result.net/max]);
   const line=`<svg class="chart" viewBox="0 0 ${W} ${Hh}" width="100%">${[0,50,100,150].map(v=>{const y=Hh-pad-(Hh-2*pad)*v/max;return `<line x1="${pad}" x2="${W-pad}" y1="${y}" y2="${y}" stroke="#eeeae1"/><text x="${pad-8}" y="${y+4}" text-anchor="end">${v}</text>`}).join("")}
@@ -400,7 +424,7 @@ R.performance=()=>{
   return `<div class="grid"><div class="card span-8"><h3>Score trend</h3>${line}</div>
     <div class="card span-4"><h3>Latest · ${esc(last.title)}</h3><div class="stat"><div class="v">${last.result.net.toFixed(2)}</div><div class="l">${last.result.correct} correct · ${last.result.wrong} wrong · ${last.result.attempted} attempted</div></div></div>
     <div class="card span-12"><h3>Sections · ${esc(last.title)}</h3><table class="t"><tr><th>Section</th><th>Net</th><th>Attempted</th><th>Accuracy</th><th>Time</th><th style="width:30%"></th></tr>${last.result.sections.map(s=>`<tr><td>${s.name}</td><td>${s.net.toFixed(2)} / ${s.max}</td><td>${s.att}</td><td>${s.att?Math.round(100*s.correct/s.att):0}%</td><td>${s.min} min</td><td><div class="bar"><i style="width:${Math.max(0,100*s.net/s.max)}%"></i></div></td></tr>`).join("")}</table></div>
-    ${last.analysis?`<div class="card span-12 prose" id="an">${last.analysis}</div>`:""}</div>`;
+    <div class="card span-12"><h3>Full analyses</h3><div class="actions" style="margin:0">${d.map(m=>`<a class="btn btn-ghost" href="#review/${m.id}">${esc(m.title)}</a>`).join("")}${DATA.warmup&&DATA.warmup.review?`<a class="btn btn-ghost" href="#review/${DATA.warmup.id}">Warm-up</a>`:""}</div></div></div>`;
 };
 function emptyArt(){return `<svg width="120" height="96" viewBox="0 0 120 96"><rect x="6" y="10" width="108" height="78" rx="10" fill="#fff" stroke="#e4ded2"/><path d="M22 70 L44 52 L62 60 L84 34 L100 40" fill="none" stroke="#d49a1a" stroke-width="3" stroke-linecap="round" stroke-dasharray="4 6"/><circle cx="84" cy="34" r="5" fill="#1f2b5c"/></svg>`;}
 
@@ -432,6 +456,62 @@ R.notes=()=>`<div class="grid" style="align-items:start"><div class="card span-8
   <table class="t"><tr><th>You can rule out</th><th>Expected marks from a guess</th></tr><tr><td>Nothing (pure guess)</td><td>+0.06</td></tr><tr><td>1 option</td><td>+0.17</td></tr><tr><td>2 options</td><td>+0.38</td></tr></table>
   <p class="callout" style="margin-top:14px">Guess when you can rule out at least one option. Blind guesses barely pay and add noise to your score.</p></div>
 </div>`;
+
+/* ---------- analysis (one attempt) ---------- */
+const TAGS={concept:"Concept",slip:"Careless slip",gap:"Knowledge gap",time:"Not reached / time",interface:"Interface"};
+const SECC={CAEC:"#1f2b5c",QA:"#b5432c",ALA:"#4f7058",GKCA:"#d49a1a",CS:"#7a5c8e"};
+const mmss=s=>s>=60?`${Math.floor(s/60)}m ${String(s%60).padStart(2,"0")}s`:`${s}s`;
+let revFilter="all";
+async function renderReview(id){
+  $("page").innerHTML=`<div class="card">Loading your analysis…</div>`;
+  try{ if(!REV[id]){ const blob=await fetch(`data/review-${id}.json?ts=${Date.now()}`,{cache:"no-store"}).then(r=>r.json()); REV[id]=await decrypt(PW,blob); } }
+  catch(e){ $("page").innerHTML=`<div class="card">This analysis isn't ready yet. Daksh will let you know when it is.</div>`; return; }
+  const a=REV[id]; $("ptitle").textContent="Analysis · "+a.title; $("page").innerHTML=`<div class="fade">${reviewHTML(a)}</div>`; bindReview(a);
+}
+function reviewHTML(a){
+  const T=a.totals, tags={}; a.questions.forEach(q=>{ if(q.tag) tags[q.tag]=(tags[q.tag]||0)+1; });
+  const scaleMax=Math.max(...a.sections.map(s=>Math.max(s.min,s.plan)))*1.05;
+  const secRows=a.sections.map(s=>{const pct=Math.min(100,100*s.min/scaleMax), pl=100*s.plan/scaleMax;
+    return `<tr><td><b>${s.name}</b></td><td>${s.net.toFixed(2)} <span style="color:var(--muted)">/ ${s.n}</span></td><td>${s.correct} · ${s.wrong} · ${s.blank}</td><td>${s.att?Math.round(100*s.correct/s.att)+"%":"—"}</td>
+      <td style="min-width:200px"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px"><span>${s.min} min</span><span>plan ${s.plan}</span></div><div class="tv"><i class="${s.min>s.plan*1.25?"over":""}" style="width:${pct}%"></i><b style="left:${pl}%"></b></div></td></tr>`}).join("");
+  const strip=a.order.map(o=>`<div class="c-${o.sec}" style="width:${100*(o.to-o.from)/a.duration}%" title="${esc(o.sec)} ${o.from}–${o.to} min">${(o.to-o.from)/a.duration>.08?esc(a.sections.find(s=>s.id===o.sec).name):""}</div>`).join("")
+    +(a.order.length&&a.order[0].from>0?"":"");
+  const lead=a.order.length?a.order[0].from:0;
+  return `<div class="grid">
+  <div class="card span-12 an-head"><h2>${esc(a.headline)}</h2><p>${esc(a.summary)}</p><div class="an-meta">${esc(a.title)} · ${esc(a.taken)} · ${a.used} of ${a.duration} min · ${esc(a.reason)}</div></div>
+  <div class="card span-3 stat"><div class="k">Net score</div><div class="v">${T.net.toFixed(2)}<small style="font:500 15px Hanken Grotesk;color:var(--muted)"> / ${T.max}</small></div><div class="l">+1 right, −0.25 wrong</div></div>
+  <div class="card span-3 stat"><div class="k">Accuracy</div><div class="v">${T.accuracy}%</div><div class="l">${T.correct} right of ${T.attempted} attempted</div></div>
+  <div class="card span-3 stat"><div class="k">Right · wrong · blank</div><div class="v">${T.correct} · ${T.wrong} · ${T.blank}</div><div class="l">Wrong answers cost ${(T.wrong*0.25).toFixed(2)} marks</div></div>
+  <div class="card span-3 stat"><div class="k">Time used</div><div class="v">${a.used}<small style="font:500 15px Hanken Grotesk;color:var(--muted)"> min</small></div><div class="l">of ${a.duration} minutes</div></div>
+  <div class="card span-12"><h3>Sections</h3><div style="overflow-x:auto"><table class="t" style="min-width:640px"><tr><th>Section</th><th>Net</th><th>Right · wrong · blank</th><th>Accuracy</th><th>Time against plan</th></tr>${secRows}</table></div>
+    <p style="font-size:13px;color:var(--muted);margin:10px 0 0">Bars share one scale, so you can compare sections. Black line = planned time. Red bar = more than 25% over plan.</p></div>
+  <div class="card span-12"><h3>Where your time went</h3><div class="strip">${lead>0.2?`<div style="width:${100*lead/a.duration}%;background:#cfc8b8"></div>`:""}${strip}</div>
+    <div class="axis"><span>0 min</span><span>${Math.round(a.duration/2)} min</span><span>${a.duration} min</span></div>
+    <div class="legend-s">${a.sections.map(s=>`<span style="--c:${SECC[s.id]}">${s.name}</span>`).join("")}</div></div>
+  <div class="card span-6"><h3>What went right</h3><ul style="margin:0;padding-left:18px">${a.strengths.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ul></div>
+  <div class="card span-6"><h3>Do this next</h3><ol style="margin:0;padding-left:18px">${a.actions.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ol></div>
+  <div class="card span-12"><h3>Why marks were lost</h3><div class="etype">${["concept","slip","gap","time"].map(k=>`<div><b>${tags[k]||0}</b><span>${TAGS[k]}</span></div>`).join("")}</div>
+    <p style="font-size:13px;color:var(--muted);margin:10px 0 0">Concept: a method or rule to learn. Careless slip: you knew it, but rushed. Knowledge gap: a fact to add to your notes. Not reached: time ran out or you moved on.</p></div>
+  <div class="card span-12"><h3>Question by question</h3><div class="toolbar">${[["all","All"],["wrong","Wrong"],["blank","Not answered"],["right","Right"]].map(f=>`<button class="seg ${revFilter===f[0]?"on":""}" data-rf="${f[0]}">${f[1]} (${f[0]==="all"?a.questions.length:a.questions.filter(q=>q.res===f[0]).length})</button>`).join("")}</div><div id="qlist"></div></div>
+  </div>`;
+}
+function qlistHTML(a){
+  const shown=new Set(); let cur=null;
+  return a.questions.filter(q=>revFilter==="all"||q.res===revFilter).map(q=>{
+    let h="";
+    if(q.sec!==cur){cur=q.sec; h+=`<div style="font:600 12px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px">${esc(a.sections.find(s=>s.id===q.sec).full)}</div>`;}
+    if(q.pid&&!shown.has(q.pid)&&a.passages[q.pid]){shown.add(q.pid); h+=`<details class="pas"><summary style="cursor:pointer;font-weight:600">${esc(a.passages[q.pid].title||"Passage")} (tap to read)</summary>\n${a.passages[q.pid].text}</details>`;}
+    const res={right:"Right",wrong:"Wrong",blank:q.status==="mr"?"Marked, not answered":"Not answered"}[q.res];
+    return h+`<div class="qcard"><div class="qh"><b>Q${q.n}</b><span>${esc(q.topic)}</span><span>·</span><span>${mmss(q.secs)}</span><span style="flex:1"></span>${q.tag?`<span class="tag t-${q.tag}">${TAGS[q.tag]}</span>`:""}<span class="tag ${q.res}">${res}</span></div>
+      <div class="qt">${q.text}</div>
+      ${q.options.map((o,k)=>`<div class="op ${k===q.key?"key":""} ${k===q.yours?"mine":""}">${k+1}. ${o}${k===q.key?"<small style='color:var(--sage)'>Correct</small>":""}${k===q.yours&&k!==q.key?"<small style='color:var(--madder)'>Your answer</small>":""}${k===q.yours&&k===q.key?"<small style='color:var(--sage)'>Your answer</small>":""}</div>`).join("")}
+      ${q.note?`<div class="qnote">${esc(q.note)}</div>`:""}
+      <details><summary>Worked solution</summary><div class="ex">${q.expl}</div></details></div>`;}).join("")||`<p style="color:var(--muted)">Nothing here.</p>`;
+}
+function bindReview(a){
+  $("qlist").innerHTML=qlistHTML(a);
+  document.querySelectorAll("[data-rf]").forEach(b=>b.onclick=()=>{revFilter=b.dataset.rf;document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x===b));$("qlist").innerHTML=qlistHTML(a);});
+}
 
 R.walkthrough=()=>{const w=DATA.warmup||{minutes:36,questions:30,file:"",title:"Warm-up test"};
 const img=(f,c)=>`<img class="shot" src="img/walkthrough/${f}" alt="${c}" loading="lazy"><div class="cap">${c}</div>`;
