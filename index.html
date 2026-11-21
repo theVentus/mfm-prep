@@ -349,7 +349,7 @@ R.overview=()=>{
     else if(dd==="2027-01-08"||dd==="2027-01-09") ag.push([dd,"Rest","Light revision only","review","Rest"]); }
   const w=DATA.warmup, wls=w?localState(w):null;
   const warm=!w?"":(wls&&wls.submitted)?`<div class="card span-12 warm"><div class="wt"><b>Warm-up done</b>Thanks. Your answers reached Daksh. You're set for the real thing.</div></div>`
-   :`<div class="card span-12 warm"><div class="wt"><b>${w.date===t?"Today: ":""}${esc(w.title)}</b>${w.minutes} minutes · ${w.questions} questions from all five sections. It doesn't count towards your scores. It's a dress rehearsal of the real flow, so tomorrow nothing is new.</div>
+   :`<div class="card span-12 warm"><div class="wt"><b>${w.date===t?"Today: ":""}${esc(w.title)}</b>${w.minutes} minutes · ${w.questions} questions from all five sections, at real-paper level. It doesn't count towards your scores. It's a full dress rehearsal, so tomorrow nothing is new.</div>
     <div class="actions" style="margin:0"><a class="btn btn-primary" href="#walkthrough">Read the walkthrough</a>${w.released?`<a class="btn btn-ghost" href="mocks/${w.file}">${wls&&wls.startedAt?"Resume the warm-up":"Open the warm-up"}</a>`:""}</div></div>`;
   return `<p class="hello">${greet}, Raina.</p><p class="hello-sub">${d.length?`You've completed ${d.length} of ${DATA.mocks.length} mocks.`:`Your first full mock is ${n?fmt(n.date,{weekday:"long"}):"coming up"}. Everything below fills in as you go.`}</p>
   <div class="grid">${warm}${nextCard}
@@ -446,7 +446,7 @@ return `<p style="color:var(--muted);margin:0 0 18px;max-width:72ch">How a mock 
  <div class="step"><div><h4>After you submit</h4><p>Your answers go to Daksh automatically, and a results file downloads on your Mac as a backup. Keep it until Daksh confirms he has your results.</p>${img("6-done.jpg","The confirmation screen. In real mocks there's no Retake button.")}</div></div>
  <div class="step"><div><h4>If something goes wrong</h4><ul><li><b>Laptop shuts, browser closes, or you hit refresh:</b> reopen the same test link. You'll be asked to resume; every saved answer is still there. The clock keeps running while it's closed.</li><li><b>Internet drops:</b> keep going. Answers save on the laptop and upload when the connection returns.</li><li><b>Anything else:</b> message Daksh. Don't start a new attempt; the server only accepts the first one.</li></ul></div></div>
 </div></div>
-<div class="card" style="margin-top:18px"><h3>Today's warm-up</h3><p style="margin:0">${w.minutes} minutes, ${w.questions} questions from all five sections, marked +1 / −0.25 like the real paper. Try a few deliberately: save one answer, mark one for review, change one with CLEAR, and press Esc once to see what happens when you leave full screen. Then submit and tell Daksh.</p>
+<div class="card" style="margin-top:18px"><h3>Today's warm-up</h3><p style="margin:0">${w.minutes} minutes, ${w.questions} questions from all five sections. The questions are at real-paper level (easy to moderate, like Mock 1) and marked +1 / −0.25, at the real paper's pace of about 70 seconds a question. Try a few deliberately: save one answer, mark one for review, change one with CLEAR, and press Esc once to see what happens when you leave full screen. Then submit and tell Daksh.</p>
 ${w.released?`<div class="actions"><a class="btn btn-primary" href="mocks/${w.file}">Open the warm-up</a><a class="btn btn-ghost" href="check.html">System check first</a></div>`:""}</div>`;};
 
 R.guide=()=>`<div class="grid">
