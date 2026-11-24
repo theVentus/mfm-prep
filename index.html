@@ -258,6 +258,7 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
   .rule{grid-template-columns:1fr}
 }
 /* readability round 2 */
+.show-m{display:none}.mrow-next{border-left:4px solid var(--indigo);background:#f6f5fb}.tag.next{background:var(--indigo);color:#fff}
 .qcard.hide-ans .op{background:none!important;border-color:var(--line)!important;color:var(--ink)!important}.qcard.hide-ans .op small,.qcard.hide-ans .qnote,.qcard.hide-ans .sol,.qcard.hide-ans .qact{display:none!important}
 .reveal{margin-top:10px}
 .rvp.sticky{position:sticky;top:0;z-index:5;padding:8px 12px;margin:0}
@@ -396,12 +397,13 @@ window.addEventListener("hashchange",()=>DATA&&route());
 function localState(m){ try{ return JSON.parse(localStorage.getItem("mfm:MFM-"+m.id+":state")||"null"); }catch(e){ return null; } }
 function status(m){
   const t=todayIST(), ls=localState(m);
-  if(m.result) return {k:"done",label:"Reviewed"};
+  if(m.result) return {k:"done",label:"Feedback ready"};
   if(ls&&ls.submitted) return {k:"wait",label:"Submitted · awaiting review"};
   if(ls&&ls.startedAt) return {k:"today",label:"In progress"};
   if(m.date===t && m.released) return {k:"today",label:"Open today"};
   if(m.date<t) return {k:"locked",label:"Missed"};
-  return {k:"mock",label:"Scheduled"};
+  const nm=nextMock(); if(nm&&nm.id===m.id) return {k:"next",label:m.date===addDays(t,1)?"Next · tomorrow":"Next · "+fmt(m.date,{weekday:"short",day:"numeric",month:"short"})};
+  return {k:"mock",label:""};
 }
 const done=()=>DATA.mocks.filter(m=>m.result);
 const nextMock=()=>DATA.mocks.find(m=>!m.result && !(localState(m)||{}).submitted && m.date>=todayIST());
@@ -476,10 +478,10 @@ let mockFilter="all";
 R.mocks=()=>`<div class="toolbar">${[["all","All mocks"],["upcoming","Upcoming"],["done","Completed"]].map(f=>`<button class="seg ${mockFilter===f[0]?"on":""}" data-f="${f[0]}">${f[1]}</button>`).join("")}</div>
   <div class="card list">${DATA.mocks.filter(m=>mockFilter==="all"||(mockFilter==="done"?(m.result||(localState(m)||{}).submitted):!(m.result||(localState(m)||{}).submitted))).map(m=>{const s=status(m);const n=+m.id.slice(1);
    const act=m.result?`<a class="btn btn-ghost" href="#review/${m.id}">Feedback</a>`:(s.k==="today"&&m.released?`<a class="btn btn-primary" href="mocks/${m.file}">${s.label==="In progress"?"Resume":"Open test"}</a>`:"");
-   return `<div class="mrow"><div class="num ${m.phase===2?"p2":m.phase===3?"p3":""}">${n}</div><div><div class="tt">${esc(m.title)}</div><div class="ss">${m.focus?esc(m.focus):(["","Find your level","Build & sharpen","Exam rhythm"][m.phase])}</div></div>
+   return `<div class="mrow"><div class="num ${m.phase===2?"p2":m.phase===3?"p3":""}">${n}</div><div><div class="tt">${esc(m.title)}</div><div class="ss"><span class="show-m">${fmt(m.date,{weekday:"short",day:"numeric",month:"short"})}${m.result?` · ${m.result.net.toFixed(2)} / 150`:""} · </span>${m.focus?esc(m.focus):(["","Find your level","Build & sharpen","Exam rhythm"][m.phase])}</div></div>
    <div class="hide-m"><div class="tt" style="font-weight:500">${fmt(m.date,{weekday:"short",day:"numeric",month:"short"})}</div><div class="ss">150 Q · 180 min</div></div>
    <div class="hide-m">${m.result?`<div class="tt">${m.result.net.toFixed(2)} <span class="ss">/ 150</span></div><div class="ss">${m.result.correct} right · ${m.result.wrong} wrong</div>`:'<div class="ss">—</div>'}</div>
-   <div class="act"><span class="tag ${s.k}">${s.label}</span>${act}</div></div>`;}).join("")}</div>`;
+   <div class="act">${s.label?`<span class="tag ${s.k}">${s.label}</span>`:""}${act}</div></div>`.replace('<div class="mrow">',s.k==="next"?'<div class="mrow mrow-next">':'<div class="mrow">');}).join("")}</div>`;
 const H={};
 H.overview=()=>{ mntRender(); mntEval(); };
 H.mocks=()=>document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{mockFilter=b.dataset.f;route();});
@@ -773,7 +775,8 @@ function mntRender(){
     ${nextM?`<p class="mnt-target">Next target: <b>${nextM.target}</b> at Mock ${+nextM.id.slice(1)}${last?` · you: ${last.actual.total}`:""}</p>`:""}
     ${cps.length?`<details class="more" id="mnt-goal"><summary>All milestones and your goal</summary>
       <div class="mnt-ms" id="mnt-ms">${cps.map((c,i)=>`${i?'<span class="ln"></span>':""}<span class="m${c.actual?" hit":""}"><b>M${+c.id.slice(1)}</b><i></i>${c.actual?c.actual.total:c.target}</span>`).join("")}</div>
-      ${D.goal?`<p>Goal by Mock 20: ${D.goal.total}, about what Delhi, Mumbai or Bengaluru has needed, with a solid interview. About ${D.goal.seatLine} has been enough for a top-7 campus. ${esc(D.goal.why||"")}</p>`:""}</details>`:""}`;
+      ${D.goal?`<p><b>Goal by Mock 20: ${D.goal.total}.</b> That's about what Delhi, Mumbai or Bengaluru has needed.<br>About <b>${D.goal.seatLine}</b> has been enough for a top-7 campus. The interview adds 30%.</p>
+      <details class="more"><summary>Where these numbers come from</summary><p>${esc(D.goal.why||"")}</p></details>`:""}</details>`:""}`;
   const nb=el.querySelector("#mnt-notice button"); if(nb) nb.onclick=()=>{ st.noticeAck=true; MNT.dirty=true; mntSave(); mntPush(); mntRender(); };
   el.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{ const r=st.steps[b.dataset.step]=st.steps[b.dataset.step]||{}; r.opened=r.opened||Date.now(); MNT.dirty=true; mntSave(); }));
 }
