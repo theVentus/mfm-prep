@@ -220,6 +220,8 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .tag.t-concept{background:var(--indigo-soft);color:var(--indigo)}.tag.t-slip{background:var(--turmeric-soft);color:#8a5f00}.tag.t-gap{background:#efe6f4;color:#6a4a7d}.tag.t-time{background:#eeebe4;color:#555}
 @media(max-width:760px){.etype{grid-template-columns:repeat(2,1fr)}}
 
+#viewer-bar{position:sticky;top:0;z-index:50;background:#1f2b5c;color:#fff;padding:8px 16px;font-size:13px;display:flex;justify-content:space-between;gap:12px}#viewer-bar a{color:#f3d58a}
+.viewer [data-got],.viewer [data-unc],.viewer #mnt-notice button{display:none!important}
 .mnt{border-left:4px solid var(--sage)}.mnt-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
 .mnt-h{font:500 22px Newsreader,serif;margin:0}.mnt-when{color:var(--muted);font-size:13px}
 .mnt-ack{margin:10px 0 0;color:var(--sage);font-weight:600;font-size:14px}
@@ -307,6 +309,12 @@ const fmt=(d,o)=>D(d).toLocaleDateString("en-IN",o);
 const addDays=(d,n)=>{const x=D(d);x.setDate(x.getDate()+n);return new Date(x.getTime()+5.5*3600e3).toISOString().slice(0,10)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let DATA=null, PW=null, REV_ONLY=null; const REV={};
+/* Mentor view (Daksh): ?mentor=1 turns it on for this browser, ?mentor=0 off. Shows exactly what Raina sees, records nothing. */
+const VIEWER=(()=>{ try{ const q=new URLSearchParams(location.search).get("mentor"); if(q==="1") localStorage.setItem("atelier:viewer","1"); if(q==="0") localStorage.removeItem("atelier:viewer"); return localStorage.getItem("atelier:viewer")==="1"; }catch(e){ return false; } })();
+if(VIEWER){ document.documentElement.classList.add("viewer");
+  addEventListener("click",e=>{ const a=e.target.closest&&e.target.closest('a[href^="mocks/"]'); if(a&&!/MFM-DEMO/.test(a.getAttribute("href"))){ e.preventDefault(); e.stopPropagation(); alertBar("Tests don't open in mentor view: opening one would start her attempt."); } },true); }
+function alertBar(t){ const b=document.getElementById("viewer-bar"); if(b){ b.querySelector("span").textContent=t; setTimeout(()=>{ b.querySelector("span").textContent=VIEWER_TXT; },4000); } }
+const VIEWER_TXT="Mentor view: you see what Raina sees. Nothing you open or click here is recorded.";
 
 /* ---------- icons ---------- */
 const I={
@@ -331,6 +339,8 @@ async function unlock(pw){
     DATA=await decrypt(pw,blob); PW=pw;
     try{localStorage.setItem("atelier:blob",JSON.stringify(blob));sessionStorage.setItem("atelier:pw",pw)}catch(e){}
     await mntInit();
+    if(VIEWER&&!document.getElementById("viewer-bar")){ const b=document.createElement("div"); b.id="viewer-bar";
+      b.innerHTML=`<span>${VIEWER_TXT}</span><a href="?mentor=0">Exit mentor view</a>`; document.body.prepend(b); }
     $("lock").classList.add("hidden"); $("app").classList.remove("hidden"); route();
   }catch(e){ $("err").textContent="That password didn't work. Check it and try again."; }
 }
@@ -564,7 +574,7 @@ function bindReview(a){
   const draw=()=>{ $("qlist").innerHTML=qlistHTML(a); observeCards(); paintProgress(a); };
   draw();
   document.querySelectorAll("[data-rf]").forEach(b=>b.onclick=()=>{revFilter=b.dataset.rf;document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x===b));draw();});
-  $("qlist").onclick=e=>{ const g=e.target.closest("[data-got],[data-unc]"); if(!g||!TRK.st) return;
+  $("qlist").onclick=e=>{ const g=e.target.closest("[data-got],[data-unc]"); if(VIEWER||!g||!TRK.st) return;
     const id=g.dataset.got||g.dataset.unc, r=TRK.st.q[id]=TRK.st.q[id]||{secs:0};
     if(g.dataset.got){ r.got=!r.got; if(r.got) r.unclear=false; } else { r.unclear=!r.unclear; if(r.unclear) r.got=false; }
     r.ut=Date.now(); TRK.dirty=true; trkSave(); trkPush();
@@ -578,7 +588,7 @@ const TRK={id:null,st:null,obs:null,vis:new Set(),last:Date.now(),tick:null,push
 const DONE_SECS=20;   // a wrong/left question counts as gone through after 20 s on screen, or "Got it"
 const trkKey=id=>"atelier:rv:"+id;
 function trkLoad(id){ try{ return JSON.parse(localStorage.getItem(trkKey(id))||"null"); }catch(e){ return null; } }
-function trkSave(){ try{ if(TRK.id&&TRK.st) localStorage.setItem(trkKey(TRK.id),JSON.stringify(TRK.st)); }catch(e){} }
+function trkSave(){ if(VIEWER) return; try{ if(TRK.id&&TRK.st) localStorage.setItem(trkKey(TRK.id),JSON.stringify(TRK.st)); }catch(e){} }
 function qDone(st,qid){ const r=st&&st.q&&st.q[qid]; return !!(r&&(r.got||(r.secs||0)>=DONE_SECS)); }
 function trkMerge(a,b){ if(!b) return a; const o={...b,...a, secs:Math.max(a.secs||0,b.secs||0), sessions:Math.max(a.sessions||0,b.sessions||0),
     first:Math.min(a.first||Infinity,b.first||Infinity), last:Math.max(a.last||0,b.last||0), q:{...(b.q||{})}};
@@ -588,7 +598,7 @@ function trkMerge(a,b){ if(!b) return a; const o={...b,...a, secs:Math.max(a.sec
 async function trkServer(id){ const s=DATA.sync; if(!s) return null;
   try{ const j=await withTimeout(fetch(`${s.endpoint}?action=attempt&mockId=REV-${id}&key=${encodeURIComponent(s.key)}`).then(r=>r.json()),5000);
        return (j&&j.attempt&&j.attempt.snapshot&&j.attempt.snapshot.trk)||null; }catch(e){ return null; } }
-function trkPush(){ const s=DATA&&DATA.sync; if(!s||!TRK.st||!TRK.dirty) return; TRK.dirty=false; const st=TRK.st;
+function trkPush(){ const s=DATA&&DATA.sync; if(VIEWER||!s||!TRK.st||!TRK.dirty) return; TRK.dirty=false; const st=TRK.st;
   const msg={kind:"snapshot",mockId:"REV-"+TRK.id,candidate:"Raina",attemptId:"review",rev:Date.now(),sentAt:Date.now(),key:s.key,data:{startedAt:st.first,trk:st}};
   fetch(s.endpoint,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(msg),keepalive:true}).catch(()=>{TRK.dirty=true;}); }
 function observeCards(){ if(!TRK.obs) return; TRK.obs.disconnect(); TRK.vis.clear(); document.querySelectorAll(".qcard[data-qid]").forEach(el=>TRK.obs.observe(el)); }
@@ -604,7 +614,7 @@ async function trkStart(a){ trkStop(); TRK.id=a.id; const now=Date.now();
   TRK.st=st; TRK.dirty=true; trkSave(); trkPush();
   TRK.obs=new IntersectionObserver(es=>es.forEach(e=>{ const q=e.target.dataset.qid; if(e.isIntersecting&&e.intersectionRatio>=0.5) TRK.vis.add(q); else TRK.vis.delete(q); }),{threshold:[0,0.5,1]});
   $("qlist").innerHTML=qlistHTML(a); observeCards(); paintProgress(a);
-  TRK.tick=setInterval(()=>{ if(document.visibilityState!=="visible"||Date.now()-TRK.last>60000||!location.hash.startsWith("#review/"+TRK.id)) return;
+  TRK.tick=setInterval(()=>{ if(VIEWER||document.visibilityState!=="visible"||Date.now()-TRK.last>60000||!location.hash.startsWith("#review/"+TRK.id)) return;
     const s=TRK.st; s.secs+=5; s.last=Date.now(); TRK.vis.forEach(q=>{ const r=s.q[q]=s.q[q]||{secs:0}; r.secs=(r.secs||0)+5;
       const c=document.querySelector(`.qcard[data-qid="${q}"]`); if(c) c.classList.toggle("done",qDone(s,q)); });
     TRK.dirty=true; trkSave(); paintProgress(a); },5000);
@@ -619,7 +629,7 @@ const MNT={doc:null,st:null,dirty:false,ack:null,srv:{},busy:false,lastSync:0,sh
 const mntKey="atelier:mnt", MNT_NOTICE="Your plan now notices which solutions and steps you have opened, so it can choose what comes next for you. It isn't shared beyond your plan.";
 const lo=(x,y)=>x&&y?Math.min(x,y):(x||y||undefined);
 function mntLoad(){ try{ const v=JSON.parse(localStorage.getItem(mntKey)||"null"); if(v&&typeof v==="object"){ v.steps=v.steps||{}; return v; } }catch(e){} return null; }
-function mntSave(){ try{ if(MNT.st) localStorage.setItem(mntKey,JSON.stringify(MNT.st)); }catch(e){} }
+function mntSave(){ if(VIEWER) return; try{ if(MNT.st) localStorage.setItem(mntKey,JSON.stringify(MNT.st)); }catch(e){} }
 function mntMerge(a,b){ if(!b) return a; if(!a) return b;
   const o={first:lo(a.first,b.first), last:Math.max(a.last||0,b.last||0), noticeAck:!!(a.noticeAck||b.noticeAck), steps:{...(b.steps||{})}};
   for(const [k,v] of Object.entries(a.steps||{})){ const w=o.steps[k]||{};
@@ -632,16 +642,16 @@ async function srvGet(mockId){ const s=DATA&&DATA.sync; if(!s) return null;
 async function mntFetchDoc(){ try{ const blob=await fetch("data/mentor.json?ts="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null); return blob?await decrypt(PW,blob):null; }catch(e){ return null; } }
 async function mntInit(){
   MNT.doc=await mntFetchDoc(); if(!MNT.doc) return;
-  const now=Date.now(); MNT.st=mntLoad()||{first:now,last:now,steps:{}}; MNT.st.last=now; mntSave();
+  const now=Date.now(); MNT.st=(VIEWER?null:mntLoad())||{first:now,last:now,steps:{}}; MNT.st.last=now; mntSave();
   await mntEval({silent:true,localOnly:true});          // first paint already skips anything done on this device
   mntSync().then(()=>mntEval({silent:true})).then(()=>mntPush());   // then the server, in the background
 }
 async function mntSync(){ const a=await srvGet("MENTOR"); MNT.lastSync=Date.now();
   if(a&&a.snapshot&&a.snapshot.mnt){ MNT.st=mntMerge(MNT.st,a.snapshot.mnt); mntSave(); } }
-function mntPost(){ const s=DATA&&DATA.sync; if(!s||!MNT.st) return; const st=MNT.st;
+function mntPost(){ const s=DATA&&DATA.sync; if(VIEWER||!s||!MNT.st) return; const st=MNT.st;
   const msg={kind:"snapshot",mockId:"MENTOR",candidate:"Raina",attemptId:"portal",rev:Date.now(),sentAt:Date.now(),key:s.key,data:{startedAt:st.first||Date.now(),mnt:st}};
   fetch(s.endpoint,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(msg),keepalive:true}).catch(()=>{MNT.dirty=true;}); }
-async function mntPush(force){ if(!DATA||!DATA.sync||!MNT.st||!(MNT.dirty||force)) return; MNT.dirty=false;
+async function mntPush(force){ if(VIEWER||!DATA||!DATA.sync||!MNT.st||!(MNT.dirty||force)) return; MNT.dirty=false;
   await mntSync(); mntPost(); }        // merge the server's copy first, so another open device's progress is never undone
 async function submitted(testId,localOnly){
   const mid="MFM-"+testId, ls=(()=>{ try{ return JSON.parse(localStorage.getItem("mfm:"+mid+":state")||"null"); }catch(e){ return null; } })();
@@ -705,7 +715,7 @@ function dmHTML(id){
   if(!c.review) return `<div class="card span-12 dm" id="dm"><h3>Defining moment</h3><p style="margin:0">Baseline: this is where the plan starts.${nextM?` Target for Mock ${+nextM.id.slice(1)}: ${nextM.target}.`:""}</p></div>`;
   return `<div class="card span-12 dm" id="dm"><h3>Defining moment</h3><p style="margin:0 0 10px">Target ${c.target}, you scored ${c.actual.total}: <span class="v-${c.review.total.replace(" ","-")}">${VERD[c.review.total]}</span>.</p>
     <div style="overflow-x:auto"><table class="t"><tr><th>Section</th><th>Target</th><th>Scored</th><th></th></tr>${Object.keys(c.sections).map(k=>`<tr><td>${esc(SECN[k]||k)}</td><td>${c.sections[k]}</td><td>${c.actual.sections[k]}</td><td class="v-${c.review.sections[k].replace(" ","-")}">${VERD[c.review.sections[k]]}</td></tr>`).join("")}</table></div></div>`; }
-setInterval(()=>{ if(!MNT.doc||!MNT.st||document.visibilityState!=="visible") return;
+setInterval(()=>{ if(VIEWER||!MNT.doc||!MNT.st||document.visibilityState!=="visible") return;
   let bump=false; for(const x of MNT.doc.steps){ if((x.done||{}).type==="open"&&location.hash===x.link&&!(MNT.st.steps[x.id]||{}).done){ const r=MNT.st.steps[x.id]=MNT.st.steps[x.id]||{}; r.openSecs=(r.openSecs||0)+5; bump=true; } }
   if(bump){ MNT.dirty=true; mntSave(); } },5000);
 setInterval(()=>{ if(MNT.doc&&$("mnt")&&document.visibilityState==="visible") mntEval(); },15000);
