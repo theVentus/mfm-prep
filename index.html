@@ -208,6 +208,9 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .chip{display:inline-block;font:600 11px Hanken Grotesk;padding:2px 8px;border-radius:99px;letter-spacing:.03em}
 .c-strong{background:var(--sage-soft);color:#2f5537}.c-mixed{background:var(--turmeric-soft);color:#7a5600}.c-weak{background:var(--madder-soft);color:#8a2b1a}.c-left{background:#ecebe6;color:#55534c}
 @media(max-width:760px){.fx{grid-template-columns:1fr}}
+.qcard.done{border-color:#b9d0bd}.qcard .qact{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--muted)}
+.qcard .qact .seg.warn{background:var(--madder-soft);border-color:#e6b9ad;color:#8a2b1a}
+.rvp{background:var(--turmeric-soft);border-radius:12px;padding:12px 14px;margin:0 0 14px;font-size:14px}.rvp .bar{margin-top:8px}
 .qcard .sol{margin-top:12px;padding:12px 14px;background:#f2f4fa;border-left:4px solid var(--indigo,#1f2b5c);border-radius:0 10px 10px 0;font-size:14.5px;line-height:1.6;color:#22242b}
 .qcard .sol .lbl,.qnote .lbl{display:block;font:700 11px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo,#1f2b5c);margin-bottom:4px}
 .qnote .lbl{color:#8a6500}
@@ -342,6 +345,7 @@ function phaseOf(d){ return d<"2026-12-01"?1:d<"2026-12-26"?2:3; }
 /* ---------- router ---------- */
 function route(){
   const key=(location.hash.slice(1)||"overview"); const rv=key.startsWith("review/")?key.slice(7):null;
+  if(!rv && TRK.id) trkStop();
   const p=rv?["performance","Feedback","Progress"]:(PAGES.find(x=>x[0]===key)||PAGES[0]);
   let groups={}; PAGES.forEach(x=>(groups[x[2]]=groups[x[2]]||[]).push(x));
   $("nav").innerHTML=Object.entries(groups).map(([g,items])=>`<div class="nav-h">${g}</div>`+items.map(x=>`<a class="nav-a ${x[0]===p[0]?"on":""}" href="#${x[0]}">${icon(x[0])}${x[1]}</a>`).join("")).join("")+
@@ -358,7 +362,7 @@ function route(){
 const R={};
 R.overview=()=>{
   const n=nextMock(), d=done(), t=todayIST();
-  const hr=new Date(Date.now()+5.5*3600e3).getUTCHours(); const greet=hr<12?"Good morning":hr<17?"Good afternoon":"Good evening";
+  const hr=new Date(Date.now()+5.5*3600e3).getUTCHours(); const greet=hr<4?"Hello":hr<12?"Good morning":hr<17?"Good afternoon":"Good evening";
   const elapsed=Math.min(1,Math.max(0,(Date.now()-START)/(EXAM-START)));
   const ph=phaseOf(t);
   const nextCard=n?`<div class="card next span-7"><div class="weave"></div><h3>${n.date===t?"Today":"Next mock"}</h3>
@@ -387,8 +391,15 @@ R.overview=()=>{
   const pr=(DATA.practice||[]).slice().reverse().slice(0,3).map(x=>{const ls=localState(x)||{}; const parent=x.for?((DATA.mocks.find(m=>m.id===x.for)||{}).title||(DATA.warmup&&DATA.warmup.id===x.for?"the warm-up":x.for)):"";
     const act=x.review?`<a class="btn btn-primary" href="#review/${x.id}">Read the feedback</a><a class="btn btn-ghost" href="mocks/${x.file}">See your answers</a>`:`<a class="btn btn-primary" href="mocks/${x.file}">${ls.submitted?"See your score and solutions":ls.startedAt?"Resume":"Start the practice set"}</a>`;
     return `<div class="card span-12 warm"><div class="wt"><b>${esc(x.title)}${parent?` · after ${esc(parent)}`:""}</b>${x.questions} questions · ${x.minutes} minutes · built from the topics your last test showed you need most: ${esc((x.topics||[]).join(", "))}. No start code needed: open it whenever you're ready. Your score, the key and full solutions appear the moment you submit.</div><div class="actions" style="margin:0">${act}</div></div>`;}).join("");
+  const lastRev=d.length?d[d.length-1]:null;
+  const nudge=(()=>{ if(!lastRev) return ""; const st=trkLoad(lastRev.id); const total=(lastRev.result.wrong||0)+(lastRev.result.blank||0);
+    const done=st?Object.keys(st.q||{}).filter(q=>qDone(st,q)).length:0; if(st&&done>=total) return "";
+    const nxt=n?` before ${esc(n.title)} on ${fmt(n.date,{weekday:"long"})}`:"";
+    return `<div class="card span-12 warm"><div class="wt"><b>${st?`${esc(lastRev.title)} feedback: ${done} of ${total} still-to-learn questions gone through`:`You haven't opened your ${esc(lastRev.title)} feedback yet`}</b>
+      Going through the solutions to the questions you got wrong or left is the quickest way to add marks${nxt}. ${st?`About ${Math.max(5,Math.round((total-done)*0.75))} minutes to go.`:"Set aside about 45 minutes."} Mark each one "Got it" or "Still unclear": the unclear ones get extra help in your practice set.</div>
+      <div class="actions" style="margin:0"><a class="btn btn-primary" href="#review/${lastRev.id}">${st?"Continue":"Open the feedback"}</a></div></div>`; })();
   return `<p class="hello">${greet}, Raina.</p><p class="hello-sub">${d.length?`You've completed ${d.length} of ${DATA.mocks.length} mocks.`:`Your first full mock is ${n?fmt(n.date,{weekday:"long"}):"coming up"}. Everything below fills in as you go.`}</p>
-  <div class="grid">${pr}${warm}${nextCard}
+  <div class="grid">${nudge}${pr}${warm}${nextCard}
     <div class="card span-5"><h3>Countdown</h3><div class="ring-wrap">${ring(elapsed)}<div><div class="big">${daysLeft()}<small>days</small></div><div style="color:var(--muted)">until the GAT on Sunday, 10 January 2027</div></div></div>
       <div class="phase-line"><div class="${ph>1?"done":"on"}"></div><div class="${ph>2?"done":ph===2?"on":""}"></div><div class="${ph===3?"on":""}"></div></div>
       <div class="phase-labels"><span>Find your level</span><span>Build &amp; sharpen</span><span>Exam rhythm</span></div></div>
@@ -476,12 +487,12 @@ const STAT={strong:"Strong",mixed:"Mixed",weak:"Needs work",left:"Not answered y
 const TAGS={concept:"Rule or method to learn",slip:"Small slip",gap:"New fact",time:"Didn't get to it",interface:"Test screen"};
 const SECC={CAEC:"#1f2b5c",QA:"#b5432c",ALA:"#4f7058",GKCA:"#d49a1a",CS:"#7a5c8e"};
 const mmss=s=>s>=60?`${Math.floor(s/60)}m ${String(s%60).padStart(2,"0")}s`:`${s}s`;
-let revFilter="all";
+let revFilter="todo";
 async function renderReview(id){
   $("page").innerHTML=`<div class="card">Loading your feedback…</div>`;
   try{ if(!REV[id]){ const blob=await fetch(`data/review-${id}.json?ts=${Date.now()}`,{cache:"no-store"}).then(r=>r.json()); REV[id]=await decrypt(PW,blob); } }
   catch(e){ $("page").innerHTML=`<div class="card">This feedback isn't ready yet. Daksh will let you know when it is.</div>`; return; }
-  const a=REV[id]; $("ptitle").textContent="Feedback · "+a.title; $("page").innerHTML=`<div class="fade">${reviewHTML(a)}</div>`; bindReview(a);
+  const a=REV[id]; $("ptitle").textContent="Feedback · "+a.title; $("page").innerHTML=`<div class="fade">${reviewHTML(a)}</div>`; bindReview(a); trkStart(a);
 }
 function reviewHTML(a){
   const T=a.totals, tags={}; a.questions.forEach(q=>{ if(q.tag) tags[q.tag]=(tags[q.tag]||0)+1; });
@@ -522,26 +533,77 @@ function reviewHTML(a){
       <p style="font-size:13px;color:var(--muted);margin:10px 0 0">With only a few questions per topic so far, treat these as early signals. They firm up with every test.</p></div>`:""}
   <div class="card span-12"><h3>Where the marks went</h3><div class="etype">${["concept","slip","gap","time"].map(k=>`<div><b>${tags[k]||0}</b><span>${TAGS[k]}</span></div>`).join("")}</div>
     <p style="font-size:13px;color:var(--muted);margin:10px 0 0">The questions you got wrong or left, sorted by why. Each one is explained in the question cards below.</p></div>
-  <div class="card span-12"><h3>Question by question</h3><div class="toolbar">${[["all","All"],["wrong","Wrong"],["blank","Left"],["right","Right"]].map(f=>`<button class="seg ${revFilter===f[0]?"on":""}" data-rf="${f[0]}">${f[1]} (${f[0]==="all"?a.questions.length:a.questions.filter(q=>q.res===f[0]).length})</button>`).join("")}</div><div id="qlist"></div></div>
+  <div class="card span-12"><h3>Question by question</h3><div id="rvprog"></div><div class="toolbar">${[["todo","Still to go"],["all","All"],["wrong","Wrong"],["blank","Left"],["right","Right"]].map(f=>`<button class="seg ${revFilter===f[0]?"on":""}" data-rf="${f[0]}">${f[1]}${f[0]==="todo"?"":` (${f[0]==="all"?a.questions.length:a.questions.filter(q=>q.res===f[0]).length})`}</button>`).join("")}</div><div id="qlist"></div></div>
   </div>`;
 }
 function qlistHTML(a){
   const shown=new Set(); let cur=null;
-  return a.questions.filter(q=>revFilter==="all"||q.res===revFilter).map(q=>{
+  return a.questions.filter(q=>revFilter==="all"||q.res===revFilter||(revFilter==="todo"&&q.res!=="right"&&!qDone(TRK.st,q.id))).map(q=>{
     let h="";
     if(q.sec!==cur){cur=q.sec; h+=`<div style="font:600 12px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px">${esc(a.sections.find(s=>s.id===q.sec).full)}</div>`;}
     if(q.pid&&!shown.has(q.pid)&&a.passages[q.pid]){shown.add(q.pid); h+=`<details class="pas"><summary style="cursor:pointer;font-weight:600">${esc(a.passages[q.pid].title||"Passage")} (tap to read)</summary>\n${a.passages[q.pid].text}</details>`;}
     const res={right:"Right",wrong:"Wrong",blank:q.status==="mr"?"Marked, no answer saved":"Left"}[q.res];
-    return h+`<div class="qcard"><div class="qh"><b>Q${q.n}</b><span>${esc(q.topic)}</span><span>·</span><span>${mmss(q.secs)}</span><span style="flex:1"></span>${q.tag?`<span class="tag t-${q.tag}">${TAGS[q.tag]}</span>`:""}<span class="tag ${q.res}">${res}</span></div>
+    const tr=q.res!=="right", rec=(TRK.st&&TRK.st.q||{})[q.id]||{};
+    return h+`<div class="qcard${tr&&qDone(TRK.st,q.id)?" done":""}"${tr?` data-qid="${q.id}"`:""}><div class="qh"><b>Q${q.n}</b><span>${esc(q.topic)}</span><span>·</span><span>${mmss(q.secs)}</span><span style="flex:1"></span>${q.tag?`<span class="tag t-${q.tag}">${TAGS[q.tag]}</span>`:""}<span class="tag ${q.res}">${res}</span></div>
       <div class="qt">${q.text}</div>
       ${q.options.map((o,k)=>`<div class="op ${k===q.key?"key":""} ${k===q.yours?"mine":""}">${k+1}. ${o}${k===q.key?"<small style='color:var(--sage)'>Correct</small>":""}${k===q.yours&&k!==q.key?"<small style='color:var(--madder)'>Your answer</small>":""}${k===q.yours&&k===q.key?"<small style='color:var(--sage)'>Your answer</small>":""}</div>`).join("")}
       ${q.note?`<div class="qnote"><span class="lbl">Note for you</span>${esc(q.note)}</div>`:""}
-      <div class="sol"><span class="lbl">Full solution · answer ${q.key+1}</span>${q.expl}</div></div>`;}).join("")||`<p style="color:var(--muted)">Nothing here.</p>`;
+      <div class="sol"><span class="lbl">Full solution · answer ${q.key+1}</span>${q.expl}</div>
+      ${tr?`<div class="qact"><span>After reading the solution:</span><button class="seg ${rec.got?"on":""}" data-got="${q.id}">✓ Got it</button><button class="seg ${rec.unclear?"on warn":""}" data-unc="${q.id}">Still unclear</button></div>`:""}</div>`;}).join("")||`<p style="color:var(--muted)">${revFilter==="todo"?"All done: you've gone through every question you got wrong or left.":"Nothing here."}</p>`;
 }
 function bindReview(a){
-  $("qlist").innerHTML=qlistHTML(a);
-  document.querySelectorAll("[data-rf]").forEach(b=>b.onclick=()=>{revFilter=b.dataset.rf;document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x===b));$("qlist").innerHTML=qlistHTML(a);});
+  const draw=()=>{ $("qlist").innerHTML=qlistHTML(a); observeCards(); paintProgress(a); };
+  draw();
+  document.querySelectorAll("[data-rf]").forEach(b=>b.onclick=()=>{revFilter=b.dataset.rf;document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x===b));draw();});
+  $("qlist").onclick=e=>{ const g=e.target.closest("[data-got],[data-unc]"); if(!g||!TRK.st) return;
+    const id=g.dataset.got||g.dataset.unc, r=TRK.st.q[id]=TRK.st.q[id]||{secs:0};
+    if(g.dataset.got){ r.got=!r.got; if(r.got) r.unclear=false; } else { r.unclear=!r.unclear; if(r.unclear) r.got=false; }
+    r.ut=Date.now(); TRK.dirty=true; trkSave(); trkPush();
+    const card=g.closest(".qcard"); card.querySelector("[data-got]").classList.toggle("on",!!r.got); const u=card.querySelector("[data-unc]"); u.classList.toggle("on",!!r.unclear); u.classList.toggle("warn",!!r.unclear);
+    card.classList.toggle("done",qDone(TRK.st,id)); paintProgress(a); };
+  $("rvnext")&&($("rvnext").onclick=()=>{ revFilter="todo"; document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x.dataset.rf==="todo")); draw(); const c=document.querySelector(".qcard[data-qid]:not(.done)"); c&&c.scrollIntoView({behavior:"smooth",block:"start"}); });
 }
+
+/* ---------- feedback engagement: time on page, solutions read, got it / still unclear ---------- */
+const TRK={id:null,st:null,obs:null,vis:new Set(),last:Date.now(),tick:null,push:null,dirty:false};
+const DONE_SECS=20;   // a wrong/left question counts as gone through after 20 s on screen, or "Got it"
+const trkKey=id=>"atelier:rv:"+id;
+function trkLoad(id){ try{ return JSON.parse(localStorage.getItem(trkKey(id))||"null"); }catch(e){ return null; } }
+function trkSave(){ try{ if(TRK.id&&TRK.st) localStorage.setItem(trkKey(TRK.id),JSON.stringify(TRK.st)); }catch(e){} }
+function qDone(st,qid){ const r=st&&st.q&&st.q[qid]; return !!(r&&(r.got||(r.secs||0)>=DONE_SECS)); }
+function trkMerge(a,b){ if(!b) return a; const o={...b,...a, secs:Math.max(a.secs||0,b.secs||0), sessions:Math.max(a.sessions||0,b.sessions||0),
+    first:Math.min(a.first||Infinity,b.first||Infinity), last:Math.max(a.last||0,b.last||0), q:{...(b.q||{})}};
+  for(const [k,v] of Object.entries(a.q||{})){ const w=o.q[k]||{}; const newer=(v.ut||0)>=(w.ut||0)?v:w;
+    o.q[k]={secs:Math.max(v.secs||0,w.secs||0), got:!!newer.got, unclear:!!newer.unclear, ut:Math.max(v.ut||0,w.ut||0)}; }
+  return o; }
+async function trkServer(id){ const s=DATA.sync; if(!s) return null;
+  try{ const j=await fetch(`${s.endpoint}?action=attempt&mockId=REV-${id}&key=${encodeURIComponent(s.key)}`).then(r=>r.json());
+       return (j&&j.attempt&&j.attempt.snapshot&&j.attempt.snapshot.trk)||null; }catch(e){ return null; } }
+function trkPush(){ const s=DATA&&DATA.sync; if(!s||!TRK.st||!TRK.dirty) return; TRK.dirty=false; const st=TRK.st;
+  const msg={kind:"snapshot",mockId:"REV-"+TRK.id,candidate:"Raina",attemptId:"review",rev:Date.now(),sentAt:Date.now(),key:s.key,data:{startedAt:st.first,trk:st}};
+  fetch(s.endpoint,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(msg),keepalive:true}).catch(()=>{TRK.dirty=true;}); }
+function observeCards(){ if(!TRK.obs) return; TRK.obs.disconnect(); TRK.vis.clear(); document.querySelectorAll(".qcard[data-qid]").forEach(el=>TRK.obs.observe(el)); }
+function paintProgress(a){ const el=$("rvprog"); if(!el||!TRK.st) return; const st=TRK.st;
+  const ids=a.questions.filter(q=>q.res!=="right").map(q=>q.id), done=ids.filter(q=>qDone(st,q)).length, unc=ids.filter(q=>(st.q[q]||{}).unclear).length;
+  el.innerHTML=`<div class="rvp"><div><b>${done} of ${ids.length}</b> questions you got wrong or left gone through${unc?` · <b>${unc}</b> marked still unclear (they'll get extra help in your practice set)`:""} · ${Math.round(st.secs/60)} min on this page so far</div>
+    <div class="bar"><i style="width:${ids.length?100*done/ids.length:100}%"></i></div>
+    ${done<ids.length?`<button class="btn btn-primary" id="rvnext" style="margin-top:10px">Show the ones still to go</button>`:`<div style="margin-top:8px;color:var(--sage);font-weight:600">All done. Well worth it.</div>`}</div>`;
+  const nb=$("rvnext"); if(nb) nb.onclick=()=>{ revFilter="todo"; document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x.dataset.rf==="todo")); $("qlist").innerHTML=qlistHTML(a); observeCards(); const c=document.querySelector(".qcard[data-qid]"); c&&c.scrollIntoView({behavior:"smooth",block:"start"}); }; }
+async function trkStart(a){ trkStop(); TRK.id=a.id; const now=Date.now();
+  let st=trkLoad(a.id)||{secs:0,sessions:0,first:now,last:now,q:{}};
+  st=trkMerge(st, await trkServer(a.id)); st.sessions=(st.sessions||0)+1; st.last=now; st.total=a.questions.filter(q=>q.res!=="right").length;
+  TRK.st=st; TRK.dirty=true; trkSave(); trkPush();
+  TRK.obs=new IntersectionObserver(es=>es.forEach(e=>{ const q=e.target.dataset.qid; if(e.isIntersecting&&e.intersectionRatio>=0.5) TRK.vis.add(q); else TRK.vis.delete(q); }),{threshold:[0,0.5,1]});
+  $("qlist").innerHTML=qlistHTML(a); observeCards(); paintProgress(a);
+  TRK.tick=setInterval(()=>{ if(document.visibilityState!=="visible"||Date.now()-TRK.last>60000||location.hash!=="#review/"+TRK.id) return;
+    const s=TRK.st; s.secs+=5; s.last=Date.now(); TRK.vis.forEach(q=>{ const r=s.q[q]=s.q[q]||{secs:0}; r.secs=(r.secs||0)+5;
+      const c=document.querySelector(`.qcard[data-qid="${q}"]`); if(c) c.classList.toggle("done",qDone(s,q)); });
+    TRK.dirty=true; trkSave(); paintProgress(a); },5000);
+  TRK.push=setInterval(trkPush,120000); }
+function trkStop(){ clearInterval(TRK.tick); clearInterval(TRK.push); if(TRK.obs) TRK.obs.disconnect(); TRK.vis.clear(); if(TRK.st) trkPush(); TRK.st=null; TRK.id=null; }
+["mousemove","scroll","keydown","touchstart","click"].forEach(e=>addEventListener(e,()=>{TRK.last=Date.now();},{passive:true}));
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden") trkPush(); });
+addEventListener("pagehide",trkPush);
 
 R.walkthrough=()=>{const w=DATA.warmup||{minutes:36,questions:30,file:"",title:"Warm-up test"};
 const img=(f,c)=>`<img class="shot" src="img/walkthrough/${f}" alt="${c}" loading="lazy"><div class="cap">${c}</div>`;
