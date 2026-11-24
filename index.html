@@ -220,6 +220,19 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .tag.t-concept{background:var(--indigo-soft);color:var(--indigo)}.tag.t-slip{background:var(--turmeric-soft);color:#8a5f00}.tag.t-gap{background:#efe6f4;color:#6a4a7d}.tag.t-time{background:#eeebe4;color:#555}
 @media(max-width:760px){.etype{grid-template-columns:repeat(2,1fr)}}
 
+.mnt{border-left:4px solid var(--sage)}.mnt-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.mnt-h{font:500 22px Newsreader,serif;margin:0}.mnt-when{color:var(--muted);font-size:13px}
+.mnt-ack{margin:10px 0 0;color:var(--sage);font-weight:600;font-size:14px}
+.mnt-now{margin:14px 0 0;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.mnt-now .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sage);font-weight:700}
+.mnt-now .tt{font:500 20px Newsreader,serif;margin:4px 0 6px;display:flex;justify-content:space-between;gap:10px}.mnt-now .tt span{font:500 13px 'Hanken Grotesk';color:var(--muted);white-space:nowrap}
+.mnt-now p{margin:0 0 10px;color:#33353d}.mnt-now .tip{font-size:13px;color:var(--muted);margin:8px 0 0}
+.mnt-next{margin:10px 0 0;font-size:14px;color:#33353d}.mnt-next div{padding:6px 0;border-bottom:1px dashed var(--line)}.mnt-next b{font-size:11px;letter-spacing:.08em;color:var(--muted);margin-right:8px}
+.mnt-later{font-size:13px;color:var(--muted);margin:10px 0 0}
+.mnt-ms{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:16px 0 0;font-size:13px}.mnt-ms .m{display:flex;flex-direction:column;align-items:center;min-width:52px}
+.mnt-ms .m b{font-size:12px;color:var(--muted)}.mnt-ms .m i{width:12px;height:12px;border-radius:50%;border:2px solid var(--sage);margin:3px 0}.mnt-ms .m.hit i{background:var(--sage)}.mnt-ms .ln{flex:1;min-width:16px;height:2px;background:var(--line)}
+.mnt-notice{margin:12px 0 0;padding:10px 14px;background:var(--sage-soft);border-radius:10px;font-size:14px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.dm table td,.dm table th{text-align:left}.dm .v-ahead{color:var(--sage);font-weight:600}.dm .v-behind{color:#b5432c;font-weight:600}
 .warm{display:flex;gap:22px;align-items:center;flex-wrap:wrap;border-left:4px solid var(--turmeric)}.warm .wt{flex:1;min-width:260px}.warm .wt b{font:500 22px Newsreader,serif;display:block;margin-bottom:4px}
 .steps{counter-reset:st;display:grid;gap:18px}.step{display:grid;grid-template-columns:46px 1fr;gap:16px}.step:before{counter-increment:st;content:counter(st);width:38px;height:38px;border-radius:50%;background:var(--indigo);color:#fff;display:grid;place-items:center;font:600 16px Hanken Grotesk}
 .step h4{font:500 21px Newsreader,serif;margin:4px 0 6px}.step p,.step li{color:#33353d;margin:0 0 6px}.step ul{padding-left:20px;margin:6px 0}
@@ -293,7 +306,7 @@ const D=d=>new Date(d+"T00:00:00+05:30");
 const fmt=(d,o)=>D(d).toLocaleDateString("en-IN",o);
 const addDays=(d,n)=>{const x=D(d);x.setDate(x.getDate()+n);return new Date(x.getTime()+5.5*3600e3).toISOString().slice(0,10)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let DATA=null, PW=null; const REV={};
+let DATA=null, PW=null, REV_ONLY=null; const REV={};
 
 /* ---------- icons ---------- */
 const I={
@@ -317,6 +330,7 @@ async function unlock(pw){
     const blob=await fetch("data/portal.json?ts="+Date.now(),{cache:"no-store"}).then(r=>r.json()).catch(()=>JSON.parse(localStorage.getItem("atelier:blob")||"null"));
     DATA=await decrypt(pw,blob); PW=pw;
     try{localStorage.setItem("atelier:blob",JSON.stringify(blob));sessionStorage.setItem("atelier:pw",pw)}catch(e){}
+    await mntInit();
     $("lock").classList.add("hidden"); $("app").classList.remove("hidden"); route();
   }catch(e){ $("err").textContent="That password didn't work. Check it and try again."; }
 }
@@ -344,7 +358,8 @@ function phaseOf(d){ return d<"2026-12-01"?1:d<"2026-12-26"?2:3; }
 
 /* ---------- router ---------- */
 function route(){
-  const key=(location.hash.slice(1)||"overview"); const rv=key.startsWith("review/")?key.slice(7):null;
+  const [key,qs]=(location.hash.slice(1)||"overview").split("?"); const rv=key.startsWith("review/")?key.slice(7):null;
+  REV_ONLY=rv&&qs&&qs.startsWith("only=")?new Set(qs.slice(5).split(",")):null;
   if(!rv && TRK.id) trkStop();
   const p=rv?["performance","Feedback","Progress"]:(PAGES.find(x=>x[0]===key)||PAGES[0]);
   let groups={}; PAGES.forEach(x=>(groups[x[2]]=groups[x[2]]||[]).push(x));
@@ -353,7 +368,7 @@ function route(){
   $("mobnav").innerHTML=PAGES.slice(0,5).map(x=>`<a class="${x[0]===p[0]?"on":""}" href="#${x[0]}">${icon(x[0])}${x[1].split(" ")[0]}</a>`).join("");
   $("crumb").textContent=p[2]; $("ptitle").textContent=p[1];
   $("cd").textContent=daysLeft()+" days to the GAT · Sun 10 Jan";
-  if(rv){ renderReview(rv); window.scrollTo(0,0); return; }
+  if(rv){ renderReview(rv); window.scrollTo(0,0); mntEval(); return; }
   $("page").innerHTML=`<div class="fade">${R[p[0]]()}</div>`;
   (H[p[0]]||(()=>{}))(); window.scrollTo(0,0);
 }
@@ -391,15 +406,8 @@ R.overview=()=>{
   const pr=(DATA.practice||[]).slice().reverse().slice(0,3).map(x=>{const ls=localState(x)||{}; const parent=x.for?((DATA.mocks.find(m=>m.id===x.for)||{}).title||(DATA.warmup&&DATA.warmup.id===x.for?"the warm-up":x.for)):"";
     const act=x.review?`<a class="btn btn-primary" href="#review/${x.id}">Read the feedback</a><a class="btn btn-ghost" href="mocks/${x.file}">See your answers</a>`:`<a class="btn btn-primary" href="mocks/${x.file}">${ls.submitted?"See your score and solutions":ls.startedAt?"Resume":"Start the practice set"}</a>`;
     return `<div class="card span-12 warm"><div class="wt"><b>${esc(x.title)}${parent?` · after ${esc(parent)}`:""}</b>${x.questions} questions · ${x.minutes} minutes · built from the topics your last test showed you need most: ${esc((x.topics||[]).join(", "))}. No start code needed: open it whenever you're ready. Your score, the key and full solutions appear the moment you submit.</div><div class="actions" style="margin:0">${act}</div></div>`;}).join("");
-  const lastRev=d.length?d[d.length-1]:null;
-  const nudge=(()=>{ if(!lastRev) return ""; const st=trkLoad(lastRev.id); const total=(lastRev.result.wrong||0)+(lastRev.result.blank||0);
-    const done=st?Object.keys(st.q||{}).filter(q=>qDone(st,q)).length:0; if(st&&done>=total) return "";
-    const nxt=n?` before ${esc(n.title)} on ${fmt(n.date,{weekday:"long"})}`:"";
-    return `<div class="card span-12 warm"><div class="wt"><b>${st?`${esc(lastRev.title)} feedback: ${done} of ${total} still-to-learn questions gone through`:`You haven't opened your ${esc(lastRev.title)} feedback yet`}</b>
-      Going through the solutions to the questions you got wrong or left is the quickest way to add marks${nxt}. ${st?`About ${Math.max(5,Math.round((total-done)*0.75))} minutes to go.`:"Set aside about 45 minutes."} Mark each one "Got it" or "Still unclear": the unclear ones get extra help in your practice set.</div>
-      <div class="actions" style="margin:0"><a class="btn btn-primary" href="#review/${lastRev.id}">${st?"Continue":"Open the feedback"}</a></div></div>`; })();
   return `<p class="hello">${greet}, Raina.</p><p class="hello-sub">${d.length?`You've completed ${d.length} of ${DATA.mocks.length} mocks.`:`Your first full mock is ${n?fmt(n.date,{weekday:"long"}):"coming up"}. Everything below fills in as you go.`}</p>
-  <div class="grid">${nudge}${pr}${warm}${nextCard}
+  <div class="grid">${MNT.doc?`<div class="card span-12 mnt" id="mnt"></div>`:""}${pr}${warm}${nextCard}
     <div class="card span-5"><h3>Countdown</h3><div class="ring-wrap">${ring(elapsed)}<div><div class="big">${daysLeft()}<small>days</small></div><div style="color:var(--muted)">until the GAT on Sunday, 10 January 2027</div></div></div>
       <div class="phase-line"><div class="${ph>1?"done":"on"}"></div><div class="${ph>2?"done":ph===2?"on":""}"></div><div class="${ph===3?"on":""}"></div></div>
       <div class="phase-labels"><span>Find your level</span><span>Build &amp; sharpen</span><span>Exam rhythm</span></div></div>
@@ -422,6 +430,7 @@ R.mocks=()=>`<div class="toolbar">${[["all","All mocks"],["upcoming","Upcoming"]
    <div class="hide-m">${m.result?`<div class="tt">${m.result.net.toFixed(2)} <span class="ss">/ 150</span></div><div class="ss">${m.result.correct} right · ${m.result.wrong} wrong</div>`:'<div class="ss">—</div>'}</div>
    <div class="act"><span class="tag ${s.k}">${s.label}</span>${act}</div></div>`;}).join("")}</div>`;
 const H={};
+H.overview=()=>{ mntRender(); mntEval(); };
 H.mocks=()=>document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{mockFilter=b.dataset.f;route();});
 
 R.schedule=()=>{
@@ -506,7 +515,7 @@ function reviewHTML(a){
   const plan=a.plan?`<div class="card span-12"><h3>${esc(a.plan.title)}</h3><div style="overflow-x:auto"><table class="t" style="min-width:620px"><tr><th>#</th><th>Section</th><th style="white-space:nowrap">Time</th><th>Move on when the timer shows</th><th>How to approach it</th></tr>
       ${a.plan.steps.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.sec)}</b></td><td style="white-space:nowrap">${x.mins} min</td><td style="white-space:nowrap"><b>${esc(x.by)}</b> left</td><td>${esc(x.tip)}</td></tr>`).join("")}</table></div>
       <p style="margin:12px 0 0;color:#33353d">${esc(a.plan.why)}</p></div>`:"";
-  return `<div class="grid">
+  return `<div class="grid">${dmHTML(a.id)}
   <div class="card span-12 an-head"><h2>${esc(a.headline)}</h2><p>${esc(a.summary)}</p>${a.caveat?`<p style="font-size:14px;color:var(--muted)">${esc(a.caveat)}</p>`:""}<div class="an-meta">${esc(a.title)} · ${esc(a.taken)} · ${a.used} of ${a.duration} min · ${esc(a.reason)}</div></div>
   <div class="card span-3 stat"><div class="k">Score</div><div class="v">${T.net.toFixed(2)}<small style="font:500 15px Hanken Grotesk;color:var(--muted)"> / ${T.max}</small></div><div class="l">+1 right, −0.25 wrong</div></div>
   <div class="card span-3 stat"><div class="k">Accuracy</div><div class="v">${T.accuracy}%</div><div class="l">${T.correct} right out of ${T.attempted} answered</div></div>
@@ -538,7 +547,7 @@ function reviewHTML(a){
 }
 function qlistHTML(a){
   const shown=new Set(); let cur=null;
-  return a.questions.filter(q=>revFilter==="all"||q.res===revFilter||(revFilter==="todo"&&q.res!=="right"&&!qDone(TRK.st,q.id))).map(q=>{
+  return a.questions.filter(q=>!REV_ONLY||REV_ONLY.has(q.id)).filter(q=>revFilter==="all"||q.res===revFilter||(revFilter==="todo"&&q.res!=="right"&&!qDone(TRK.st,q.id))).map(q=>{
     let h="";
     if(q.sec!==cur){cur=q.sec; h+=`<div style="font:600 12px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px">${esc(a.sections.find(s=>s.id===q.sec).full)}</div>`;}
     if(q.pid&&!shown.has(q.pid)&&a.passages[q.pid]){shown.add(q.pid); h+=`<details class="pas"><summary style="cursor:pointer;font-weight:600">${esc(a.passages[q.pid].title||"Passage")} (tap to read)</summary>\n${a.passages[q.pid].text}</details>`;}
@@ -577,7 +586,7 @@ function trkMerge(a,b){ if(!b) return a; const o={...b,...a, secs:Math.max(a.sec
     o.q[k]={secs:Math.max(v.secs||0,w.secs||0), got:!!newer.got, unclear:!!newer.unclear, ut:Math.max(v.ut||0,w.ut||0)}; }
   return o; }
 async function trkServer(id){ const s=DATA.sync; if(!s) return null;
-  try{ const j=await fetch(`${s.endpoint}?action=attempt&mockId=REV-${id}&key=${encodeURIComponent(s.key)}`).then(r=>r.json());
+  try{ const j=await withTimeout(fetch(`${s.endpoint}?action=attempt&mockId=REV-${id}&key=${encodeURIComponent(s.key)}`).then(r=>r.json()),5000);
        return (j&&j.attempt&&j.attempt.snapshot&&j.attempt.snapshot.trk)||null; }catch(e){ return null; } }
 function trkPush(){ const s=DATA&&DATA.sync; if(!s||!TRK.st||!TRK.dirty) return; TRK.dirty=false; const st=TRK.st;
   const msg={kind:"snapshot",mockId:"REV-"+TRK.id,candidate:"Raina",attemptId:"review",rev:Date.now(),sentAt:Date.now(),key:s.key,data:{startedAt:st.first,trk:st}};
@@ -595,7 +604,7 @@ async function trkStart(a){ trkStop(); TRK.id=a.id; const now=Date.now();
   TRK.st=st; TRK.dirty=true; trkSave(); trkPush();
   TRK.obs=new IntersectionObserver(es=>es.forEach(e=>{ const q=e.target.dataset.qid; if(e.isIntersecting&&e.intersectionRatio>=0.5) TRK.vis.add(q); else TRK.vis.delete(q); }),{threshold:[0,0.5,1]});
   $("qlist").innerHTML=qlistHTML(a); observeCards(); paintProgress(a);
-  TRK.tick=setInterval(()=>{ if(document.visibilityState!=="visible"||Date.now()-TRK.last>60000||location.hash!=="#review/"+TRK.id) return;
+  TRK.tick=setInterval(()=>{ if(document.visibilityState!=="visible"||Date.now()-TRK.last>60000||!location.hash.startsWith("#review/"+TRK.id)) return;
     const s=TRK.st; s.secs+=5; s.last=Date.now(); TRK.vis.forEach(q=>{ const r=s.q[q]=s.q[q]||{secs:0}; r.secs=(r.secs||0)+5;
       const c=document.querySelector(`.qcard[data-qid="${q}"]`); if(c) c.classList.toggle("done",qDone(s,q)); });
     TRK.dirty=true; trkSave(); paintProgress(a); },5000);
@@ -604,6 +613,106 @@ function trkStop(){ clearInterval(TRK.tick); clearInterval(TRK.push); if(TRK.obs
 ["mousemove","scroll","keydown","touchstart","click"].forEach(e=>addEventListener(e,()=>{TRK.last=Date.now();},{passive:true}));
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden") trkPush(); });
 addEventListener("pagehide",trkPush);
+
+/* ---------- the plan: the mentor's next steps (docs/superpowers/specs/2026-11-25-mentor-engine-design.md) ---------- */
+const MNT={doc:null,st:null,dirty:false,ack:null,srv:{},busy:false,lastSync:0,shownNow:null,mockDone:false};
+const mntKey="atelier:mnt", MNT_NOTICE="Your plan now notices which solutions and steps you have opened, so it can choose what comes next for you. It isn't shared beyond your plan.";
+const lo=(x,y)=>x&&y?Math.min(x,y):(x||y||undefined);
+function mntLoad(){ try{ const v=JSON.parse(localStorage.getItem(mntKey)||"null"); if(v&&typeof v==="object"){ v.steps=v.steps||{}; return v; } }catch(e){} return null; }
+function mntSave(){ try{ if(MNT.st) localStorage.setItem(mntKey,JSON.stringify(MNT.st)); }catch(e){} }
+function mntMerge(a,b){ if(!b) return a; if(!a) return b;
+  const o={first:lo(a.first,b.first), last:Math.max(a.last||0,b.last||0), noticeAck:!!(a.noticeAck||b.noticeAck), steps:{...(b.steps||{})}};
+  for(const [k,v] of Object.entries(a.steps||{})){ const w=o.steps[k]||{};
+    o.steps[k]={done:!!(v.done||w.done), openSecs:Math.max(v.openSecs||0,w.openSecs||0), opened:lo(v.opened,w.opened), doneAt:lo(v.doneAt,w.doneAt)}; }
+  return o; }
+function withTimeout(pr,ms){ return Promise.race([pr,new Promise(r=>setTimeout(()=>r(null),ms))]); }
+async function srvGet(mockId){ const s=DATA&&DATA.sync; if(!s) return null;
+  try{ const j=await withTimeout(fetch(`${s.endpoint}?action=attempt&mockId=${encodeURIComponent(mockId)}&key=${encodeURIComponent(s.key)}`).then(r=>r.ok?r.json():null),5000);
+       return (j&&j.attempt)||null; }catch(e){ return null; } }
+async function mntFetchDoc(){ try{ const blob=await fetch("data/mentor.json?ts="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null); return blob?await decrypt(PW,blob):null; }catch(e){ return null; } }
+async function mntInit(){
+  MNT.doc=await mntFetchDoc(); if(!MNT.doc) return;
+  const now=Date.now(); MNT.st=mntLoad()||{first:now,last:now,steps:{}}; MNT.st.last=now; mntSave();
+  await mntEval({silent:true,localOnly:true});          // first paint already skips anything done on this device
+  mntSync().then(()=>mntEval({silent:true})).then(()=>mntPush());   // then the server, in the background
+}
+async function mntSync(){ const a=await srvGet("MENTOR"); MNT.lastSync=Date.now();
+  if(a&&a.snapshot&&a.snapshot.mnt){ MNT.st=mntMerge(MNT.st,a.snapshot.mnt); mntSave(); } }
+function mntPost(){ const s=DATA&&DATA.sync; if(!s||!MNT.st) return; const st=MNT.st;
+  const msg={kind:"snapshot",mockId:"MENTOR",candidate:"Raina",attemptId:"portal",rev:Date.now(),sentAt:Date.now(),key:s.key,data:{startedAt:st.first||Date.now(),mnt:st}};
+  fetch(s.endpoint,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(msg),keepalive:true}).catch(()=>{MNT.dirty=true;}); }
+async function mntPush(force){ if(!DATA||!DATA.sync||!MNT.st||!(MNT.dirty||force)) return; MNT.dirty=false;
+  await mntSync(); mntPost(); }        // merge the server's copy first, so another open device's progress is never undone
+async function submitted(testId,localOnly){
+  const mid="MFM-"+testId, ls=(()=>{ try{ return JSON.parse(localStorage.getItem("mfm:"+mid+":state")||"null"); }catch(e){ return null; } })();
+  if(ls&&ls.submitted) return true; if(localOnly) return false;
+  const c=MNT.srv[mid]; if(c&&(c.v||Date.now()-c.t<60000)) return c.v;
+  const a=await srvGet(mid); const v=!!(a&&a.results); MNT.srv[mid]={v,t:Date.now()}; return v; }
+async function trkFor(test,localOnly){
+  if(TRK.id===test&&TRK.st) return TRK.st;
+  const local=trkLoad(test)||{q:{}}; if(localOnly) return local;
+  const c=MNT.srv["REV-"+test]; let srv=c&&Date.now()-c.t<60000?c.v:undefined;
+  if(srv===undefined){ srv=await trkServer(test); MNT.srv["REV-"+test]={v:srv,t:Date.now()}; }
+  return trkMerge(local, srv); }
+async function mntDone(step,localOnly){
+  const d=step.done||{}, rec=(MNT.st.steps||{})[step.id]||{};
+  if(rec.done) return true;
+  if(d.type==="read"||d.type==="got"){
+    const ok=st=>d.type==="read"?(d.qids||[]).filter(q=>qDone(st,q)).length>=Math.ceil((d.min||1)*(d.qids||[]).length-1e-9):(d.qids||[]).every(q=>((st.q||{})[q]||{}).got);
+    if(ok(await trkFor(d.test,true))) return true;          // this device already decides it: no waiting for the server
+    return localOnly?false:ok(await trkFor(d.test,false)); }
+  if(d.type==="practice"||d.type==="mock") return await submitted(d.test,localOnly);
+  if(d.type==="open") return (rec.openSecs||0)>=(d.secs||30);
+  return false; }
+async function mntEval(o={}){
+  if(!MNT.doc||!MNT.st||MNT.busy) return; MNT.busy=true;
+  try{ if(!o.localOnly&&Date.now()-MNT.lastSync>60000) await mntSync();
+    let changed=null;
+    for(const step of MNT.doc.steps){ const rec=MNT.st.steps[step.id]=MNT.st.steps[step.id]||{};
+      if(!rec.done && await mntDone(step,o.localOnly)){ rec.done=true; rec.doneAt=Date.now(); MNT.dirty=true; if(step.id===MNT.shownNow) changed=step; } }
+    MNT.mockDone=!!(MNT.doc.nextMock&&await submitted(MNT.doc.nextMock.id,o.localOnly));
+    if(MNT.dirty) mntSave();
+    if(changed&&!o.silent){ MNT.ack=changed; setTimeout(()=>{ MNT.ack=null; mntRender(); },4000); }
+    if(MNT.dirty&&!o.localOnly) mntPush();
+  } finally { MNT.busy=false; }
+  mntRender(); }
+async function mntRefreshDoc(){ const d=await mntFetchDoc(); if(d&&MNT.doc&&d.version!==MNT.doc.version){ MNT.doc=d; MNT.ack=null; mntRender(); mntEval({silent:true}); } }
+function mntRender(){
+  const el=$("mnt"); if(!el||!MNT.doc||!MNT.st) return; const D=MNT.doc, st=MNT.st;
+  const left=MNT.mockDone?[]:D.steps.filter(x=>!(st.steps[x.id]||{}).done), now=left[0];
+  const nm=D.nextMock&&DATA.mocks.find(m=>m.id===D.nextMock.id);
+  MNT.shownNow=now?now.id:null;
+  const card=now?`<div class="lbl">Now</div><div class="tt">${esc(now.title)}<span>about ${now.minutes} min</span></div><p>${esc(now.why)}</p>
+      <a class="btn btn-primary" href="${esc(now.link)}" data-step="${esc(now.id)}">Start</a>${now.tip?`<p class="tip">Tip: ${esc(now.tip)}</p>`:""}`
+    :MNT.mockDone&&nm?`<div class="lbl">Now</div><div class="tt">All done for now</div><p>${esc(nm.title)} is done. Your feedback and your next steps are on their way.</p>`
+    :`<div class="lbl">Now</div><div class="tt">All done for now</div><p>That's everything on your plan until the next update.</p>`;
+  const cps=(D.checkpoints||[]).filter(c=>c.milestone);
+  el.innerHTML=`<div class="mnt-top"><p class="mnt-h">${esc(D.headline)}</p>${nm?`<span class="mnt-when">${esc(nm.title)} · ${fmt(nm.date,{weekday:"short",day:"numeric",month:"short"})}</span>`:""}</div>
+    ${st.noticeAck?"":`<div class="mnt-notice" id="mnt-notice"><span>${MNT_NOTICE}</span><button class="btn btn-ghost">Okay</button></div>`}
+    ${MNT.ack?`<p class="mnt-ack">Done: ${esc(MNT.ack.title)}.${now?` Next up: ${esc(now.title)}.`:""}</p>`:""}
+    <div class="mnt-now" id="mnt-now">${card}</div>
+    ${left.length>1?`<div class="mnt-next">${left.slice(1,3).map(x=>`<div><b>NEXT</b>${esc(x.title)} · about ${x.minutes} min</div>`).join("")}</div>`:""}
+    ${(D.later||[]).length||left.length>3?`<p class="mnt-later">Later: ${left.slice(3).map(x=>esc(x.title)+".").concat((D.later||[]).map(esc)).join(" ")}</p>`:""}
+    ${D.goal?`<p class="mnt-later" title="${esc(D.goal.why||"")}">Goal by Mock 20: ${D.goal.total}, the range for a Delhi, Mumbai or Bengaluru seat. About ${D.goal.seatLine} is the line for a seat at a good campus.</p>`:""}
+    ${cps.length?`<div class="mnt-ms" id="mnt-ms">${cps.map((c,i)=>`${i?'<span class="ln"></span>':""}<span class="m${c.actual?" hit":""}" title="${c.actual?`Scored ${c.actual.total}`:`Target ${c.target}`}"><b>M${+c.id.slice(1)}</b><i></i>${c.actual?c.actual.total:c.target}</span>`).join("")}</div>`:""}`;
+  const nb=el.querySelector("#mnt-notice button"); if(nb) nb.onclick=()=>{ st.noticeAck=true; MNT.dirty=true; mntSave(); mntPush(); mntRender(); };
+  el.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{ const r=st.steps[b.dataset.step]=st.steps[b.dataset.step]||{}; r.opened=r.opened||Date.now(); MNT.dirty=true; mntSave(); }));
+}
+const VERD={"ahead":"Ahead","on track":"On track","behind":"Behind"};
+function dmHTML(id){
+  const cps=MNT.doc&&MNT.doc.checkpoints; if(!cps) return ""; const c=cps.find(x=>x.id===id); if(!c||!c.actual) return "";
+  const nextM=cps.find(x=>x.milestone&&!x.actual);
+  if(!c.review) return `<div class="card span-12 dm" id="dm"><h3>Defining moment</h3><p style="margin:0">Baseline: this is where the plan starts.${nextM?` Target for Mock ${+nextM.id.slice(1)}: ${nextM.target}.`:""}</p></div>`;
+  return `<div class="card span-12 dm" id="dm"><h3>Defining moment</h3><p style="margin:0 0 10px">Target ${c.target}, you scored ${c.actual.total}: <span class="v-${c.review.total.replace(" ","-")}">${VERD[c.review.total]}</span>.</p>
+    <div style="overflow-x:auto"><table class="t"><tr><th>Section</th><th>Target</th><th>Scored</th><th></th></tr>${Object.keys(c.sections).map(k=>`<tr><td>${esc(SECN[k]||k)}</td><td>${c.sections[k]}</td><td>${c.actual.sections[k]}</td><td class="v-${c.review.sections[k].replace(" ","-")}">${VERD[c.review.sections[k]]}</td></tr>`).join("")}</table></div></div>`; }
+setInterval(()=>{ if(!MNT.doc||!MNT.st||document.visibilityState!=="visible") return;
+  let bump=false; for(const x of MNT.doc.steps){ if((x.done||{}).type==="open"&&location.hash===x.link&&!(MNT.st.steps[x.id]||{}).done){ const r=MNT.st.steps[x.id]=MNT.st.steps[x.id]||{}; r.openSecs=(r.openSecs||0)+5; bump=true; } }
+  if(bump){ MNT.dirty=true; mntSave(); } },5000);
+setInterval(()=>{ if(MNT.doc&&$("mnt")&&document.visibilityState==="visible") mntEval(); },15000);
+setInterval(()=>mntPush(),120000);
+setInterval(()=>{ if(MNT.doc&&document.visibilityState==="visible") mntRefreshDoc(); },600000);
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden"){ if(MNT.dirty) mntPost(); } else if(MNT.doc){ mntRefreshDoc(); if($("mnt")) mntEval(); } });
+addEventListener("pagehide",()=>{ if(MNT.dirty) mntPost(); });
 
 R.walkthrough=()=>{const w=DATA.warmup||{minutes:36,questions:30,file:"",title:"Warm-up test"};
 const img=(f,c)=>`<img class="shot" src="img/walkthrough/${f}" alt="${c}" loading="lazy"><div class="cap">${c}</div>`;
