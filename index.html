@@ -523,7 +523,7 @@ function reviewHTML(a){
       <p><span class="lbl">What to do</span>${esc(f.do)}</p>
       ${f.material&&f.material.length?`<p><span class="lbl">In your material</span>${f.material.map(esc).join("; ")}</p>`:""}
       ${f.method?`<p><span class="lbl">Method to use</span>${esc(f.method)}</p>`:""}</div>`).join("")}</div>
-      ${a.practice?`<div class="actions" style="margin:14px 0 0"><a class="btn btn-primary" href="${esc(a.practice.href)}">Open your practice set: ${esc(a.practice.title)}</a></div>`:""}</div>`:""}
+      ${a.practice?`<div class="actions" style="margin:14px 0 0">${[].concat(a.practice).map((p,i)=>`<a class="btn ${i?"btn-ghost":"btn-primary"}" href="${esc(p.href)}">${esc(p.title)}</a>`).join("")}</div>`:""}</div>`:""}
   ${a.workon&&a.workon.length?`<div class="card span-12"><h3>What to work on</h3><div class="wo">${a.workon.map(w=>`<div class="wo-i"><h4>${esc(w.title)}</h4><p><span class="lbl">What we saw</span>${esc(w.seen)}</p><p><span class="lbl">What to try</span>${esc(w.do)}</p></div>`).join("")}</div></div>`:""}
   ${plan}
   ${a.habits&&a.habits.length?`<div class="card span-12"><h3>Good habits to build</h3><ul style="margin:0;padding-left:18px">${a.habits.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ul></div>`:""}
