@@ -191,7 +191,7 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .an-head h2{font:500 30px/1.2 Newsreader,serif;margin:0 0 10px}.an-head p{margin:0 0 8px;color:#33353d;max-width:78ch}.an-meta{font-size:13px;color:var(--muted)}
 .tv{position:relative;height:10px;border-radius:6px;background:#eeeae1}.tv i{position:absolute;left:0;top:0;height:100%;border-radius:6px;background:var(--indigo-2)}.tv i.over{background:var(--madder)}.tv b{position:absolute;top:-4px;width:2px;height:18px;background:var(--ink)}
 .strip{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}.strip div{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden}
-.c-CAEC{background:#1f2b5c}.c-QA{background:#b5432c}.c-ALA{background:#4f7058}.c-GKCA{background:#d49a1a}.c-CS{background:#7a5c8e}
+.c-CAEC{background:#1f2b5c}.c-QA{background:#8a7f6a}.c-ALA{background:#4f7058}.c-GKCA{background:#d49a1a}.c-CS{background:#7a5c8e}
 .axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
 .legend-s{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}.legend-s span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
 .wo{display:grid;grid-template-columns:1fr 1fr;gap:14px}.wo-i{border:1px solid var(--line);border-radius:12px;padding:14px 16px}.wo-i h4{font:500 19px Newsreader,serif;margin:0 0 8px}.wo-i p{margin:0 0 8px;font-size:14px;color:#33353d}.wo-i .lbl{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}@media(max-width:760px){.wo{grid-template-columns:1fr}}
@@ -205,7 +205,7 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .fx{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.fx-i{border:1px solid var(--line);border-radius:12px;padding:14px 16px}
 .fx-i h4{margin:0 0 2px;font:600 16px Hanken Grotesk}.fx-i .sub{font-size:12px;color:var(--muted);margin-bottom:8px}
 .fx-i p{margin:6px 0;font-size:14px}.fx-i .lbl{display:block;font:700 11px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
-.chip{display:inline-block;font:600 11px Hanken Grotesk;padding:2px 8px;border-radius:99px;letter-spacing:.03em}
+.st-chip{display:inline-block;font:600 11px Hanken Grotesk;padding:2px 8px;border-radius:99px;letter-spacing:.03em}
 .c-strong{background:var(--sage-soft);color:#2f5537}.c-mixed{background:var(--turmeric-soft);color:#7a5600}.c-weak{background:var(--madder-soft);color:#8a2b1a}.c-left{background:#ecebe6;color:#55534c}
 @media(max-width:760px){.fx{grid-template-columns:1fr}}
 .qcard.done{border-color:#b9d0bd}.qcard .qact{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--muted)}
@@ -250,12 +250,54 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
   .top{padding:18px 18px 0;flex-wrap:wrap;align-items:flex-start}.page{padding:16px 18px 90px}
   .grid>*{grid-column:span 12!important}
   .cal-wrap{grid-template-columns:1fr}
-  .mrow{grid-template-columns:46px 1fr;gap:10px}.mrow .hide-m{display:none}.mrow .act{grid-column:1/-1;justify-content:flex-start}
+  .mrow{grid-template-columns:46px 1fr;gap:10px}.mrow .hide-m{display:none}.mrow .show-m{display:inline}.mrow .act{grid-column:1/-1;justify-content:flex-start}
   .mob-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--indigo);padding:8px 6px calc(8px + env(safe-area-inset-bottom));justify-content:space-around;z-index:10}
   .mob-nav a{color:#cfcce0;text-decoration:none;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px}
   .mob-nav a.on{color:#fff}
   .mob-nav svg{width:20px;height:20px}
   .rule{grid-template-columns:1fr}
+}
+/* readability round 2 */
+.qcard.hide-ans .op{background:none!important;border-color:var(--line)!important;color:var(--ink)!important}.qcard.hide-ans .op small,.qcard.hide-ans .qnote,.qcard.hide-ans .sol,.qcard.hide-ans .qact{display:none!important}
+.reveal{margin-top:10px}
+.rvp.sticky{position:sticky;top:0;z-index:5;padding:8px 12px;margin:0}
+.stepv .step-h,.stepv #stepnext,.stepv #rvprog,.stepv .step-tip{max-width:780px}
+.cta.ready{box-shadow:0 0 0 3px var(--sage-soft);position:sticky;bottom:12px;z-index:6}
+.tv-cell{min-width:200px}.show-s{display:none}
+@media(max-width:760px){.show-s{display:block}.tv-cell{min-width:110px}.cta.ready{bottom:70px}}
+.qcard .op:not(.key):not(.mine){padding:4px 10px}
+@media(max-width:760px){.an-head h2{font-size:22px}}
+/* readability round 1 (three independent visual reviews, 25 Nov) */
+.mnt-h{font:500 15px 'Hanken Grotesk';color:var(--muted);margin:0}
+.mnt-now .tt{font:500 28px/1.2 Newsreader,serif;display:block;margin:6px 0 8px}
+.mnt-now p{max-width:62ch}.mnt-now .go{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.mnt-now .go span{color:var(--muted);font-size:14px}
+.btn-big{padding:14px 30px;font-size:16px;min-height:48px}
+.mnt-prog{display:flex;align-items:center;gap:12px;margin:12px 0 0;font-size:13px;color:var(--muted)}.mnt-prog .bar{flex:1;max-width:260px;background:var(--line)}
+.mnt-next a{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px dashed var(--line);color:inherit;text-decoration:none}.mnt-next a span{flex:1}.mnt-next em{font-style:normal;color:var(--muted);font-size:13px}
+.mnt-done{margin:10px 0 0;font-size:13px;color:var(--sage)}.mnt-done div{padding:2px 0}
+.mnt-target{margin:14px 0 0;font-size:14px}
+details.more{margin:10px 0 0;font-size:14px}details.more summary{cursor:pointer;color:var(--indigo);font-weight:600;font-size:13px}details.more ul{margin:8px 0 0;padding-left:18px;color:#33353d}details.more p{color:#33353d}
+.mnt-notice{font-size:13px}
+.next-slim .title{font-size:24px}
+.an-head p{max-width:72ch}.an-meta b{color:var(--ink)}.dm{margin:10px 0 0;font-size:14px}.dm .v-ahead{color:var(--sage);font-weight:600}.dm .v-behind{color:#b5432c;font-weight:600}
+.fine{font-size:13px;color:var(--muted);margin:10px 0 0}
+.cta{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-left:4px solid var(--sage)}.cta .lbl{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sage);font-weight:700}
+.ul{margin:0;padding-left:18px;max-width:72ch}.ul li{margin-bottom:6px}
+details.bd{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 18px}details.bd>summary{cursor:pointer;font-weight:600;color:var(--indigo)}details.bd[open]>.grid{margin-top:14px}
+.step-h h2{font:500 28px/1.2 Newsreader,serif;margin:8px 0 6px}.step-h p{max-width:72ch;color:#33353d}.step-h .back{font-size:14px;color:var(--indigo);text-decoration:none;font-weight:600}
+#qlist{max-width:780px}
+details.sol summary{cursor:pointer;font-weight:600;color:var(--indigo);font-size:13px}
+.op:not(.key):not(.mine){color:#4a4b52}
+.qcard .qact{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:420px}.qcard .qact>span{grid-column:1/-1}
+.qcard .qact .seg{min-height:46px;font-size:15px;border-color:#8f8778}.qcard [data-got].on{background:var(--sage);color:#fff;border-color:var(--sage)}
+.rvp .bar{background:#fff}
+.viewer .qact{display:none!important}
+.mnt-ms{flex-wrap:nowrap}.mnt-ms .m{min-width:34px}.mnt-ms .ln{min-width:6px}
+@media(max-width:760px){ .hide-s{display:none} }
+@media(max-width:600px){
+  .page{padding:12px 12px 90px}.card{padding:16px 14px}.qcard{padding:14px 12px}.fx-i,.wo-i,.mnt-now{padding:12px}
+  .mnt-now .btn-big{width:100%;justify-content:center}
+  .mob-nav a{flex:1;min-height:48px;justify-content:center;font-size:12px}
 }
 </style>
 </head>
@@ -363,7 +405,7 @@ function status(m){
 }
 const done=()=>DATA.mocks.filter(m=>m.result);
 const nextMock=()=>DATA.mocks.find(m=>!m.result && !(localState(m)||{}).submitted && m.date>=todayIST());
-const daysLeft=()=>Math.max(0,Math.ceil((EXAM-Date.now())/864e5));
+const daysLeft=()=>Math.max(0,Math.round((Date.parse("2027-01-10")-Date.parse(todayIST()))/864e5));
 function phaseOf(d){ return d<"2026-12-01"?1:d<"2026-12-26"?2:3; }
 
 /* ---------- router ---------- */
@@ -371,7 +413,7 @@ function route(){
   const [key,qs]=(location.hash.slice(1)||"overview").split("?"); const rv=key.startsWith("review/")?key.slice(7):null;
   REV_ONLY=rv&&qs&&qs.startsWith("only=")?new Set(qs.slice(5).split(",")):null;
   if(!rv && TRK.id) trkStop();
-  const p=rv?["performance","Feedback","Progress"]:(PAGES.find(x=>x[0]===key)||PAGES[0]);
+  const p=rv?(REV_ONLY?["overview","Your plan","Study"]:["performance","Feedback","Progress"]):(PAGES.find(x=>x[0]===key)||PAGES[0]);
   let groups={}; PAGES.forEach(x=>(groups[x[2]]=groups[x[2]]||[]).push(x));
   $("nav").innerHTML=Object.entries(groups).map(([g,items])=>`<div class="nav-h">${g}</div>`+items.map(x=>`<a class="nav-a ${x[0]===p[0]?"on":""}" href="#${x[0]}">${icon(x[0])}${x[1]}</a>`).join("")).join("")+
     `<div class="nav-h">Before a mock</div><a class="nav-a" href="check.html">${icon("check")}System check</a><a class="nav-a" href="mocks/MFM-DEMO.html">${icon("play")}Interface practice</a>`;
@@ -390,13 +432,12 @@ R.overview=()=>{
   const hr=new Date(Date.now()+5.5*3600e3).getUTCHours(); const greet=hr<4?"Hello":hr<12?"Good morning":hr<17?"Good afternoon":"Good evening";
   const elapsed=Math.min(1,Math.max(0,(Date.now()-START)/(EXAM-START)));
   const ph=phaseOf(t);
-  const nextCard=n?`<div class="card next span-7"><div class="weave"></div><h3>${n.date===t?"Today":"Next mock"}</h3>
-      <div class="title">${esc(n.title)}</div><div class="meta">${fmt(n.date,{weekday:"long",day:"numeric",month:"long"})} · 180 minutes · 150 questions</div>
-      <div class="pills"><span class="pill">English 50</span><span class="pill">Quant 20</span><span class="pill">Reasoning 25</span><span class="pill">GK 25</span><span class="pill">Case study 30</span></div>
-      <div class="actions">${n.released?`<a class="btn btn-light" href="mocks/${n.file}">Open the test</a>`:`<span class="btn btn-ghost" style="opacity:.7;cursor:default">Opens on ${fmt(n.date,{day:"numeric",month:"short"})}</span>`}
-        <a class="btn btn-ghost" href="check.html">System check</a><a class="btn btn-ghost" href="mocks/MFM-DEMO.html">Practice the interface</a></div>
-      <div class="check"><div>${icon("check","#d49a1a").replace("<svg","<svg width=16 height=16")} Pick any 3-hour slot on the day. A desk, Chrome, charger plugged in, phone away.</div>
-      <div>${icon("check","#d49a1a").replace("<svg","<svg width=16 height=16")} Daksh sends your start code when you say you're ready. The clock starts when you click "I am ready to begin".</div></div></div>`
+  const today=n&&n.date===t;
+  const nextCard=n?`<div class="card next ${MNT.doc?"span-12 next-slim":"span-7"}"><div class="weave"></div><h3>${today?"Today":"Next mock"}</h3>
+      <div class="title">${esc(n.title)}</div><div class="meta">${fmt(n.date,{weekday:"long",day:"numeric",month:"long"})} · 180 minutes · 150 questions${today?" · any 3-hour slot today":""}</div>
+      <div class="actions">${today&&n.released?`<a class="btn btn-light" href="mocks/${n.file}">Open the test</a>`:""}<a class="btn btn-ghost" href="check.html">System check</a>${today?`<a class="btn btn-ghost" href="mocks/MFM-DEMO.html">Practice the interface</a>`:""}</div>
+      ${today?`<div class="check"><div>${icon("check","#d49a1a").replace("<svg","<svg width=16 height=16")} A desk, Chrome, charger plugged in, phone away.</div>
+      <div>${icon("check","#d49a1a").replace("<svg","<svg width=16 height=16")} Daksh sends your start code when you say you're ready. The clock starts when you click "I am ready to begin".</div></div>`:""}</div>`
     :`<div class="card next span-7"><div class="weave"></div><h3>Next mock</h3><div class="title">Nothing scheduled</div><div class="meta">Use the time to review your last analysis.</div></div>`;
   const best=d.length?Math.max(...d.map(m=>m.result.net)):null;
   const acc=d.length?Math.round(100*d.reduce((a,m)=>a+m.result.correct,0)/Math.max(1,d.reduce((a,m)=>a+m.result.attempted,0))):null;
@@ -417,15 +458,15 @@ R.overview=()=>{
     const act=x.review?`<a class="btn btn-primary" href="#review/${x.id}">Read the feedback</a><a class="btn btn-ghost" href="mocks/${x.file}">See your answers</a>`:`<a class="btn btn-primary" href="mocks/${x.file}">${ls.submitted?"See your score and solutions":ls.startedAt?"Resume":"Start the practice set"}</a>`;
     return `<div class="card span-12 warm"><div class="wt"><b>${esc(x.title)}${parent?` · after ${esc(parent)}`:""}</b>${x.questions} questions · ${x.minutes} minutes · built from the topics your last test showed you need most: ${esc((x.topics||[]).join(", "))}. No start code needed: open it whenever you're ready. Your score, the key and full solutions appear the moment you submit.</div><div class="actions" style="margin:0">${act}</div></div>`;}).join("");
   return `<p class="hello">${greet}, Raina.</p><p class="hello-sub">${d.length?`You've completed ${d.length} of ${DATA.mocks.length} mocks.`:`Your first full mock is ${n?fmt(n.date,{weekday:"long"}):"coming up"}. Everything below fills in as you go.`}</p>
-  <div class="grid">${MNT.doc?`<div class="card span-12 mnt" id="mnt"></div>`:""}${pr}${warm}${nextCard}
-    <div class="card span-5"><h3>Countdown</h3><div class="ring-wrap">${ring(elapsed)}<div><div class="big">${daysLeft()}<small>days</small></div><div style="color:var(--muted)">until the GAT on Sunday, 10 January 2027</div></div></div>
+  <div class="grid">${MNT.doc?`<div class="card span-12 mnt" id="mnt"></div>${nextCard}`:`${pr}${warm}${nextCard}`}
+${MNT.doc?"":`    <div class="card span-5"><h3>Countdown</h3><div class="ring-wrap">${ring(elapsed)}<div><div class="big">${daysLeft()}<small>days</small></div><div style="color:var(--muted)">until the GAT on Sunday, 10 January 2027</div></div></div>
       <div class="phase-line"><div class="${ph>1?"done":"on"}"></div><div class="${ph>2?"done":ph===2?"on":""}"></div><div class="${ph===3?"on":""}"></div></div>
       <div class="phase-labels"><span>Find your level</span><span>Build &amp; sharpen</span><span>Exam rhythm</span></div></div>
     ${tiles.map(x=>`<div class="card span-3 stat"><div class="k">${x[0]}</div><div class="v">${x[1]}</div><div class="l">${x[2]}</div></div>`).join("")}
     <div class="card span-6"><h3>This week</h3><div class="agenda">${ag.length?ag.map(a=>`<div class="ag"><div class="d"><b>${fmt(a[0],{day:"numeric"})}</b><span>${fmt(a[0],{weekday:"short"})}</span></div><div><div class="t">${esc(a[1])}</div><div class="s">${a[2]}</div></div><span class="tag ${a[4]==="Today"?"today":a[3]}">${a[4]}</span></div>`).join(""):'<div class="s" style="color:var(--muted)">No mocks this week.</div>'}</div></div>
     <div class="card span-6"><h3>Syllabus coverage</h3><div class="cov">${DATA.syllabus.map(s=>{const c=s.topics.filter(x=>x.seen>0).length;return `<div class="cov-row"><span>${s.name}</span><div class="bar"><i style="width:${100*c/s.topics.length}%"></i></div><span style="text-align:right;color:var(--muted)">${c}/${s.topics.length}</span></div>`}).join("")}</div>
       <p style="font-size:13px;color:var(--muted);margin:14px 0 0">Topics you've met in reviewed mocks. <a href="#syllabus">See the full map →</a></p></div>
-  </div>`;
+`}  </div>`;
 };
 function ring(f){const r=34,c=2*Math.PI*r;return `<svg width="88" height="88" viewBox="0 0 88 88"><circle cx="44" cy="44" r="${r}" fill="none" stroke="#eeeae1" stroke-width="8"/><circle cx="44" cy="44" r="${r}" fill="none" stroke="#d49a1a" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-f)}" transform="rotate(-90 44 44)"/><text x="44" y="49" text-anchor="middle" style="font:600 14px Hanken Grotesk;fill:#1a1c22">${Math.round(f*100)}%</text></svg>`;}
 const covered=()=>DATA.syllabus.reduce((a,s)=>a+s.topics.filter(x=>x.seen>0).length,0);
@@ -503,83 +544,105 @@ R.notes=()=>`<div class="grid" style="align-items:start"><div class="card span-8
 /* ---------- analysis (one attempt) ---------- */
 const SECN={CAEC:"English",QA:"Quant",ALA:"Reasoning",GKCA:"GK",CS:"Case study"};
 const STAT={strong:"Strong",mixed:"Mixed",weak:"Needs work",left:"Not answered yet",untested:"Not tested"};
-const TAGS={concept:"Rule or method to learn",slip:"Small slip",gap:"New fact",time:"Didn't get to it",interface:"Test screen"};
-const SECC={CAEC:"#1f2b5c",QA:"#b5432c",ALA:"#4f7058",GKCA:"#d49a1a",CS:"#7a5c8e"};
+const TAGS={concept:"Rule or method to learn",slip:"Small slip",gap:"New fact",time:"Time trouble",interface:"Test screen"};
+const SECC={CAEC:"#1f2b5c",QA:"#8a7f6a",ALA:"#4f7058",GKCA:"#d49a1a",CS:"#7a5c8e"};
 const mmss=s=>s>=60?`${Math.floor(s/60)}m ${String(s%60).padStart(2,"0")}s`:`${s}s`;
 let revFilter="todo";
 async function renderReview(id){
   $("page").innerHTML=`<div class="card">Loading your feedback…</div>`;
   try{ if(!REV[id]){ const blob=await fetch(`data/review-${id}.json?ts=${Date.now()}`,{cache:"no-store"}).then(r=>r.json()); REV[id]=await decrypt(PW,blob); } }
   catch(e){ $("page").innerHTML=`<div class="card">This feedback isn't ready yet. Daksh will let you know when it is.</div>`; return; }
-  const a=REV[id]; $("ptitle").textContent="Feedback · "+a.title; $("page").innerHTML=`<div class="fade">${reviewHTML(a)}</div>`; bindReview(a); trkStart(a);
+  const a=REV[id]; $("ptitle").textContent=REV_ONLY?"Today's step":"Feedback · "+a.title; $("page").innerHTML=`<div class="fade">${reviewHTML(a)}</div>`; bindReview(a); trkStart(a);
 }
 function reviewHTML(a){
   const T=a.totals, tags={}; a.questions.forEach(q=>{ if(q.tag) tags[q.tag]=(tags[q.tag]||0)+1; });
   const scaleMax=Math.max(...a.sections.map(s=>Math.max(s.min,s.plan)))*1.05;
   const secRows=a.sections.map(s=>{const pct=Math.min(100,100*s.min/scaleMax), pl=100*s.plan/scaleMax;
-    return `<tr><td><b>${s.name}</b></td><td>${s.net.toFixed(2)} <span style="color:var(--muted)">/ ${s.n}</span></td><td>${s.correct} · ${s.wrong} · ${s.blank}</td><td>${s.att?Math.round(100*s.correct/s.att)+"%":"—"}</td>
-      <td style="min-width:200px"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px"><span>${s.min} min</span><span>plan ${s.plan}</span></div><div class="tv"><i class="${s.min>s.plan*1.25?"over":""}" style="width:${pct}%"></i><b style="left:${pl}%"></b></div></td></tr>`}).join("");
+    return `<tr><td><b>${s.name}</b></td><td>${s.net.toFixed(2)} <span style="color:var(--muted)">/ ${s.n}</span></td><td>${s.correct} · ${s.wrong} · ${s.blank}</td><td class="hide-s">${s.att?Math.round(100*s.correct/s.att)+"%":"—"}</td>
+      <td class="tv-cell"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px"><span>${s.min} min</span><span>plan ${s.plan}</span></div><div class="tv"><i class="${s.min>s.plan*1.25?"over":""}" style="width:${pct}%"></i><b style="left:${pl}%"></b></div></td></tr>`}).join("");
   const strip=a.order.map(o=>`<div class="c-${o.sec}" style="width:${100*(o.to-o.from)/a.duration}%" title="${esc(o.sec)} ${o.from}–${o.to} min">${(o.to-o.from)/a.duration>.08?esc(a.sections.find(s=>s.id===o.sec).name):""}</div>`).join("")
     +(a.order.length&&a.order[0].from>0?"":"");
   const lead=a.order.length?a.order[0].from:0;
   const plan=a.plan?`<div class="card span-12"><h3>${esc(a.plan.title)}</h3><div style="overflow-x:auto"><table class="t" style="min-width:620px"><tr><th>#</th><th>Section</th><th style="white-space:nowrap">Time</th><th>Move on when the timer shows</th><th>How to approach it</th></tr>
-      ${a.plan.steps.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.sec)}</b></td><td style="white-space:nowrap">${x.mins} min</td><td style="white-space:nowrap"><b>${esc(x.by)}</b> left</td><td>${esc(x.tip)}</td></tr>`).join("")}</table></div>
+      ${a.plan.steps.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.sec)}</b><div class="fine show-s">${esc(x.tip)}</div></td><td style="white-space:nowrap">${x.mins} min</td><td style="white-space:nowrap"><b>${esc(x.by)}</b> left</td><td>${esc(x.tip)}</td></tr>`).join("")}</table></div>
       <p style="margin:12px 0 0;color:#33353d">${esc(a.plan.why)}</p></div>`:"";
-  return `<div class="grid">${dmHTML(a.id)}
-  <div class="card span-12 an-head"><h2>${esc(a.headline)}</h2><p>${esc(a.summary)}</p>${a.caveat?`<p style="font-size:14px;color:var(--muted)">${esc(a.caveat)}</p>`:""}<div class="an-meta">${esc(a.title)} · ${esc(a.taken)} · ${a.used} of ${a.duration} min · ${esc(a.reason)}</div></div>
-  <div class="card span-3 stat"><div class="k">Score</div><div class="v">${T.net.toFixed(2)}<small style="font:500 15px Hanken Grotesk;color:var(--muted)"> / ${T.max}</small></div><div class="l">+1 right, −0.25 wrong</div></div>
-  <div class="card span-3 stat"><div class="k">Accuracy</div><div class="v">${T.accuracy}%</div><div class="l">${T.correct} right out of ${T.attempted} answered</div></div>
-  <div class="card span-3 stat"><div class="k">Right · wrong · left</div><div class="v">${T.correct} · ${T.wrong} · ${T.blank}</div><div class="l">Wrong answers cost you ${(T.wrong*0.25).toFixed(2)} marks</div></div>
-  <div class="card span-3 stat"><div class="k">Time used</div><div class="v">${a.used}<small style="font:500 15px Hanken Grotesk;color:var(--muted)"> min</small></div><div class="l">of ${a.duration} minutes</div></div>
-  <div class="card span-12"><h3>Section by section</h3><div style="overflow-x:auto"><table class="t" style="min-width:640px"><tr><th>Section</th><th>Score</th><th>Right · wrong · left</th><th>Accuracy</th><th>Time spent vs. planned</th></tr>${secRows}</table></div>
-    <p style="font-size:13px;color:var(--muted);margin:10px 0 0">The black line is the time planned for each section. A red bar means you went well over it.</p></div>
+  if(REV_ONLY) return stepHTML(a);
+  const byTxt=planBy;
+  const planCard=a.plan&&!(MNT.doc&&MNT.mockDone)?`<div class="card span-12"><h3>${esc(a.plan.title.replace(/\s*\(version \d+\)/i,""))}</h3><div style="overflow-x:auto"><table class="t plan-t"><tr><th>#</th><th>Section</th><th>Time</th><th>Move on at</th><th class="hide-s">How to approach it</th></tr>
+      ${a.plan.steps.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.sec)}</b><div class="fine show-s">${esc(x.tip)}</div></td><td style="white-space:nowrap">${x.mins} min</td><td style="white-space:nowrap"><b>${esc(byTxt(x.by))}</b></td><td class="hide-s">${esc(x.tip)}</td></tr>`).join("")}</table></div>
+      ${a.plan.why?`<details class="more"><summary>Why this order</summary><p>${esc(a.plan.why)}</p></details>`:""}</div>`:"";
+  const nx=MNT.doc&&MNT.st?MNT.doc.steps.find(x=>!(MNT.st.steps[x.id]||{}).done):null;
+  const cta=nx?`<div class="card span-12 cta"><div><span class="lbl">Your next step</span><b>${esc(nx.title)}</b> · about ${nx.minutes} min</div><a class="btn btn-primary" href="${esc(nx.link)}">Start</a></div>`:"";
+  const sec=`<div class="card span-12"><h3>Section by section</h3><div style="overflow-x:auto"><table class="t"><tr><th>Section</th><th>Score</th><th>Right · wrong · left</th><th class="hide-s">Accuracy</th><th>Time vs. plan</th></tr>${secRows}</table></div>
+    <p class="fine">The black line is the time planned for each section. A red bar means you went well over it.</p></div>
   <div class="card span-12"><h3>How you spent the time</h3><div class="strip">${lead>0.2?`<div style="width:${100*lead/a.duration}%;background:#cfc8b8"></div>`:""}${strip}</div>
     <div class="axis"><span>0 min</span><span>${Math.round(a.duration/2)} min</span><span>${a.duration} min</span></div>
-    <div class="legend-s">${a.sections.map(s=>`<span style="--c:${SECC[s.id]}">${s.name}</span>`).join("")}</div></div>
-  <div class="card span-12"><h3>What went well</h3><ul style="margin:0;padding-left:18px">${a.strengths.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ul></div>
-  ${a.focus&&a.focus.length?`<div class="card span-12"><h3>Topics to focus on next</h3><p style="margin:0 0 12px;color:#33353d;font-size:14px">Picked from every test you've taken so far: the topics where a real paper has the most marks for you to gain. "Marks at stake" is roughly how many marks per paper the topic is worth to you right now.</p><div class="fx">${a.focus.map(f=>`<div class="fx-i"><h4>${esc(f.name)}</h4><div class="sub">${esc(SECN[f.sec]||f.sec)} · about ${f.weight} questions per paper · <b>${f.stake.toFixed(1)} marks at stake</b> <span class="chip c-${f.status}">${STAT[f.status]}</span></div>
-      <p><span class="lbl">What we saw</span>${esc(f.seen?f.seen+" ":"")}${esc(f.evidence)}</p>
+    <div class="legend-s">${a.sections.map(s=>`<span style="--c:${SECC[s.id]}">${s.name}</span>`).join("")}</div></div>`;
+  const focus=a.focus&&a.focus.length?`<div class="card span-12"><h3>Topics to focus on next</h3><div class="fx">${a.focus.map(f=>`<div class="fx-i"><h4>${esc(f.name)}</h4><div class="sub">${esc(SECN[f.sec]||f.sec)} · <b>${f.stake.toFixed(1)} marks at stake</b> <span class="st-chip c-${f.status}">${STAT[f.status]}</span></div>
       <p><span class="lbl">What to do</span>${esc(f.do)}</p>
-      ${f.material&&f.material.length?`<p><span class="lbl">In your material</span>${f.material.map(esc).join("; ")}</p>`:""}
-      ${f.method?`<p><span class="lbl">Method to use</span>${esc(f.method)}</p>`:""}</div>`).join("")}</div>
-      ${a.practice?`<div class="actions" style="margin:14px 0 0">${[].concat(a.practice).map((p,i)=>`<a class="btn ${i?"btn-ghost":"btn-primary"}" href="${esc(p.href)}">${esc(p.title)}</a>`).join("")}</div>`:""}</div>`:""}
-  ${a.workon&&a.workon.length?`<div class="card span-12"><h3>What to work on</h3><div class="wo">${a.workon.map(w=>`<div class="wo-i"><h4>${esc(w.title)}</h4><p><span class="lbl">What we saw</span>${esc(w.seen)}</p><p><span class="lbl">What to try</span>${esc(w.do)}</p></div>`).join("")}</div></div>`:""}
-  ${plan}
-  ${a.habits&&a.habits.length?`<div class="card span-12"><h3>Good habits to build</h3><ul style="margin:0;padding-left:18px">${a.habits.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ul></div>`:""}
-  ${a.actions&&a.actions.length?`<div class="card span-12"><h3>Next steps</h3><ol style="margin:0;padding-left:18px">${a.actions.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join("")}</ol></div>`:""}
-  ${a.topics&&a.topics.length?`<div class="card span-12"><h3>Topic by topic</h3><div style="overflow-x:auto"><table class="t" style="min-width:600px"><tr><th>Topic</th><th>Section</th><th>This test (right · wrong · left)</th><th>All tests so far</th><th></th></tr>
-      ${a.topics.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(SECN[t.sec]||t.sec)}</td><td>${t.here.right} · ${t.here.wrong} · ${t.here.left}</td><td>${t.all.right} of ${t.all.right+t.all.wrong} right${t.all.left?`, ${t.all.left} left`:""}</td><td><span class="chip c-${t.status}">${STAT[t.status]}</span></td></tr>`).join("")}</table></div>
-      <p style="font-size:13px;color:var(--muted);margin:10px 0 0">With only a few questions per topic so far, treat these as early signals. They firm up with every test.</p></div>`:""}
-  <div class="card span-12"><h3>Where the marks went</h3><div class="etype">${["concept","slip","gap","time"].map(k=>`<div><b>${tags[k]||0}</b><span>${TAGS[k]}</span></div>`).join("")}</div>
-    <p style="font-size:13px;color:var(--muted);margin:10px 0 0">The questions you got wrong or left, sorted by why. Each one is explained in the question cards below.</p></div>
-  <div class="card span-12"><h3>Question by question</h3><div id="rvprog"></div><div class="toolbar">${[["todo","Still to go"],["all","All"],["wrong","Wrong"],["blank","Left"],["right","Right"]].map(f=>`<button class="seg ${revFilter===f[0]?"on":""}" data-rf="${f[0]}">${f[1]}${f[0]==="todo"?"":` (${f[0]==="all"?a.questions.length:a.questions.filter(q=>q.res===f[0]).length})`}</button>`).join("")}</div><div id="qlist"></div></div>
+      <details class="more"><summary>Why, and where it is in your material</summary><p><span class="lbl">What we saw</span>${esc(f.seen?f.seen+" ":"")}${esc(f.evidence)}</p>
+      ${f.material&&f.material.length&&!/^Not covered/.test(f.material[0])?`<p><span class="lbl">In your material</span>${f.material.map(esc).join("; ")}</p>`:""}
+      ${f.method?`<p><span class="lbl">Method to use</span>${esc(f.method)}</p>`:""}</details></div>`).join("")}</div></div>`:"";
+  const workon=a.workon&&a.workon.length?`<div class="card span-12"><h3>What to work on</h3><div class="wo">${a.workon.map(w=>`<div class="wo-i"><h4>${esc(w.title)}</h4><p><span class="lbl">What to try</span>${esc(w.do)}</p><details class="more"><summary>What we saw</summary><p>${esc(w.seen)}</p></details></div>`).join("")}</div></div>`:"";
+  const habits=a.habits&&a.habits.length?`<div class="card span-12"><h3>Good habits to build</h3><ul class="ul">${a.habits.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:"";
+  const topics=a.topics&&a.topics.length?`<div class="card span-12"><h3>Topic by topic</h3><div style="overflow-x:auto"><table class="t" style="min-width:560px"><tr><th>Topic</th><th>Section</th><th>This test (right · wrong · left)</th><th>All tests so far</th><th></th></tr>
+      ${a.topics.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(SECN[t.sec]||t.sec)}</td><td>${t.here.right} · ${t.here.wrong} · ${t.here.left}</td><td>${t.all.right} of ${t.all.right+t.all.wrong} right${t.all.left?`, ${t.all.left} left`:""}</td><td><span class="st-chip c-${t.status}">${STAT[t.status]}</span></td></tr>`).join("")}</table></div></div>`:"";
+  const marks=`<div class="card span-12"><h3>Where the marks went</h3><div class="etype">${["concept","slip","gap","time"].map(k=>`<div><b>${tags[k]||0}</b><span>${TAGS[k]}</span></div>`).join("")}</div></div>`;
+  return `<div class="grid">
+  ${cta}
+  <div class="card span-12 an-head"><h2>${esc(a.headline)}</h2><p>${esc(a.summary)}</p>
+    <div class="an-meta"><b>${T.net.toFixed(2)} / ${T.max}</b> · ${T.correct} right · ${T.wrong} wrong · ${T.blank} left · ${T.accuracy}% accuracy · ${a.used} of ${a.duration} min</div>${dmHTML(a.id)}
+    ${a.caveat?`<p class="fine">${esc(a.caveat)}</p>`:""}</div>
+  ${planCard}
+  <div class="card span-12"><h3>What went well</h3><ul class="ul">${a.strengths.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+  <details class="span-12 bd" id="fullbd"><summary>Full breakdown: sections, time, topics, habits</summary><div class="grid">${sec}${focus}${workon}${habits}${topics}${marks}</div></details>
+  <details class="span-12 bd" id="allq"><summary>All ${a.questions.length} questions, one by one</summary><div class="card" style="margin-top:14px"><div id="rvprog"></div><div class="toolbar">${[["todo","Still to go"],["all","All"],["wrong","Wrong"],["blank","Left"],["right","Right"]].map(f=>`<button class="seg ${revFilter===f[0]?"on":""}" data-rf="${f[0]}">${f[1]}${f[0]==="todo"?"":` (${f[0]==="all"?a.questions.length:a.questions.filter(q=>q.res===f[0]).length})`}</button>`).join("")}</div><div id="qlist"></div></div></details>
+  </div>`;
+}
+function planBy(b){ if(!/^\d+:\d\d$/.test(b)) return b+" left"; const [h,m]=b.split(":").map(Number); return h===0&&m===0?"to the end":(h?`${h} h `:"")+(m?`${m} m`:"")+" left"; }
+function stepHTML(a){
+  const D=MNT.doc, st=MNT.st, step=D&&D.steps.find(x=>x.link===location.hash), n=REV_ONLY.size;
+  const after=D?D.steps.slice(D.steps.indexOf(step)+1).concat(D.steps).find(x=>x!==step&&!(st.steps[x.id]||{}).done):null;
+  return `<div class="grid stepv">
+  <div class="card span-12 step-h"><a class="back" href="#overview">← Overview</a><h2>${step?esc(step.title):`${n} questions from ${esc(a.title)}`}</h2>
+    <p>${n} questions · about ${step?step.minutes:n*2} min. Try each one first, then tap <b>Show answer</b>, read the note, and tap <b>Got it</b> or <b>Still unclear</b>.</p></div>
+  <div class="span-12" id="rvprog"></div>
+  <div class="span-12" id="qlist"></div>
+  ${step&&step.tip?`<p class="span-12 fine step-tip">Tip: ${esc(step.tip)}</p>`:""}
+  <div class="card span-12 cta" id="stepnext"><div><span class="lbl" id="stepnext-l">Next</span>${after?`<b>${esc(after.title)}</b> · about ${after.minutes} min`:`<b>That's everything on your plan for now.</b>`}</div>
+    <div class="actions" style="margin:0">${after?`<a class="btn btn-primary" href="${esc(after.link)}">Start</a>`:""}<a class="btn btn-ghost" href="#overview">Back to the overview</a></div></div>
   </div>`;
 }
 function qlistHTML(a){
   const shown=new Set(); let cur=null;
-  return a.questions.filter(q=>!REV_ONLY||REV_ONLY.has(q.id)).filter(q=>revFilter==="all"||q.res===revFilter||(revFilter==="todo"&&q.res!=="right"&&!qDone(TRK.st,q.id))).map(q=>{
+  return a.questions.filter(q=>!REV_ONLY||REV_ONLY.has(q.id)).filter(q=>REV_ONLY||revFilter==="all"||q.res===revFilter||(revFilter==="todo"&&q.res!=="right"&&!qDone(TRK.st,q.id))).map(q=>{
     let h="";
-    if(q.sec!==cur){cur=q.sec; h+=`<div style="font:600 12px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px">${esc(a.sections.find(s=>s.id===q.sec).full)}</div>`;}
+    if(q.sec!==cur&&!REV_ONLY){cur=q.sec; h+=`<div style="font:600 12px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px">${esc(a.sections.find(s=>s.id===q.sec).full)}</div>`;}
     if(q.pid&&!shown.has(q.pid)&&a.passages[q.pid]){shown.add(q.pid); h+=`<details class="pas"><summary style="cursor:pointer;font-weight:600">${esc(a.passages[q.pid].title||"Passage")} (tap to read)</summary>\n${a.passages[q.pid].text}</details>`;}
     const res={right:"Right",wrong:"Wrong",blank:q.status==="mr"?"Marked, no answer saved":"Left"}[q.res];
-    const tr=q.res!=="right", rec=(TRK.st&&TRK.st.q||{})[q.id]||{};
-    return h+`<div class="qcard${tr&&qDone(TRK.st,q.id)?" done":""}"${tr?` data-qid="${q.id}"`:""}><div class="qh"><b>Q${q.n}</b><span>${esc(q.topic)}</span><span>·</span><span>${mmss(q.secs)}</span><span style="flex:1"></span>${q.tag?`<span class="tag t-${q.tag}">${TAGS[q.tag]}</span>`:""}<span class="tag ${q.res}">${res}</span></div>
+    const tr=q.res!=="right", rec=(TRK.st&&TRK.st.q||{})[q.id]||{}, dn=tr&&qDone(TRK.st,q.id), hide=REV_ONLY&&tr&&!dn;
+    const tg=q.res==="blank"&&q.secs<15?"Skipped":q.tag==="time"&&q.secs<120?"":q.tag?TAGS[q.tag]:"";
+    const nb=q.note?(m=>m?`<b>${esc(m[1])}</b>${esc(q.note.slice(m[1].length))}`:esc(q.note))(q.note.match(/^(.+?[.!?])(\s|$)/)):"";
+    return h+`<div class="qcard${dn?" done":""}${hide?" hide-ans":""}"${tr?` data-qid="${q.id}"`:""}><div class="qh"><b>Q${q.n}</b><span>${esc(q.topic)}</span><span>·</span><span>${mmss(q.secs)}</span><span style="flex:1"></span><span class="tag ${q.res}">${res}${tg?` · ${tg}`:""}</span></div>
       <div class="qt">${q.text}</div>
       ${q.options.map((o,k)=>`<div class="op ${k===q.key?"key":""} ${k===q.yours?"mine":""}">${k+1}. ${o}${k===q.key?"<small style='color:var(--sage)'>Correct</small>":""}${k===q.yours&&k!==q.key?"<small style='color:var(--madder)'>Your answer</small>":""}${k===q.yours&&k===q.key?"<small style='color:var(--sage)'>Your answer</small>":""}</div>`).join("")}
-      ${q.note?`<div class="qnote"><span class="lbl">Note for you</span>${esc(q.note)}</div>`:""}
-      <div class="sol"><span class="lbl">Full solution · answer ${q.key+1}</span>${q.expl}</div>
-      ${tr?`<div class="qact"><span>After reading the solution:</span><button class="seg ${rec.got?"on":""}" data-got="${q.id}">✓ Got it</button><button class="seg ${rec.unclear?"on warn":""}" data-unc="${q.id}">Still unclear</button></div>`:""}</div>`;}).join("")||`<p style="color:var(--muted)">${revFilter==="todo"?"All done: you've gone through every question you got wrong or left.":"Nothing here."}</p>`;
+      ${hide?`<button class="btn btn-ghost reveal" data-reveal="${q.id}">Show answer</button>`:""}
+      ${q.note?`<div class="qnote"><span class="lbl">Note for you</span>${nb}</div>`:""}
+      ${q.note?`<details class="sol"><summary>Full solution · answer ${q.key+1}</summary>${q.expl}</details>`:`<div class="sol"><span class="lbl">Full solution · answer ${q.key+1}</span>${q.expl}</div>`}
+      ${tr?`<div class="qact"><span>How did that go?</span><button class="seg ${rec.got?"on":""}" data-got="${q.id}" aria-pressed="${!!rec.got}">✓ Got it</button><button class="seg ${rec.unclear?"on warn":""}" data-unc="${q.id}" aria-pressed="${!!rec.unclear}">Still unclear</button></div>`:""}</div>`;}).join("")||`<p style="color:var(--muted)">${revFilter==="todo"?"All done: you've gone through every question you got wrong or left.":"Nothing here."}</p>`;
 }
 function bindReview(a){
   const draw=()=>{ $("qlist").innerHTML=qlistHTML(a); observeCards(); paintProgress(a); };
   draw();
   document.querySelectorAll("[data-rf]").forEach(b=>b.onclick=()=>{revFilter=b.dataset.rf;document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x===b));draw();});
-  $("qlist").onclick=e=>{ const g=e.target.closest("[data-got],[data-unc]"); if(VIEWER||!g||!TRK.st) return;
+  $("qlist").onclick=e=>{ const rv=e.target.closest("[data-reveal]"); if(rv){ rv.closest(".qcard").classList.remove("hide-ans"); rv.remove(); return; }
+    const g=e.target.closest("[data-got],[data-unc]"); if(VIEWER||!g||!TRK.st) return;
     const id=g.dataset.got||g.dataset.unc, r=TRK.st.q[id]=TRK.st.q[id]||{secs:0};
     if(g.dataset.got){ r.got=!r.got; if(r.got) r.unclear=false; } else { r.unclear=!r.unclear; if(r.unclear) r.got=false; }
     r.ut=Date.now(); TRK.dirty=true; trkSave(); trkPush();
     const card=g.closest(".qcard"); card.querySelector("[data-got]").classList.toggle("on",!!r.got); const u=card.querySelector("[data-unc]"); u.classList.toggle("on",!!r.unclear); u.classList.toggle("warn",!!r.unclear);
-    card.classList.toggle("done",qDone(TRK.st,id)); paintProgress(a); };
+    card.classList.toggle("done",qDone(TRK.st,id)); paintProgress(a);
+    if(r.got||r.unclear){ const nx=[...document.querySelectorAll(".qcard[data-qid]")].find(c=>c.compareDocumentPosition(card)&Node.DOCUMENT_POSITION_PRECEDING&&!c.classList.contains("done")); if(nx) setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"start"}),450); } };
   $("rvnext")&&($("rvnext").onclick=()=>{ revFilter="todo"; document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x.dataset.rf==="todo")); draw(); const c=document.querySelector(".qcard[data-qid]:not(.done)"); c&&c.scrollIntoView({behavior:"smooth",block:"start"}); });
 }
 
@@ -589,7 +652,7 @@ const DONE_SECS=20;   // a wrong/left question counts as gone through after 20 s
 const trkKey=id=>"atelier:rv:"+id;
 function trkLoad(id){ try{ return JSON.parse(localStorage.getItem(trkKey(id))||"null"); }catch(e){ return null; } }
 function trkSave(){ if(VIEWER) return; try{ if(TRK.id&&TRK.st) localStorage.setItem(trkKey(TRK.id),JSON.stringify(TRK.st)); }catch(e){} }
-function qDone(st,qid){ const r=st&&st.q&&st.q[qid]; return !!(r&&(r.got||(r.secs||0)>=DONE_SECS)); }
+function qDone(st,qid){ const r=st&&st.q&&st.q[qid]; return !!(r&&(r.got||r.unclear||(r.secs||0)>=DONE_SECS)); }
 function trkMerge(a,b){ if(!b) return a; const o={...b,...a, secs:Math.max(a.secs||0,b.secs||0), sessions:Math.max(a.sessions||0,b.sessions||0),
     first:Math.min(a.first||Infinity,b.first||Infinity), last:Math.max(a.last||0,b.last||0), q:{...(b.q||{})}};
   for(const [k,v] of Object.entries(a.q||{})){ const w=o.q[k]||{}; const newer=(v.ut||0)>=(w.ut||0)?v:w;
@@ -603,19 +666,20 @@ function trkPush(){ const s=DATA&&DATA.sync; if(VIEWER||!s||!TRK.st||!TRK.dirty)
   fetch(s.endpoint,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(msg),keepalive:true}).catch(()=>{TRK.dirty=true;}); }
 function observeCards(){ if(!TRK.obs) return; TRK.obs.disconnect(); TRK.vis.clear(); document.querySelectorAll(".qcard[data-qid]").forEach(el=>TRK.obs.observe(el)); }
 function paintProgress(a){ const el=$("rvprog"); if(!el||!TRK.st) return; const st=TRK.st;
-  const ids=a.questions.filter(q=>q.res!=="right").map(q=>q.id), done=ids.filter(q=>qDone(st,q)).length, unc=ids.filter(q=>(st.q[q]||{}).unclear).length;
-  el.innerHTML=`<div class="rvp"><div><b>${done} of ${ids.length}</b> questions you got wrong or left gone through${unc?` · <b>${unc}</b> marked still unclear (they'll get extra help in your practice set)`:""} · ${Math.round(st.secs/60)} min on this page so far</div>
-    <div class="bar"><i style="width:${ids.length?100*done/ids.length:100}%"></i></div>
-    ${done<ids.length?`<button class="btn btn-primary" id="rvnext" style="margin-top:10px">Show the ones still to go</button>`:`<div style="margin-top:8px;color:var(--sage);font-weight:600">All done. Well worth it.</div>`}</div>`;
-  const nb=$("rvnext"); if(nb) nb.onclick=()=>{ revFilter="todo"; document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x.dataset.rf==="todo")); $("qlist").innerHTML=qlistHTML(a); observeCards(); const c=document.querySelector(".qcard[data-qid]"); c&&c.scrollIntoView({behavior:"smooth",block:"start"}); }; }
+  const ids=a.questions.filter(q=>q.res!=="right"&&(!REV_ONLY||REV_ONLY.has(q.id))).map(q=>q.id), done=ids.filter(q=>qDone(st,q)).length, unc=ids.filter(q=>(st.q[q]||{}).unclear).length;
+  if(REV_ONLY){ const step=MNT.doc&&MNT.doc.steps.find(x=>x.link===location.hash), need=step&&step.done&&step.done.min?Math.ceil(step.done.min*ids.length-1e-9):ids.length, fin=done>=need;
+    el.innerHTML=`<div class="rvp sticky"><div><b>${done} of ${ids.length}</b> done${unc?` · ${unc} still unclear`:""}${fin?` · <b style="color:var(--sage)">Step done ✓</b>`:""}</div><div class="bar"><i style="width:${ids.length?100*done/ids.length:100}%"></i></div></div>`;
+    const nx=$("stepnext"); if(nx&&fin&&!nx.classList.contains("ready")){ nx.classList.add("ready"); $("stepnext-l").textContent="Step done ✓ · Next"; if(TRK.dirty) nx.scrollIntoView({behavior:"smooth",block:"center"}); }
+    return; }
+  el.innerHTML=`<div class="rvp"><div><b>${ids.length-done}</b> wrong or left still to go${unc?` · <b>${unc}</b> still unclear`:""}. Your plan gives them to you a few at a time.</div><div class="bar"><i style="width:${ids.length?100*done/ids.length:100}%"></i></div></div>`; }
 async function trkStart(a){ trkStop(); TRK.id=a.id; const now=Date.now();
   let st=trkLoad(a.id)||{secs:0,sessions:0,first:now,last:now,q:{}};
   st=trkMerge(st, await trkServer(a.id)); st.sessions=(st.sessions||0)+1; st.last=now; st.total=a.questions.filter(q=>q.res!=="right").length;
   TRK.st=st; TRK.dirty=true; trkSave(); trkPush();
-  TRK.obs=new IntersectionObserver(es=>es.forEach(e=>{ const q=e.target.dataset.qid; if(e.isIntersecting&&e.intersectionRatio>=0.5) TRK.vis.add(q); else TRK.vis.delete(q); }),{threshold:[0,0.5,1]});
+  TRK.obs=new IntersectionObserver(es=>es.forEach(e=>{ const q=e.target.dataset.qid; if(e.isIntersecting&&e.intersectionRect.height>=0.5*Math.min(e.boundingClientRect.height,innerHeight)) TRK.vis.add(q); else TRK.vis.delete(q); }),{threshold:[0,0.5,1]});
   $("qlist").innerHTML=qlistHTML(a); observeCards(); paintProgress(a);
   TRK.tick=setInterval(()=>{ if(VIEWER||document.visibilityState!=="visible"||Date.now()-TRK.last>60000||!location.hash.startsWith("#review/"+TRK.id)) return;
-    const s=TRK.st; s.secs+=5; s.last=Date.now(); TRK.vis.forEach(q=>{ const r=s.q[q]=s.q[q]||{secs:0}; r.secs=(r.secs||0)+5;
+    const s=TRK.st; s.secs+=5; s.last=Date.now(); TRK.vis.forEach(q=>{ const cc=document.querySelector(`.qcard[data-qid="${q}"]`); if(cc&&cc.classList.contains("hide-ans")) return; const r=s.q[q]=s.q[q]||{secs:0}; r.secs=(r.secs||0)+5;
       const c=document.querySelector(`.qcard[data-qid="${q}"]`); if(c) c.classList.toggle("done",qDone(s,q)); });
     TRK.dirty=true; trkSave(); paintProgress(a); },5000);
   TRK.push=setInterval(trkPush,120000); }
@@ -626,7 +690,7 @@ addEventListener("pagehide",trkPush);
 
 /* ---------- the plan: the mentor's next steps (docs/superpowers/specs/2026-11-25-mentor-engine-design.md) ---------- */
 const MNT={doc:null,st:null,dirty:false,ack:null,srv:{},busy:false,lastSync:0,shownNow:null,mockDone:false};
-const mntKey="atelier:mnt", MNT_NOTICE="Your plan now notices which solutions and steps you have opened, so it can choose what comes next for you. It isn't shared beyond your plan.";
+const mntKey="atelier:mnt", MNT_NOTICE="Your plan ticks off steps as you do them, so it knows what to give you next. It isn't shared beyond your plan.";
 const lo=(x,y)=>x&&y?Math.min(x,y):(x||y||undefined);
 function mntLoad(){ try{ const v=JSON.parse(localStorage.getItem(mntKey)||"null"); if(v&&typeof v==="object"){ v.steps=v.steps||{}; return v; } }catch(e){} return null; }
 function mntSave(){ if(VIEWER) return; try{ if(MNT.st) localStorage.setItem(mntKey,JSON.stringify(MNT.st)); }catch(e){} }
@@ -682,29 +746,34 @@ async function mntEval(o={}){
       if(!rec.done && await mntDone(step,o.localOnly)){ rec.done=true; rec.doneAt=Date.now(); MNT.dirty=true; if(step.id===MNT.shownNow) changed=step; } }
     MNT.mockDone=!!(MNT.doc.nextMock&&await submitted(MNT.doc.nextMock.id,o.localOnly));
     if(MNT.dirty) mntSave();
-    if(changed&&!o.silent){ MNT.ack=changed; setTimeout(()=>{ MNT.ack=null; mntRender(); },4000); }
+    if(changed&&!o.silent) MNT.ack=changed;
     if(MNT.dirty&&!o.localOnly) mntPush();
   } finally { MNT.busy=false; }
   mntRender(); }
 async function mntRefreshDoc(){ const d=await mntFetchDoc(); if(d&&MNT.doc&&d.version!==MNT.doc.version){ MNT.doc=d; MNT.ack=null; mntRender(); mntEval({silent:true}); } }
 function mntRender(){
   const el=$("mnt"); if(!el||!MNT.doc||!MNT.st) return; const D=MNT.doc, st=MNT.st;
-  const left=MNT.mockDone?[]:D.steps.filter(x=>!(st.steps[x.id]||{}).done), now=left[0];
+  const isDone=x=>!!(st.steps[x.id]||{}).done;
+  const left=MNT.mockDone?[]:D.steps.filter(x=>!isDone(x)), now=left[0], fin=D.steps.filter(isDone);
   const nm=D.nextMock&&DATA.mocks.find(m=>m.id===D.nextMock.id);
   MNT.shownNow=now?now.id:null;
-  const card=now?`<div class="lbl">Now</div><div class="tt">${esc(now.title)}<span>about ${now.minutes} min</span></div><p>${esc(now.why)}</p>
-      <a class="btn btn-primary" href="${esc(now.link)}" data-step="${esc(now.id)}">Start</a>${now.tip?`<p class="tip">Tip: ${esc(now.tip)}</p>`:""}`
+  const card=now?`<div class="lbl">Now · step ${fin.length+1} of ${D.steps.length}</div><div class="tt">${esc(now.title)}</div><p>${esc(now.why)}</p>
+      <div class="go"><a class="btn btn-primary btn-big" href="${esc(now.link)}" data-step="${esc(now.id)}">Start</a><span>about ${now.minutes} min</span></div>`
     :MNT.mockDone&&nm?`<div class="lbl">Now</div><div class="tt">All done for now</div><p>${esc(nm.title)} is done. Your feedback and your next steps are on their way.</p>`
     :`<div class="lbl">Now</div><div class="tt">All done for now</div><p>That's everything on your plan until the next update.</p>`;
-  const cps=(D.checkpoints||[]).filter(c=>c.milestone);
-  el.innerHTML=`<div class="mnt-top"><p class="mnt-h">${esc(D.headline)}</p>${nm?`<span class="mnt-when">${esc(nm.title)} · ${fmt(nm.date,{weekday:"short",day:"numeric",month:"short"})}</span>`:""}</div>
-    ${st.noticeAck?"":`<div class="mnt-notice" id="mnt-notice"><span>${MNT_NOTICE}</span><button class="btn btn-ghost">Okay</button></div>`}
-    ${MNT.ack?`<p class="mnt-ack">Done: ${esc(MNT.ack.title)}.${now?` Next up: ${esc(now.title)}.`:""}</p>`:""}
+  const cps=(D.checkpoints||[]).filter(c=>c.milestone), nextM=cps.find(c=>!c.actual), last=[...cps].reverse().find(c=>c.actual);
+  el.innerHTML=`<div class="mnt-top"><p class="mnt-h">${esc(D.headline)}</p></div>
+    ${MNT.ack?`<p class="mnt-ack" role="status">Nice. That's "${esc(MNT.ack.title)}" done.</p>`:""}
+    ${fin.length?`<div class="mnt-done">${fin.map(x=>`<div>✓ ${esc(x.title)}</div>`).join("")}</div>`:""}
+    <div class="mnt-prog"><div class="bar"><i style="width:${100*fin.length/D.steps.length}%"></i></div><span>${fin.length} of ${D.steps.length} done${nm?` before ${esc(nm.title.replace(/^MFM GAT\s*[–-]\s*/,""))}`:""}</span></div>
     <div class="mnt-now" id="mnt-now">${card}</div>
-    ${left.length>1?`<div class="mnt-next">${left.slice(1,3).map(x=>`<div><b>NEXT</b>${esc(x.title)} · about ${x.minutes} min</div>`).join("")}</div>`:""}
-    ${(D.later||[]).length||left.length>3?`<p class="mnt-later">Later: ${left.slice(3).map(x=>esc(x.title)+".").concat((D.later||[]).map(esc)).join(" ")}</p>`:""}
-    ${D.goal?`<p class="mnt-later" title="${esc(D.goal.why||"")}">Goal by Mock 20: ${D.goal.total}, the range for a Delhi, Mumbai or Bengaluru seat. About ${D.goal.seatLine} is the line for a seat at a good campus.</p>`:""}
-    ${cps.length?`<div class="mnt-ms" id="mnt-ms">${cps.map((c,i)=>`${i?'<span class="ln"></span>':""}<span class="m${c.actual?" hit":""}" title="${c.actual?`Scored ${c.actual.total}`:`Target ${c.target}`}"><b>M${+c.id.slice(1)}</b><i></i>${c.actual?c.actual.total:c.target}</span>`).join("")}</div>`:""}`;
+    ${left.length>1?`<div class="mnt-next">${left.slice(1,3).map(x=>`<a href="${esc(x.link)}" data-step="${esc(x.id)}"><b>NEXT</b><span>${esc(x.title)}</span><em>${x.minutes} min</em></a>`).join("")}</div>`:""}
+    ${left.length>3||(D.later||[]).length?`<details class="more"><summary>${left.length>3?`${left.length-3} more step${left.length>4?"s":""} and what comes after`:"What comes after"}</summary><ul>${left.slice(3).map(x=>`<li>${esc(x.title)} · ${x.minutes} min</li>`).concat((D.later||[]).map(x=>`<li>${esc(x)}</li>`)).join("")}</ul></details>`:""}
+    ${st.noticeAck?"":`<div class="mnt-notice" id="mnt-notice"><span>${MNT_NOTICE}</span><button class="btn btn-ghost">Okay</button></div>`}
+    ${nextM?`<p class="mnt-target">Next target: <b>${nextM.target}</b> at Mock ${+nextM.id.slice(1)}${last?` · you: ${last.actual.total}`:""}</p>`:""}
+    ${cps.length?`<details class="more" id="mnt-goal"><summary>All milestones and your goal</summary>
+      <div class="mnt-ms" id="mnt-ms">${cps.map((c,i)=>`${i?'<span class="ln"></span>':""}<span class="m${c.actual?" hit":""}"><b>M${+c.id.slice(1)}</b><i></i>${c.actual?c.actual.total:c.target}</span>`).join("")}</div>
+      ${D.goal?`<p>Goal by Mock 20: ${D.goal.total}, about what Delhi, Mumbai or Bengaluru has needed, with a solid interview. About ${D.goal.seatLine} has been enough for a top-7 campus. ${esc(D.goal.why||"")}</p>`:""}</details>`:""}`;
   const nb=el.querySelector("#mnt-notice button"); if(nb) nb.onclick=()=>{ st.noticeAck=true; MNT.dirty=true; mntSave(); mntPush(); mntRender(); };
   el.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{ const r=st.steps[b.dataset.step]=st.steps[b.dataset.step]||{}; r.opened=r.opened||Date.now(); MNT.dirty=true; mntSave(); }));
 }
@@ -712,9 +781,9 @@ const VERD={"ahead":"Ahead","on track":"On track","behind":"Behind"};
 function dmHTML(id){
   const cps=MNT.doc&&MNT.doc.checkpoints; if(!cps) return ""; const c=cps.find(x=>x.id===id); if(!c||!c.actual) return "";
   const nextM=cps.find(x=>x.milestone&&!x.actual);
-  if(!c.review) return `<div class="card span-12 dm" id="dm"><h3>Defining moment</h3><p style="margin:0">Baseline: this is where the plan starts.${nextM?` Target for Mock ${+nextM.id.slice(1)}: ${nextM.target}.`:""}</p></div>`;
-  return `<div class="card span-12 dm" id="dm"><h3>Defining moment</h3><p style="margin:0 0 10px">Target ${c.target}, you scored ${c.actual.total}: <span class="v-${c.review.total.replace(" ","-")}">${VERD[c.review.total]}</span>.</p>
-    <div style="overflow-x:auto"><table class="t"><tr><th>Section</th><th>Target</th><th>Scored</th><th></th></tr>${Object.keys(c.sections).map(k=>`<tr><td>${esc(SECN[k]||k)}</td><td>${c.sections[k]}</td><td>${c.actual.sections[k]}</td><td class="v-${c.review.sections[k].replace(" ","-")}">${VERD[c.review.sections[k]]}</td></tr>`).join("")}</table></div></div>`; }
+  if(!c.review) return `<div class="dm" id="dm">Baseline for your plan.${nextM?` Next target: <b>${nextM.target}</b> at Mock ${+nextM.id.slice(1)}.`:""}</div>`;
+  return `<div class="dm" id="dm">Target ${c.target}, you scored ${c.actual.total}: <span class="v-${c.review.total.replace(" ","-")}">${VERD[c.review.total]}</span>.
+    <div style="overflow-x:auto"><table class="t" style="margin-top:8px"><tr><th>Section</th><th>Target</th><th>Scored</th><th></th></tr>${Object.keys(c.sections).map(k=>`<tr><td>${esc(SECN[k]||k)}</td><td>${c.sections[k]}</td><td>${c.actual.sections[k]}</td><td class="v-${c.review.sections[k].replace(" ","-")}">${VERD[c.review.sections[k]]}</td></tr>`).join("")}</table></div></div>`; }
 setInterval(()=>{ if(VIEWER||!MNT.doc||!MNT.st||document.visibilityState!=="visible") return;
   let bump=false; for(const x of MNT.doc.steps){ if((x.done||{}).type==="open"&&location.hash===x.link&&!(MNT.st.steps[x.id]||{}).done){ const r=MNT.st.steps[x.id]=MNT.st.steps[x.id]||{}; r.openSecs=(r.openSecs||0)+5; bump=true; } }
   if(bump){ MNT.dirty=true; mntSave(); } },5000);
