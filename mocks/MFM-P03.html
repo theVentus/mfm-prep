@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NIFT Entrance Examination – Computer Based Test</title>
+<style>
+:root{--blue:#2f6db5;--navy:#1d3f72;--grey:#dcdcdc;--line:#c9c9c9;--green:#3a9a3a;--red:#d63a2f;--purple:#6c3fa0;--orange:#f0812b;--txt:#222}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:Arial,Helvetica,sans-serif;color:var(--txt);font-size:14px;background:#fff}
+body.noselect{-webkit-user-select:none;user-select:none}
+button{font-family:inherit;cursor:pointer}
+.hidden{display:none!important}
+/* header */
+.hdr{background:#fff;border-bottom:3px solid var(--blue);display:flex;align-items:center;justify-content:space-between;padding:6px 14px;height:62px}
+.hdr .brand{display:flex;align-items:center;gap:10px}
+.hdr .logo{width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px}
+.hdr .t1{font-weight:bold;font-size:16px;color:var(--navy)}
+.hdr .t2{font-size:12px;color:#555}
+.cand{display:flex;align-items:center;gap:10px}
+.cand .info{text-align:right;font-size:12px;line-height:1.5}
+.cand .info b{color:var(--navy)}
+.cam{width:72px;height:54px;background:#111;border:1px solid #999;position:relative;overflow:hidden}
+.cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam .rec{position:absolute;top:2px;left:3px;font-size:9px;color:#fff;background:rgba(200,0,0,.85);padding:0 3px;border-radius:2px}
+.cam .off{position:absolute;inset:0;color:#bbb;font-size:9px;display:flex;align-items:center;justify-content:center;text-align:center}
+.timer{font-size:13px;margin-left:12px;padding:6px 10px;border:1px solid var(--line);background:#f7f7f7;white-space:nowrap}
+.timer b{font-size:16px;color:var(--navy)}
+.timer.low b{color:var(--red)}
+/* generic panels */
+.page{max-width:1000px;margin:20px auto;padding:0 16px}
+/* instant results */
+.rs-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.rs-tiles div{border:1px solid var(--line);padding:10px 12px;background:#f8fafd}
+.rs-tiles b{display:block;font-size:22px;color:var(--navy)}
+.rs-tiles span{font-size:12px;color:#555}
+.rs-f{margin:14px 0 8px;display:flex;gap:6px;flex-wrap:wrap}
+.rs-f button{border:1px solid var(--line);background:#fff;padding:6px 10px;font-size:12px;font-weight:bold}
+.rs-f button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.rq{border:1px solid var(--line);margin:10px 0;padding:12px 14px;background:#fff}
+.rq-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:#555;margin-bottom:6px}
+.rq-h .q{font-weight:bold;color:var(--navy);font-size:14px}
+.rq-h .r{margin-left:auto;font-weight:bold;padding:2px 8px;border-radius:2px;color:#fff}
+.r-right{background:var(--green)} .r-wrong{background:var(--red)} .r-left{background:#8a8a8a}
+.rq-t{white-space:pre-wrap;line-height:1.55;margin-bottom:8px}
+.rq-o{padding:5px 8px;margin:3px 0;border:1px solid #e3e3e3;border-radius:2px}
+.rq-o.key{background:#e5f4e5;border-color:var(--green);font-weight:bold}
+.rq-o.bad{background:#fde2e0;border-color:var(--red)}
+.rq-o small{float:right;font-weight:bold}
+.rq-s{margin-top:10px;padding:10px 12px;background:#fff8e1;border-left:4px solid #e0a800;line-height:1.6}
+.rq-s .lbl{display:block;font-size:11px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#8a6500;margin-bottom:4px}
+.rq-p{margin:16px 0 6px;padding:10px 12px;background:#f3f6fb;border:1px solid var(--line);white-space:pre-wrap;line-height:1.55;font-size:13px}
+.rs-sec{font-size:12px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin:18px 0 4px}
+@media(max-width:640px){.rs-tiles{grid-template-columns:repeat(2,1fr)}}
+.box{border:1px solid var(--line);padding:18px 22px;background:#fff}
+.box h2{margin:0 0 12px;font-size:18px;color:var(--navy)}
+.btn{border:1px solid #999;background:#fff;padding:8px 14px;font-size:13px;font-weight:bold;border-radius:2px}
+.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn.green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.orange{background:var(--orange);color:#fff;border-color:var(--orange)}
+.btn.blue{background:#3b7dd8;color:#fff;border-color:#3b7dd8}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.err{color:var(--red);font-weight:bold;margin-top:8px}
+.ok{color:var(--green);font-weight:bold}
+.warnbar{background:#fff3cd;border:1px solid #e0c46c;padding:8px 12px;margin:8px 0;font-size:13px}
+.dangerbar{background:#fde2e0;border:1px solid var(--red);padding:8px 12px;margin:8px 0;font-size:13px;color:#7a1d16;font-weight:bold}
+input[type=text]{padding:8px;font-size:15px;border:1px solid #999;width:260px;letter-spacing:2px;text-transform:uppercase}
+table.sum{border-collapse:collapse;width:100%;margin:10px 0}
+table.sum th,table.sum td{border:1px solid var(--line);padding:6px 8px;text-align:center;font-size:13px}
+table.sum th{background:#eef3fa}
+/* exam layout */
+#exam{display:flex;flex-direction:column;height:100vh}
+.secbar{display:flex;align-items:center;gap:4px;padding:4px 10px;background:#eef3fa;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.secbar .lbl{font-weight:bold;margin-right:6px;font-size:12px}
+.sectab{border:1px solid var(--line);background:#fff;padding:5px 10px;font-size:12px}
+.sectab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.main{flex:1;display:flex;min-height:0}
+.qarea{flex:1;display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--line)}
+.qhead{display:flex;justify-content:space-between;padding:6px 12px;border-bottom:1px solid var(--line);font-size:13px;background:#fafafa}
+.qhead b{font-size:15px}
+.qbody{flex:1;display:flex;min-height:0}
+.passage{flex:1;overflow:auto;padding:12px 16px;border-right:1px solid var(--line);line-height:1.6;font-size:14px}
+.question{flex:1;overflow:auto;padding:12px 16px;line-height:1.6;font-size:15px}
+.question .stem{margin-bottom:14px;white-space:pre-wrap}
+.passage .ptext{white-space:pre-wrap}
+.opt{display:flex;align-items:flex-start;gap:8px;padding:6px 4px;margin:2px 0;border-radius:2px}
+.opt:hover{background:#f3f7fd}
+.opt input{margin-top:5px;transform:scale(1.15)}
+.opt label{cursor:pointer;flex:1;white-space:pre-wrap}
+.fig{display:inline-block;vertical-align:middle;margin:6px 4px}
+.qfoot{border-top:1px solid var(--line);padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;background:#fafafa}
+.qfoot .row{display:flex;gap:8px;flex-wrap:wrap}
+.side{width:300px;display:flex;flex-direction:column;min-height:0;background:#fff}
+.legend{padding:8px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px}
+.legend div{display:flex;align-items:center;gap:6px}
+.pal{flex:1;overflow:auto;padding:8px}
+.pal h4{margin:4px 0 8px;font-size:13px;background:var(--blue);color:#fff;padding:5px 8px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.qb{height:36px;border:1px solid #999;background:#e5e5e5;font-weight:bold;font-size:13px;position:relative;border-radius:3px}
+.st-na{background:var(--red);color:#fff;border-color:#a12a22;border-radius:0 0 14px 14px}
+.st-a{background:var(--green);color:#fff;border-color:#2b742b;border-radius:14px 14px 0 0}
+.st-mr{background:var(--purple);color:#fff;border-color:#4e2c75;border-radius:50%}
+.st-amr{background:var(--purple);color:#fff;border-color:#4e2c75;border-radius:50%}
+.st-amr::after{content:"";position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:var(--green);border:2px solid #fff}
+.qb.cur{outline:3px solid #f5c518;outline-offset:1px}
+.sw{width:26px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;font-size:11px;border:1px solid #999;position:relative;flex:none}
+.side .subm{padding:10px;border-top:1px solid var(--line);text-align:center}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:50}
+.modal{background:#fff;max-width:760px;width:92%;padding:18px 22px;border-top:4px solid var(--blue);max-height:90vh;overflow:auto}
+.modal h3{margin:0 0 10px;color:var(--navy)}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 14px;font-size:13px;z-index:60;border-radius:3px}
+textarea.code{width:100%;height:110px;font-family:monospace;font-size:11px}
+ol.ins li{margin:6px 0;line-height:1.5}
+.savebanner{position:fixed;top:0;left:0;right:0;z-index:70}
+</style>
+</head>
+<body class="noselect">
+<div class="hdr">
+  <div class="brand"><div class="logo">NIFT</div><div><div class="t1" id="hTitle">NIFT Entrance Examination</div><div class="t2" id="hSub">General Ability Test (GAT) – Computer Based Test</div></div></div>
+  <div class="cand">
+    <div class="info">Candidate Name : <b id="hName"></b><br>Exam Name : <b id="hExam"></b><br>Subject : <b>GAT</b></div>
+    <div class="cam" id="camBox"><video id="camVid" autoplay muted playsinline></video><span class="rec hidden" id="camRec">● LIVE</span><div class="off" id="camOff">Camera<br>off</div></div>
+    <div class="timer hidden" id="timerBox">Time Left : <b id="timer">--:--:--</b></div>
+  </div>
+</div>
+<div id="saveBanner" class="savebanner hidden"><div class="dangerbar" style="margin:0">Your progress could NOT be saved on this device. Do not close or refresh this window. Inform the invigilator.</div></div>
+
+<!-- SCREEN: blocked -->
+<div id="scrBlocked" class="page hidden"><div class="box"><h2>This test cannot start on this browser</h2><div id="blockedMsg" class="dangerbar"></div><p>Open this test in <b>Google Chrome</b> (normal window, not Incognito/Private) and try again.</p></div></div>
+
+<!-- SCREEN: login -->
+<div id="scrLogin" class="page hidden"><div class="box">
+  <h2>Candidate Login</h2>
+  <p>Mock: <b id="lMock"></b></p>
+  <p>Enter the <b>Test Start Code</b> given to you by the invigilator. The question paper unlocks only with this code.</p>
+  <input type="text" id="codeIn" autocomplete="off" spellcheck="false" placeholder="START CODE">
+  <button class="btn primary" id="codeBtn">Sign In</button>
+  <div class="err hidden" id="codeErr"></div>
+  <div class="hidden" id="codeWait" style="margin-top:8px;color:#555">Verifying your code and checking for an existing attempt… (this can take a few seconds)</div>
+  <div class="warnbar" style="margin-top:16px">Your camera and microphone will be switched on for proctoring during the test. Full-screen mode is mandatory; every exit from full screen and every switch to another tab or window is recorded.</div>
+</div></div>
+
+<!-- SCREEN: instructions -->
+<div id="scrIns" class="page hidden"><div class="box">
+  <h2>General Instructions</h2>
+  <ol class="ins">
+    <li>Total duration of the examination is <b id="iDur"></b> minutes. The clock is set at the server; the countdown timer at the top right shows the time remaining. When the timer reaches zero, the examination ends by itself. You need not submit your paper.</li>
+    <li>The paper has <b id="iTotal"></b> questions in the following sections. You may move freely between sections and questions within the total time.<table class="sum" id="iSecs"></table></li>
+    <li>Marking scheme: <b>+1</b> for every correct answer, <b>−0.25</b> for every incorrect answer, <b>0</b> for a question not answered.</li>
+    <li>The Question Palette on the right shows the status of each question using the symbols below:
+      <div class="legend" style="border:0;grid-template-columns:1fr">
+        <div><span class="sw">1</span> You have not visited the question yet.</div>
+        <div><span class="sw st-na">2</span> You have not answered the question.</div>
+        <div><span class="sw st-a">3</span> You have answered the question.</div>
+        <div><span class="sw st-mr">4</span> You have NOT answered the question, but have marked it for review.</div>
+        <div><span class="sw st-amr">5</span> You have answered the question and marked it for review. This answer <b>will be considered</b> for evaluation.</div>
+      </div></li>
+    <li>To answer: click an option, then click <b>SAVE &amp; NEXT</b>. If you move to another question without saving, your choice is <b>not saved</b>.</li>
+    <li><b>SAVE &amp; MARK FOR REVIEW</b> saves your answer and marks it for review. <b>MARK FOR REVIEW &amp; NEXT</b> marks the question for review without saving a new choice. <b>CLEAR</b> removes your saved answer.</li>
+    <li>Your responses are saved continuously. If the system closes unexpectedly, reopen the test: you will resume where you left off, and the timer will have kept running.</li>
+    <li>Camera and microphone stay on throughout. Exiting full screen or switching tabs/windows is recorded with time.</li>
+  </ol>
+  <div id="camStatus" class="warnbar">Checking camera and microphone…</div>
+  <label><input type="checkbox" id="agree"> I have read and understood the instructions. I agree that I will not use any unfair means during the examination.</label>
+  <div style="margin-top:14px"><button class="btn primary" id="beginBtn" disabled>I am ready to begin</button></div>
+</div></div>
+
+<!-- SCREEN: resume -->
+<div id="scrResume" class="page hidden"><div class="box">
+  <h2>Resume your test</h2>
+  <p>Your previous session for <b id="rMock"></b> was interrupted. All saved responses are intact. The timer kept running while the test was closed.</p>
+  <p>Time remaining: <b id="rLeft"></b></p>
+  <button class="btn primary" id="resumeBtn">Resume test</button>
+</div></div>
+
+<!-- SCREEN: exam -->
+<div id="exam" class="hidden">
+  <div class="secbar"><span class="lbl">Sections</span><span id="secTabs"></span></div>
+  <div class="main">
+    <div class="qarea">
+      <div class="qhead"><span><b id="qNo"></b> <span id="qSec" style="color:#666"></span></span><span>Marks: +1 / −0.25</span></div>
+      <div class="qbody"><div class="passage hidden" id="passage"></div><div class="question" id="question"></div></div>
+      <div class="qfoot">
+        <div class="row">
+          <button class="btn green" id="bSaveNext">SAVE &amp; NEXT</button>
+          <button class="btn" id="bClear">CLEAR</button>
+          <button class="btn orange" id="bSaveMark">SAVE &amp; MARK FOR REVIEW</button>
+          <button class="btn blue" id="bMarkNext">MARK FOR REVIEW &amp; NEXT</button>
+        </div>
+        <div class="row">
+          <button class="btn" id="bBack">&lt;&lt; BACK</button>
+          <button class="btn" id="bNext">NEXT &gt;&gt;</button>
+        </div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="legend" id="legend"></div>
+      <div class="pal"><h4 id="palTitle"></h4><div class="grid" id="grid"></div></div>
+      <div class="subm"><button class="btn green" id="bSubmit" style="width:100%">SUBMIT</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: done -->
+<div id="scrDone" class="page hidden"><div class="box">
+  <h2>Your responses have been submitted</h2>
+  <p id="dWhy"></p>
+  <table class="sum" id="dSum"></table>
+  <div id="upStatus" class="warnbar hidden"></div>
+  <div id="rsBox" class="hidden"><h2 style="margin-top:18px">Your score</h2><div class="rs-tiles" id="rsTiles"></div>
+    <table class="sum" id="rsSec"></table>
+    <p style="font-size:13px;color:#555">+1 for a right answer, −0.25 for a wrong one, 0 if left. Detailed feedback from your mentor follows on the portal.</p>
+    <h2 style="margin-top:18px">Answer key and full solutions</h2><div class="rs-f" id="rsF"></div><div id="rsList"></div></div>
+  <p id="rsNone" class="hidden" style="font-size:13px;color:#555">The answer key and solutions open with your start code, which this browser doesn't have. They'll be on your feedback page in the portal.</p>
+  <p><b>Send your results to your mentor.</b> A results file has been downloaded. If you cannot find it, click the button below, or copy the results code and send it.</p>
+  <button class="btn primary" id="dlBtn">Download results file again</button>
+  <button class="btn" id="copyBtn">Copy results code</button>
+  <p style="font-size:12px;color:#666">Results code:</p>
+  <textarea class="code" id="codeOut" readonly></textarea>
+  <p id="practiceBox" class="hidden"><button class="btn primary" id="retakeBtn">Retake this practice test</button></p>
+</div></div>
+
+<div id="ovl" class="overlay hidden"><div class="modal" id="ovlBody"></div></div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+"use strict";
+const MOCK = {"mockId": "MFM-P03", "title": "Practice set 3: Quant method and pace", "durationMin": 30, "candidate": "Raina", "sections": [{"id": "QA", "name": "Quantitative Ability", "part": "Sec A"}], "secOf": {"P03-Q01": "QA", "P03-Q02": "QA", "P03-Q03": "QA", "P03-Q04": "QA", "P03-Q05": "QA", "P03-Q06": "QA", "P03-Q07": "QA", "P03-Q08": "QA", "P03-Q09": "QA", "P03-Q10": "QA", "P03-Q11": "QA", "P03-Q12": "QA", "P03-Q13": "QA", "P03-Q14": "QA", "P03-Q15": "QA"}, "endpoint": "https://script.google.com/macros/s/AKfycby6ANR4jyen5qqs67UZ2db-G8LG1HEEL5JXi-9QLwkLcy9_olGSinf31fN8Vdu6vPE/exec", "syncKey": "pj4ASDY_GvyQ-7xq1534QBXY", "swPath": "../sw.js", "autoCode": "P3-RGJ2", "salt": "/M4G38/Wmjl3AYVaOGGmTQ==", "iv": "cjcUpeSIlR/0nNKP", "ct": "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", "iter": 200000, "sol": {"salt": "Lk/GisTgrHvVUa/aEKNd5g==", "iv": "HiZB4/YaRjzLHzX/", "ct": "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", "iter": 200000}};
+const ENGINE_VERSION = "1.0.0";
+const $ = id => document.getElementById(id);
+const KEY = MOCK ? "mfm:" + MOCK.mockId + ":state" : "mfm:none";
+const STATUS = {NV:"nv", NA:"na", A:"a", MR:"mr", AMR:"amr"};
+let S = null;            // persistent state
+let P = null;            // decrypted paper {passages, items}
+let order = [];          // item ids in display order
+let pending = null;      // unsaved radio selection for current question
+let lastTick = 0;
+let mediaStream = null;
+let finalizing = false;
+
+/* ---------- utils ---------- */
+const b64ToBytes = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const bytesToB64 = b => { let s=""; const a=new Uint8Array(b); for (let i=0;i<a.length;i+=0x8000) s+=String.fromCharCode.apply(null,a.subarray(i,i+0x8000)); return btoa(s); };
+const now = () => Date.now();
+const fmt = ms => { ms=Math.max(0,ms); const s=Math.floor(ms/1000); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return [h,m,x].map(v=>String(v).padStart(2,"0")).join(":"); };
+const normCode = c => (c||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : bytesToB64(crypto.getRandomValues(new Uint8Array(16))));
+function show(id){ for (const s of ["scrBlocked","scrLogin","scrIns","scrResume","exam","scrDone"]) $(s).classList.toggle("hidden", s!==id); }
+function toast(msg, ms=3500){ const t=$("toast"); t.textContent=msg; t.classList.remove("hidden"); clearTimeout(toast._h); toast._h=setTimeout(()=>t.classList.add("hidden"), ms); }
+function modal(html){ $("ovlBody").innerHTML=html; $("ovl").classList.remove("hidden"); }
+function closeModal(){ $("ovl").classList.add("hidden"); }
+
+/* ---------- storage ---------- */
+function storageWorks(){
+  try { const k="mfm:__probe__"; localStorage.setItem(k,"1"); const ok=localStorage.getItem(k)==="1"; localStorage.removeItem(k); return ok; } catch(e){ return false; }
+}
+function load(){ try { const r=localStorage.getItem(KEY); return r ? JSON.parse(r) : null; } catch(e){ return null; } }
+function persist(){
+  if (!S) return true;
+  S.rev = (S.rev||0) + 1;
+  try { localStorage.setItem(KEY, JSON.stringify(S)); $("saveBanner").classList.add("hidden"); return true; }
+  catch(e){ $("saveBanner").classList.remove("hidden"); return false; }
+}
+function ev(e, extra){ if (!S) return; const o={t: now()-S.startedAt, e}; if (extra) Object.assign(o, extra); S.events.push(o); }
+
+/* ---------- crypto ---------- */
+async function decryptPaper(code){
+  const enc = new TextEncoder();
+  const base = await crypto.subtle.importKey("raw", enc.encode(normCode(code)), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey({name:"PBKDF2", salt:b64ToBytes(MOCK.salt), iterations:MOCK.iter, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64ToBytes(MOCK.iv)}, key, b64ToBytes(MOCK.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+async function sha256hex(str){ const d=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join(""); }
+async function gzipB64(str){
+  if (typeof CompressionStream === "undefined") return "RAW:" + bytesToB64(new TextEncoder().encode(str));
+  const cs = new Blob([str]).stream().pipeThrough(new CompressionStream("gzip"));
+  return "GZ:" + bytesToB64(await new Response(cs).arrayBuffer());
+}
+
+/* ---------- media / proctor ---------- */
+async function startMedia(){
+  const pr = S ? S.proctor : (startMedia.pre = startMedia.pre || {});
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ pr.camera="unavailable"; pr.mic="unavailable"; return camUI(false,"Camera not available on this browser. The test can continue; this is recorded."); }
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({video:{width:320,height:240}, audio:true});
+    pr.camera="granted"; pr.mic="granted";
+    $("camVid").srcObject = mediaStream;
+    camUI(true,"Camera and microphone are ON. Proctoring is active.");
+  } catch(e){
+    try { mediaStream = await navigator.mediaDevices.getUserMedia({video:true}); pr.camera="granted"; pr.mic="denied"; $("camVid").srcObject=mediaStream; camUI(true,"Camera ON, microphone OFF. This is recorded."); }
+    catch(e2){ pr.camera="denied"; pr.mic="denied"; camUI(false,"Camera/microphone permission was denied. The test can continue; this is recorded."); }
+  }
+}
+function camUI(on, msg){ $("camOff").classList.toggle("hidden", on); $("camRec").classList.toggle("hidden", !on); $("camStatus").textContent = msg; $("camStatus").className = on ? "warnbar ok" : "dangerbar"; }
+function enterFS(){ const el=document.documentElement; if (el.requestFullscreen && !document.fullscreenElement) el.requestFullscreen().catch(()=>{}); }
+document.addEventListener("fullscreenchange", () => {
+  if (!S || S.submitted || $("exam").classList.contains("hidden")) return;
+  if (!document.fullscreenElement){ S.proctor.fsExits++; ev("fs_exit"); persist();
+    modal('<h3>You have exited full-screen mode</h3><p>This has been recorded ('+S.proctor.fsExits+' time(s)). Return to full screen to continue your test. The timer is still running.</p><button class="btn primary" id="fsBack">Return to full screen</button>');
+    $("fsBack").onclick = () => { closeModal(); enterFS(); };
+  } else { ev("fs_enter"); persist(); }
+});
+document.addEventListener("visibilitychange", () => {
+  if (!S || S.submitted || $("exam").classList.contains("hidden")) return;
+  if (document.hidden){ accrue(); S.proctor.tabSwitches++; ev("tab_hidden"); persist(); }
+  else { lastTick = now(); ev("tab_visible"); persist(); toast("Switching away from the test window has been recorded ("+S.proctor.tabSwitches+")."); }
+});
+window.addEventListener("blur", () => { if (S && !S.submitted && !$("exam").classList.contains("hidden")){ S.proctor.blurs=(S.proctor.blurs||0)+1; ev("blur"); persist(); } });
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("copy", e => e.preventDefault());
+window.addEventListener("pagehide", () => { if (S && !S.submitted && P && S.startedAt){ accrue(); persist(); } });
+
+/* ---------- paper / navigation ---------- */
+function item(i){ return P.items[i]; }
+function secOf(i){ return item(i).section; }
+function secStart(secId){ return order.findIndex(i => secOf(i)===secId); }
+function accrue(){
+  if (!S || S.submitted || document.hidden || !P || !S.startedAt || !lastTick) { lastTick = now(); return; }
+  const t = now(); const id = item(S.cur).id; S.tq[id] = (S.tq[id]||0) + Math.max(0, t-lastTick); lastTick = t;
+}
+function go(idx, reason){
+  accrue();
+  if (pending !== null && pending !== S.ans[item(S.cur).id]) ev("unsaved_choice_lost", {q:item(S.cur).id, v:pending});
+  pending = null;
+  idx = Math.max(0, Math.min(P.items.length-1, idx));
+  S.cur = idx;
+  const id = item(idx).id;
+  if (S.st[id] === STATUS.NV || !S.st[id]) S.st[id] = STATUS.NA;
+  ev("view", {q:id, via:reason||"nav"});
+  persist(); render(); snap();
+}
+function render(){
+  const it = item(S.cur), id = it.id;
+  const sec = MOCK.sections.find(s=>s.id===it.section);
+  $("qNo").textContent = "Question No. " + (S.cur+1);
+  $("qSec").textContent = "| " + sec.name;
+  const pv = $("passage");
+  if (it.passageId && P.passages[it.passageId]){ const p=P.passages[it.passageId]; pv.innerHTML = (p.title?'<b>'+p.title+'</b><br>':'') + '<div class="ptext">'+p.text+'</div>'; pv.classList.remove("hidden"); }
+  else { pv.classList.add("hidden"); pv.innerHTML=""; }
+  const chosen = pending !== null ? pending : (S.ans[id] ?? null);
+  let h = '<div class="stem">'+it.text+'</div>';
+  it.options.forEach((o,k) => { h += '<div class="opt"><input type="radio" name="opt" id="o'+k+'" value="'+k+'"'+(chosen===k?' checked':'')+'><label for="o'+k+'">'+(k+1)+'. '+o+'</label></div>'; });
+  $("question").innerHTML = h;
+  $("question").scrollTop = 0; pv.scrollTop = 0;
+  document.querySelectorAll('input[name=opt]').forEach(r => r.onchange = () => { pending = +r.value; ev("select",{q:id,v:pending}); });
+  // tabs
+  $("secTabs").innerHTML = MOCK.sections.map(s => '<button class="sectab'+(s.id===it.section?' active':'')+'" data-s="'+s.id+'">'+s.name+(s.part?' ('+s.part+')':'')+'</button>').join(" ");
+  document.querySelectorAll(".sectab").forEach(b => b.onclick = () => go(secStart(b.dataset.s), "section_tab"));
+  renderPalette(it.section);
+  $("bBack").disabled = S.cur===0;
+}
+function counts(filterSec){
+  const c={nv:0,na:0,a:0,mr:0,amr:0};
+  P.items.forEach(it => { if (!filterSec || it.section===filterSec) c[S.st[it.id]||"nv"]++; });
+  return c;
+}
+function renderPalette(secId){
+  const c = counts(secId);
+  $("legend").innerHTML =
+    '<div><span class="sw st-a">'+c.a+'</span>Answered</div><div><span class="sw st-na">'+c.na+'</span>Not Answered</div>'+
+    '<div><span class="sw">'+c.nv+'</span>Not Visited</div><div><span class="sw st-mr">'+c.mr+'</span>Marked for Review</div>'+
+    '<div style="grid-column:1/3"><span class="sw st-amr">'+c.amr+'</span>Answered &amp; Marked for Review (will be considered for evaluation)</div>';
+  const sec = MOCK.sections.find(s=>s.id===secId);
+  $("palTitle").textContent = sec.name;
+  let h="";
+  P.items.forEach((it,i) => { if (it.section!==secId) return; const st=S.st[it.id]||"nv"; h += '<button class="qb '+(st==="nv"?"":"st-"+st)+(i===S.cur?" cur":"")+'" data-i="'+i+'">'+(i+1)+'</button>'; });
+  $("grid").innerHTML = h;
+  document.querySelectorAll(".qb").forEach(b => b.onclick = () => go(+b.dataset.i, "palette"));
+}
+function act(kind){
+  const id = item(S.cur).id;
+  const sel = pending !== null ? pending : (S.ans[id] ?? null);
+  if (kind==="saveNext"){
+    if (pending !== null){ S.ans[id]=pending; S.st[id]=STATUS.A; ev("save",{q:id,v:pending}); }
+    else if (S.ans[id]!=null){ S.st[id] = STATUS.A; }
+    else { S.st[id]=STATUS.NA; }
+    pending=null; return go(S.cur+1, "save_next");
+  }
+  if (kind==="saveMark"){
+    if (sel===null){ toast("Please choose an option before using SAVE & MARK FOR REVIEW."); return; }
+    S.ans[id]=sel; S.st[id]=STATUS.AMR; ev("save_mark",{q:id,v:sel}); pending=null; return go(S.cur+1, "save_mark");
+  }
+  if (kind==="markNext"){
+    S.st[id] = (S.ans[id]!=null) ? STATUS.AMR : STATUS.MR; ev("mark",{q:id}); return go(S.cur+1, "mark_next");
+  }
+  if (kind==="clear"){
+    delete S.ans[id]; pending=null; S.st[id]=STATUS.NA; ev("clear",{q:id}); persist(); snap(); return render();
+  }
+}
+
+/* ---------- timer ---------- */
+let timerH = null;
+function tick(){
+  if (!S || S.submitted) return;
+  const left = S.endAt - now();
+  $("timer").textContent = fmt(left);
+  $("timerBox").classList.toggle("low", left < 5*60*1000);
+  accrue();
+  if (left <= 0){ finalize("timeout"); return; }
+  if (!tick.n || now()-tick.n > 5000){ tick.n = now(); persist(); }
+}
+function startTimer(){ $("timerBox").classList.remove("hidden"); clearInterval(timerH); timerH = setInterval(tick, 500); tick(); }
+
+/* ---------- submit ---------- */
+function submitDialog(){
+  let rows = '<tr><th>Section</th><th>No. of Questions</th><th>Answered</th><th>Not Answered</th><th>Marked for Review</th><th>Answered &amp; Marked for Review</th><th>Not Visited</th></tr>';
+  MOCK.sections.forEach(s => { const c=counts(s.id); const n=P.items.filter(it=>it.section===s.id).length; rows += '<tr><td style="text-align:left">'+s.name+'</td><td>'+n+'</td><td>'+c.a+'</td><td>'+c.na+'</td><td>'+c.mr+'</td><td>'+c.amr+'</td><td>'+c.nv+'</td></tr>'; });
+  modal('<h3>Exam Summary</h3><table class="sum">'+rows+'</table><p><b>Are you sure you want to submit for final marking?</b> No changes will be allowed after submission.</p><button class="btn green" id="subYes">Yes, Submit</button> <button class="btn" id="subNo">No, go back</button>');
+  $("subNo").onclick = closeModal;
+  $("subYes").onclick = () => { $("subYes").disabled = true; closeModal(); finalize("manual"); };
+}
+async function finalize(reason){
+  if (finalizing || (S && S.submitted)) return;
+  finalizing = true;
+  clearInterval(timerH);
+  if (P) accrue();
+  if (pending !== null) ev("unsaved_choice_lost", {q:item(S.cur).id, v:pending});
+  pending = null;
+  S.submitted = true; S.submitReason = reason; S.submittedAt = now();
+  ev("submit", {reason});
+  const body = {
+    kind:"mfm-results", engineVersion:ENGINE_VERSION, mockId:MOCK.mockId, candidate:MOCK.candidate, attemptId:S.attemptId,
+    startedAt:S.startedAt, endAt:S.endAt, submittedAt:S.submittedAt, submitReason:reason,
+    answers:S.ans, status:S.st, timePerQ:S.tq, proctor:S.proctor, resumes:S.resumes, events:S.events,
+    userAgent:navigator.userAgent, order: P ? P.items.map(i=>i.id) : []
+  };
+  const json = JSON.stringify(body);
+  body.checksum = await sha256hex(json);
+  S.results = body;
+  S.resultsCode = await gzipB64(JSON.stringify(body));
+  persist();
+  if (mediaStream) mediaStream.getTracks().forEach(t=>t.stop());
+  if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+  upload("final", body);
+  showDone(true);
+}
+function downloadResults(){
+  try {
+    const blob = new Blob([JSON.stringify(S.results, null, 1)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "MFM_" + MOCK.mockId + "_results_" + new Date(S.submittedAt).toISOString().slice(0,10) + ".json";
+    document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+    ev("download"); persist();
+  } catch(e){ toast("Download failed. Please copy the results code instead."); }
+}
+async function decryptSol(code){
+  const enc = new TextEncoder(), X = MOCK.sol;
+  const base = await crypto.subtle.importKey("raw", enc.encode(normCode(code) + "|SOL"), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey({name:"PBKDF2", salt:b64ToBytes(X.salt), iterations:X.iter, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64ToBytes(X.iv)}, key, b64ToBytes(X.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+let RSF = "all";
+async function showResults(){
+  if (!MOCK.sol) return;
+  let K = null;
+  try { if (S.code){ if (!P) P = await decryptPaper(S.code); K = await decryptSol(S.code); } } catch(e){ K = null; }
+  if (!K || !P){ $("rsNone").classList.remove("hidden"); return; }
+  const esc2 = t => String(t).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+  const qs = P.items.map((it, i) => { const a = S.ans[it.id]; const k = K.key[it.id];
+    return {n:i+1, it, a, k, res: a==null ? "left" : (a===k ? "right" : "wrong"), secs: Math.round((S.tq[it.id]||0)/1000)}; });
+  const C = qs.filter(q=>q.res==="right").length, W = qs.filter(q=>q.res==="wrong").length, L = qs.length-C-W;
+  const used = Math.round((Math.min(S.submittedAt, S.endAt) - S.startedAt)/60000);
+  $("rsTiles").innerHTML = [["Score", (C-0.25*W).toFixed(2)+" / "+qs.length], ["Right · wrong · left", C+" · "+W+" · "+L],
+    ["Accuracy", (C+W? Math.round(100*C/(C+W)) : 0)+"%"], ["Time taken", used+" of "+MOCK.durationMin+" min"]].map(x=>"<div><span>"+x[0]+"</span><b>"+x[1]+"</b></div>").join("");
+  let rows = '<tr><th>Section</th><th>Score</th><th>Right</th><th>Wrong</th><th>Left</th><th>Time spent</th></tr>';
+  MOCK.sections.forEach(s => { const q = qs.filter(x=>x.it.section===s.id); if (!q.length) return; const c=q.filter(x=>x.res==="right").length, w=q.filter(x=>x.res==="wrong").length;
+    rows += '<tr><td style="text-align:left">'+s.name+'</td><td>'+(c-0.25*w).toFixed(2)+' / '+q.length+'</td><td>'+c+'</td><td>'+w+'</td><td>'+(q.length-c-w)+'</td><td>'+Math.round(q.reduce((t,x)=>t+x.secs,0)/60)+' min</td></tr>'; });
+  $("rsSec").innerHTML = rows;
+  const mm = s => s>=60 ? Math.floor(s/60)+"m "+String(s%60).padStart(2,"0")+"s" : s+"s";
+  const list = () => { let cur=null, shown=new Set(), h="";
+    qs.filter(q => RSF==="all" || q.res===RSF).forEach(q => {
+      if (q.it.section!==cur){ cur=q.it.section; h += '<div class="rs-sec">'+esc2((MOCK.sections.find(s=>s.id===cur)||{}).name||cur)+'</div>'; }
+      const pid = q.it.passageId; if (pid && !shown.has(pid) && P.passages[pid]){ shown.add(pid); const ps=P.passages[pid]; h += '<div class="rq-p"><b>'+esc2(ps.title||"Passage")+'</b>\n'+ps.text+'</div>'; }
+      h += '<div class="rq"><div class="rq-h"><span class="q">Q'+q.n+'</span><span>'+esc2(K.topic[q.it.id]||"")+'</span><span>· '+mm(q.secs)+'</span><span class="r r-'+q.res+'">'+({right:"Right",wrong:"Wrong",left:"Left"})[q.res]+'</span></div>'
+        + '<div class="rq-t">'+q.it.text+'</div>'
+        + q.it.options.map((o,k)=>'<div class="rq-o'+(k===q.k?" key":"")+(k===q.a&&k!==q.k?" bad":"")+'">'+(k+1)+'. '+o+(k===q.k?'<small style="color:var(--green)">Correct answer</small>':'')+(k===q.a&&k!==q.k?'<small style="color:var(--red)">Your answer</small>':'')+(k===q.a&&k===q.k?'<small style="color:var(--green)">Your answer ✓</small>':'')+'</div>').join("")
+        + '<div class="rq-s"><span class="lbl">Solution · answer '+(q.k+1)+'</span>'+(K.expl[q.it.id]||"")+'</div></div>'; });
+    $("rsList").innerHTML = h || '<p style="color:#555">Nothing here.</p>'; };
+  $("rsF").innerHTML = [["all","All"],["wrong","Wrong"],["left","Left"],["right","Right"]].map(f=>'<button data-f="'+f[0]+'" class="'+(RSF===f[0]?"on":"")+'">'+f[1]+' ('+(f[0]==="all"?qs.length:qs.filter(q=>q.res===f[0]).length)+')</button>').join("");
+  $("rsF").querySelectorAll("button").forEach(b => b.onclick = () => { RSF=b.dataset.f; $("rsF").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b)); list(); });
+  list(); $("rsBox").classList.remove("hidden"); document.body.classList.remove("noselect");
+}
+function showDone(first){
+  show("scrDone"); $("timerBox").classList.add("hidden");
+  const why = {manual:"You submitted the test.", timeout:"Time is over. Your test was submitted automatically.", timeout_closed:"The test time ran out while the test was closed. Your saved responses were submitted automatically."};
+  $("dWhy").textContent = (why[S.submitReason]||"") + " Submitted at " + new Date(S.submittedAt).toLocaleString() + ".";
+  let rows='<tr><th>Section</th><th>Answered (incl. answered &amp; marked)</th><th>Not answered</th></tr>';
+  MOCK.sections.forEach(s => { const ids=(S.results.order||[]).filter(id => (MOCK.secOf||{})[id]===s.id); let a=0; ids.forEach(id=>{ if (S.ans[id]!=null) a++; }); rows+='<tr><td style="text-align:left">'+s.name+'</td><td>'+a+'</td><td>'+(ids.length-a)+'</td></tr>'; });
+  $("dSum").innerHTML = rows;
+  $("codeOut").value = S.resultsCode || "";
+  upStatus();
+  if (MOCK.practice){ $("practiceBox").classList.remove("hidden"); $("retakeBtn").onclick = () => { try { localStorage.removeItem(KEY); } catch(e){} location.reload(); }; }
+  if (first && !MOCK.practice) downloadResults();
+  showResults();
+}
+$("dlBtn").onclick = downloadResults;
+$("copyBtn").onclick = async () => {
+  const t=$("codeOut"); try { await navigator.clipboard.writeText(t.value); toast("Results code copied."); }
+  catch(e){ document.body.classList.remove("noselect"); t.focus(); t.select(); try{ document.execCommand("copy"); toast("Results code copied."); }catch(_){ toast("Select the code and copy it manually."); } }
+};
+
+/* ---------- server sync (optional; everything works without it) ---------- */
+const OUTBOX = "mfm:outbox";
+function outboxLoad(){ try { return JSON.parse(localStorage.getItem(OUTBOX)||"[]"); } catch(e){ return []; } }
+function outboxSave(a){ try { localStorage.setItem(OUTBOX, JSON.stringify(a)); } catch(e){} }
+function snapshotOf(){ const c = Object.assign({}, S); delete c.code; delete c.resultsCode; return c; }
+function upload(kind, body){
+  if (!MOCK.endpoint || !S) return;
+  const msg = {kind, mockId:MOCK.mockId, candidate:MOCK.candidate, attemptId:S.attemptId, rev:S.rev||0, sentAt:now(), key:MOCK.syncKey||"", data:body};
+  let box = outboxLoad();
+  if (kind==="snapshot") box = box.filter(m => !(m.kind==="snapshot" && m.attemptId===S.attemptId)); // only latest snapshot matters
+  box.push(msg); outboxSave(box); flush();
+}
+let flushing = false;
+async function flush(){
+  if (!MOCK.endpoint || flushing) return;
+  flushing = true;
+  try {
+    let box = outboxLoad();
+    while (box.length){
+      const m = box[0];
+      let ok = false;
+      try {
+        const r = await fetch(MOCK.endpoint, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(m)});
+        const j = await r.json().catch(()=>null); ok = !!(j && j.ok);
+      } catch(e){ ok = false; }
+      if (!ok) break;
+      box = outboxLoad(); box = box.filter(x => !(x.kind===m.kind && x.attemptId===m.attemptId && x.sentAt===m.sentAt)); outboxSave(box);
+      if (m.kind==="final" && S && S.attemptId===m.attemptId){ S.uploaded = true; persist(); upStatus(); }
+      if (S && !S.submitted){ S.lastSyncAt = now(); }
+    }
+  } finally { flushing = false; upStatus(); }
+}
+function upStatus(){
+  const box = $("upStatus"); if (!box || !MOCK.endpoint || !S || !S.submitted) return;
+  box.classList.remove("hidden");
+  if (S.uploaded){ box.className="warnbar ok"; box.textContent="Results uploaded to your mentor ✓"; }
+  else { box.className="dangerbar"; box.textContent = navigator.onLine ? "Uploading results… If this message stays, send the downloaded file or the results code." : "You are offline. Results will upload automatically when the internet is back — keep this page open, or send the downloaded file / results code."; }
+}
+window.addEventListener("online", flush);
+setInterval(flush, MOCK && MOCK.flushMs || 15000);
+let snapT = 0;
+function snap(force){
+  if (!MOCK.endpoint || !S || S.submitted || !S.startedAt) return;
+  const gap = MOCK.snapMs || 60000;
+  if (!force && now()-snapT < gap){ clearTimeout(snap.h); snap.h = setTimeout(()=>snap(true), gap-(now()-snapT)); return; }
+  snapT = now(); upload("snapshot", snapshotOf());
+}
+async function serverAttempt(){
+  // ask the server whether this mock already has an attempt; returns {ok, attempt:{snapshot|results}} or null if unreachable
+  if (!MOCK.endpoint) return null;
+  try {
+    const u = MOCK.endpoint + (MOCK.endpoint.includes("?")?"&":"?") + "action=attempt&mockId=" + encodeURIComponent(MOCK.mockId) + "&key=" + encodeURIComponent(MOCK.syncKey||"");
+    const ctl = new AbortController(); const to = setTimeout(()=>ctl.abort(), 12000);
+    const r = await fetch(u, {signal:ctl.signal}); clearTimeout(to);
+    const j = await r.json(); return j && j.ok ? j : null;
+  } catch(e){ return null; }
+}
+
+/* ---------- boot ---------- */
+async function adoptServer(a, code){
+  // a = {results} or {snapshot}; returns true if it took over the flow
+  if (a.results){
+    S = {v:1, mockId:MOCK.mockId, attemptId:a.results.attemptId, code, submitted:true, submitReason:a.results.submitReason, submittedAt:a.results.submittedAt,
+         startedAt:a.results.startedAt, endAt:a.results.endAt, ans:a.results.answers, st:a.results.status, tq:a.results.timePerQ, events:a.results.events||[],
+         proctor:a.results.proctor||{}, results:a.results, uploaded:true, restoredFrom:"server"};
+    S.resultsCode = await gzipB64(JSON.stringify(a.results)); persist(); showDone(false); return true;
+  }
+  if (a.snapshot && a.snapshot.startedAt){
+    S = Object.assign({}, a.snapshot, {code, restoredFrom:"server"});
+    S.events = S.events||[]; ev("restored_from_server"); persist();
+    return await resumeFlow();
+  }
+  return false;
+}
+async function resumeFlow(){
+  if (!P){ try { P = await decryptPaper(S.code); } catch(e){ show("scrBlocked"); $("blockedMsg").textContent="Saved session could not be reopened."; return true; } }
+  order = P.items.map((_,i)=>i);
+  if (now() >= S.endAt){ S.cur = S.cur||0; ev("resume_after_timeout"); await finalize("timeout_closed"); return true; }
+  show("scrResume"); $("rLeft").textContent = fmt(S.endAt-now());
+  clearInterval(resumeFlow.h); resumeFlow.h = setInterval(()=>{ if (!$("scrResume").classList.contains("hidden")) $("rLeft").textContent = fmt(S.endAt-now()); }, 1000);
+  $("resumeBtn").disabled = false;
+  $("resumeBtn").onclick = async () => { $("resumeBtn").disabled=true; await startMedia(); startExam(false); };
+  return true;
+}
+async function beginNew(code){
+  S = { v:1, mockId:MOCK.mockId, attemptId:uuid(), code:normCode(code), startedAt:0, endAt:0, cur:0, ans:{}, st:{}, tq:{}, events:[], resumes:0,
+        proctor:Object.assign({camera:"unknown", mic:"unknown", fsExits:0, tabSwitches:0, blurs:0}, startMedia.pre||{}), submitted:false };
+}
+async function onCode(){
+  const code = $("codeIn").value; $("codeErr").classList.add("hidden"); $("codeBtn").disabled = true; $("codeWait").classList.remove("hidden");
+  try { P = await decryptPaper(code); }
+  catch(e){ $("codeWait").classList.add("hidden"); $("codeErr").textContent = "Invalid start code. Please check and try again."; $("codeErr").classList.remove("hidden"); $("codeBtn").disabled=false; return; }
+  const srv = await serverAttempt();
+  $("codeWait").classList.add("hidden");
+  if (srv && srv.attempt && await adoptServer(srv.attempt, normCode(code))) return;
+  await beginNew(code);
+  if (MOCK.endpoint) S.proctor.lockCheck = srv ? "ok" : "unreachable";
+  show("scrIns");
+  $("iDur").textContent = MOCK.durationMin; $("iTotal").textContent = P.items.length;
+  $("iSecs").innerHTML = '<tr><th>Section</th><th>Part</th><th>Questions</th></tr>' + MOCK.sections.map(s=>'<tr><td style="text-align:left">'+s.name+'</td><td>'+(s.part||"")+'</td><td>'+P.items.filter(i=>i.section===s.id).length+'</td></tr>').join("");
+  await startMedia();
+}
+function startExam(fresh){
+  order = P.items.map((_,i)=>i);
+  if (fresh){
+    S.startedAt = now(); S.endAt = S.startedAt + MOCK.durationMin*60*1000;
+    P.items.forEach(it => S.st[it.id] = STATUS.NV);
+    ev("start");
+    if (!persist()){ $("saveBanner").classList.remove("hidden"); }
+    upload("start", snapshotOf());
+  } else { S.resumes = (S.resumes||0)+1; ev("resume"); persist(); upload("resume", {at:now()}); }
+  enterFS();
+  show("exam"); lastTick = now();
+  const id = item(S.cur).id; if (S.st[id]===STATUS.NV) S.st[id]=STATUS.NA;
+  render(); startTimer();
+  snap(true);
+}
+$("codeBtn").onclick = onCode;
+$("codeIn").addEventListener("keydown", e => { if (e.key==="Enter") onCode(); });
+$("agree").onchange = () => { $("beginBtn").disabled = !$("agree").checked; };
+$("beginBtn").onclick = () => { $("beginBtn").disabled = true; startExam(true); };
+$("bSaveNext").onclick = () => act("saveNext");
+$("bSaveMark").onclick = () => act("saveMark");
+$("bMarkNext").onclick = () => act("markNext");
+$("bClear").onclick = () => act("clear");
+$("bBack").onclick = () => go(S.cur-1, "back");
+$("bNext").onclick = () => go(S.cur+1, "next");
+$("bSubmit").onclick = submitDialog;
+
+async function boot(){
+  if (!MOCK){ show("scrBlocked"); $("blockedMsg").textContent="No question paper is loaded in this file."; return; }
+  $("hName").textContent = MOCK.candidate || "Candidate"; $("hExam").textContent = MOCK.title; $("lMock").textContent = MOCK.title; $("rMock").textContent = MOCK.title;
+  if (!window.crypto || !crypto.subtle){ show("scrBlocked"); $("blockedMsg").textContent="This browser does not support secure decryption."; return; }
+  if (!storageWorks()){ show("scrBlocked"); $("blockedMsg").textContent="This browser cannot save your responses (storage is blocked or full). Starting the test here would risk losing your answers."; return; }
+  const saved = load();
+  if (saved && saved.mockId === MOCK.mockId && (saved.submitted || saved.startedAt)){
+    S = saved;
+    if (S.submitted){ showDone(false); flush(); return; }
+    if (MOCK.endpoint){
+      const srv = await serverAttempt();
+      const a = srv && srv.attempt;
+      if (a && a.results){ await adoptServer(a, S.code); return; }
+      if (a && a.snapshot && a.snapshot.attemptId === S.attemptId && (a.snapshot.rev||0) > (S.rev||0)){ await adoptServer(a, S.code); return; }
+      if (a && a.snapshot && a.snapshot.attemptId !== S.attemptId && a.snapshot.startedAt < S.startedAt){ await adoptServer(a, S.code); return; }
+    }
+    await resumeFlow(); flush(); return;
+  }
+  if (MOCK.autoCode){ $("codeIn").value = MOCK.autoCode; flush(); onCode(); return; }   // practice sets: no start code
+  show("scrLogin"); setTimeout(()=>$("codeIn").focus(), 50); flush();
+}
+if (MOCK && MOCK.swPath && "serviceWorker" in navigator && window.isSecureContext && location.protocol !== "file:"){
+  navigator.serviceWorker.register(MOCK.swPath).then(() => navigator.serviceWorker.ready)
+    .then(() => caches.open("mfm-v1")).then(c => c.add(location.pathname)).catch(()=>{});
+}
+boot();
+</script>
+</body>
+</html>
