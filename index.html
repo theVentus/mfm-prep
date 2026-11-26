@@ -48,9 +48,14 @@ label.f{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;text-t
 .btn-block{width:100%;justify-content:center;padding:13px}
 .err{color:var(--madder);font-size:14px;min-height:20px;margin-top:10px}
 /* ---------- shell ---------- */
-#app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
-aside{background:var(--indigo);color:#e9e6f2;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-aside .weave{opacity:.08}
+#app{min-height:100vh}
+.topbar{position:relative;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px max(4vw,18px);overflow:hidden}
+.topbar .weave{opacity:.08}
+.tb-home{position:relative;display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;font-weight:600;min-height:44px}
+.tb-home b{font:600 19px Newsreader,serif}
+.tb-right{position:relative;display:flex;align-items:center;gap:14px;font-size:14px;color:#dfe2f0}
+.tb-right button{background:none;border:0;color:#cfcce0;padding:0;font-size:13px;text-decoration:underline;min-height:44px}
+.cd-s{display:none}@media(max-width:600px){.cd-l{display:none}.cd-s{display:inline}}
 .side-brand{position:relative;padding:22px 22px 18px;display:flex;align-items:center;gap:12px}
 .mark{width:34px;height:34px;border-radius:9px;background:var(--turmeric);display:grid;place-items:center;flex:none}
 .side-brand b{display:block;font:600 18px Newsreader,serif;color:#fff;letter-spacing:.01em}
@@ -67,12 +72,13 @@ nav{position:relative;padding:8px 12px;flex:1}
 .avatar{width:32px;height:32px;border-radius:50%;background:var(--madder);color:#fff;display:grid;place-items:center;font-weight:700}
 .side-foot button{background:none;border:0;color:#cfcce0;padding:0;margin-left:auto;font-size:12px;text-decoration:underline}
 main{min-width:0}
-.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 36px 0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 36px 0;max-width:1040px;margin:0 auto;box-sizing:content-box}
+.top.hidden-top{display:none}
 .top h1{font:500 30px/1.15 Newsreader,serif;margin:0}
 .top .crumb{color:var(--muted);font-size:13px}
 .chip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap}
 .chip i{width:8px;height:8px;border-radius:50%;background:var(--madder);display:inline-block}
-.page{padding:22px 36px 60px;max-width:1240px}
+.page{padding:22px 36px 60px;max-width:1040px;margin:0 auto;box-sizing:content-box}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px}
 .card h3{font:600 13px "Hanken Grotesk";letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
@@ -242,19 +248,13 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 /* performance */
 .chart text{font:12px "Hanken Grotesk";fill:var(--muted)}
 /* mobile */
-.mob-nav{display:none}
 @media (max-width:980px){
   #lock{grid-template-columns:1fr}.lock-art{min-height:42vh;padding:32px}.lock-art h1{font-size:38px}
   #app{grid-template-columns:1fr}
-  aside{display:none}
-  .top{padding:18px 18px 0;flex-wrap:wrap;align-items:flex-start}.page{padding:16px 18px 90px}
+  .top{padding:18px 18px 0;flex-wrap:wrap;align-items:flex-start}.page{padding:16px 18px 48px}
   .grid>*{grid-column:span 12!important}
   .cal-wrap{grid-template-columns:1fr}
   .mrow{grid-template-columns:46px 1fr;gap:10px}.mrow .hide-m{display:none}.mrow .show-m{display:inline}.mrow .act{grid-column:1/-1;justify-content:flex-start}
-  .mob-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--indigo);padding:8px 6px calc(8px + env(safe-area-inset-bottom));justify-content:space-around;z-index:10}
-  .mob-nav a{color:#cfcce0;text-decoration:none;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px}
-  .mob-nav a.on{color:#fff}
-  .mob-nav svg{width:20px;height:20px}
   .rule{grid-template-columns:1fr}
 }
 /* readability round 2 */
@@ -268,7 +268,7 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .stepv .step-h,.stepv #stepnext,.stepv #rvprog,.stepv .step-tip{max-width:780px}
 .cta.ready{box-shadow:0 0 0 3px var(--sage-soft);position:sticky;bottom:12px;z-index:6}
 .tv-cell{min-width:200px}.show-s{display:none}
-@media(max-width:760px){.show-s{display:block}.tv-cell{min-width:110px}.cta.ready{bottom:70px}}
+@media(max-width:760px){.show-s{display:block}.tv-cell{min-width:110px}.cta.ready{bottom:12px}}
 .qcard .op:not(.key):not(.mine){padding:4px 10px}
 @media(max-width:760px){.an-head h2{font-size:22px}}
 /* readability round 1 (three independent visual reviews, 25 Nov) */
@@ -299,10 +299,53 @@ details.sol summary{cursor:pointer;font-weight:600;color:var(--indigo);font-size
 .mnt-ms{flex-wrap:nowrap}.mnt-ms .m{min-width:34px}.mnt-ms .ln{min-width:6px}
 @media(max-width:760px){ .hide-s{display:none} }
 @media(max-width:600px){
-  .page{padding:12px 12px 90px}.card{padding:16px 14px}.qcard{padding:14px 12px}.fx-i,.wo-i,.mnt-now{padding:12px}
+  .page{padding:12px 12px 48px}.card{padding:16px 14px}.qcard{padding:14px 12px}.fx-i,.wo-i,.mnt-now{padding:12px}
   .mnt-now .btn-big{width:100%;justify-content:center}
-  .mob-nav a{flex:1;min-height:48px;justify-content:center;font-size:12px}
 }
+/* ---------- Today page (26 Nov redesign) ---------- */
+.sec-h{font:500 26px Newsreader,serif;margin:30px 0 10px}
+.path{padding:20px 26px 18px}
+.path .mnt-h{font:500 17px 'Hanken Grotesk';color:#3d3f47;margin:0 0 6px}
+.path-grid{display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:14px;position:relative}
+.path-grid::before{content:"";position:absolute;left:16px;top:22px;bottom:10px;border-left:2px dashed #c9c2b2}
+#mockstop::before{top:0;bottom:auto;height:30px}#mockstop:empty{display:none}
+.stop-k{display:flex;justify-content:center;padding-top:20px;position:relative}
+.knot{width:14px;height:14px;border-radius:50%;background:var(--paper);border:2px solid #8a8272;display:block}
+.knot.now{width:20px;height:20px;border:0;background:var(--madder);box-shadow:0 0 0 5px var(--madder-soft)}
+.dia{width:16px;height:16px;transform:rotate(45deg);background:var(--indigo);display:block;margin-top:8px}
+.path .mnt-now{margin:10px 0 6px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:16px 18px}
+.path .mnt-now .tt{font:500 22px Newsreader,serif;margin:2px 0 6px}
+.path .mnt-now p{margin:0 0 8px;color:#33353d}.path .mnt-now .tip{font-size:14px;color:#4b4d55}
+.path .mnt-now .go{margin-top:6px}
+.stop{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:16px;padding:14px 0;border-bottom:1px solid #efe9de;text-decoration:none;color:var(--ink)}
+.stop .st-t{font-weight:600}.stop .st-s{grid-column:1;color:var(--muted);font-size:15px}.stop em{grid-column:2;grid-row:1/3;align-self:center;font-style:normal;color:var(--muted);font-size:14px;white-space:nowrap}
+.mockbox{position:relative;margin:12px 0 4px;background:var(--indigo);color:#fff;border-radius:14px;padding:20px 24px;overflow:hidden}
+.mb-top{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.mb-t{font:500 30px/1.1 Newsreader,serif}.mb-w{color:#dfe2f0;font-size:15px;margin-top:4px}
+.mb-act{display:flex;flex-direction:column;align-items:flex-end;gap:8px}.mb-act a{color:#dfe2f0;font-size:14px}.mb-act .btn{background:#fff;color:var(--indigo);border-color:#fff}
+.gameplan{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.18)}
+.gameplan b{display:block}.gameplan span{display:block;font-size:14px;color:#dfe2f0}
+#timing:not(:empty){margin-top:14px;font-size:14px;color:#dfe2f0}
+#later{margin:12px 0 0 48px;font-size:15px;color:#3d3f47}#later ul{margin:4px 0 0;padding-left:18px}
+.path .mnt-notice{background:none;padding:6px 0 0 48px;color:var(--muted)}.path .mnt-notice .btn{padding:6px 12px}
+.foot{display:flex;flex-wrap:wrap;gap:8px 22px;margin:36px 0 0;padding-top:16px;border-top:1px solid var(--line-2);font-size:15px;color:var(--muted)}
+.foot a{color:var(--indigo)}
+@media(max-width:760px){.gameplan{grid-template-columns:1fr}.mb-act{align-items:flex-start}.path{padding:16px 14px}#later,.path .mnt-notice{margin-left:0;padding-left:0}}
+.sec-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}.sec-row a{font-weight:600;color:var(--indigo)}
+.latest .lt-h{font-size:17px;margin:0 0 6px}.wo-i p.seen{color:var(--muted);font-size:13px;margin:0}
+.season{padding:22px 26px 12px}.figs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:14px}
+.fig .k{display:block;font-size:14px;color:var(--muted)}.fig b{display:block;font:500 32px/1.15 Newsreader,serif}.fig b.pc{font-size:30px}.fig .s{display:block;font-size:14px;color:var(--muted)}
+.season .sh{font-weight:600;margin:0}#seam{width:100%;overflow:hidden}
+.secrow,.sec-head{display:grid;grid-template-columns:150px minmax(0,1fr) 170px;column-gap:22px;align-items:center;padding:11px 0;border-top:1px solid #efe9de}
+.secrow .sn{font-weight:600}.secrow .sn span{font-weight:400;color:var(--muted);font-size:14px}
+.secrow .sb{display:flex;align-items:center;gap:12px}.secrow .bar{flex:1;height:10px;border-radius:5px;background:#ece6da;overflow:hidden}.secrow .bar i{display:block;height:100%;background:var(--indigo);border-radius:5px}
+.secrow .sv{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:15px}.secrow .sc{font-size:15px}
+.sec-head{font-size:14px;color:var(--muted);border-top:0;padding-top:16px}.sec-head span:first-child{font-weight:600;color:var(--ink)}
+.ch-up{color:var(--sage)}.ch-down{color:var(--madder)}.ch-first{color:var(--muted)}
+@media(max-width:760px){.figs{grid-template-columns:1fr 1fr}.secrow,.sec-head{grid-template-columns:1fr auto;row-gap:6px}.secrow .sb{grid-column:1/-1;grid-row:2}.sec-head span:nth-child(2){display:none}.season{padding:16px 14px 8px}}
+#qseam{display:flex;flex-wrap:wrap;gap:4px;margin:14px 0 4px}.qm{display:inline-block;width:14px;height:6px;border-radius:3px;background:var(--sage);vertical-align:middle}
+.qm.w{width:10px;height:10px;border-radius:50%;background:var(--madder)}.qm.l{width:10px;height:10px;border-radius:50%;background:var(--paper);border:1.5px solid #b8b0a0;box-sizing:border-box}
+.qs-l{margin:0 0 6px}.hab-h{font:500 18px Newsreader,serif;margin:16px 0 4px}
 </style>
 </head>
 <body>
@@ -327,16 +370,14 @@ details.sol summary{cursor:pointer;font-weight:600;color:var(--indigo);font-size
 
 <!-- ============ APP ============ -->
 <div id="app" class="hidden">
-  <aside><div class="weave"></div>
-    <div class="side-brand"><div class="mark"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M2 5h14M2 9h14M2 13h14M5 2v14M9 2v14M13 2v14" stroke="#1f2b5c" stroke-width="1.6"/></svg></div><div><b>The Atelier</b><span>MFM 2027 preparation</span></div></div>
-    <nav id="nav"></nav>
-    <div class="side-foot"><div class="who"><div class="avatar">R</div><div><div style="color:#fff;font-weight:600">Raina</div><div style="opacity:.6;font-size:12px">Candidate · MFM</div></div><button id="logout">Lock</button></div></div>
-  </aside>
+  <header class="topbar"><div class="weave"></div>
+    <a class="tb-home" id="home" href="#overview"></a>
+    <div class="tb-right"><span id="cd"></span><div class="avatar" aria-hidden="true">R</div><button id="logout">Lock</button></div>
+  </header>
   <main>
-    <div class="top"><div><div class="crumb" id="crumb"></div><h1 id="ptitle"></h1></div><div class="chip"><i></i><span id="cd"></span></div></div>
+    <div class="top" id="top"><div><div class="crumb" id="crumb"></div><h1 id="ptitle"></h1></div></div>
     <div class="page" id="page"></div>
   </main>
-  <div class="mob-nav" id="mobnav"></div>
 </div>
 
 <script>
@@ -419,12 +460,11 @@ function route(){
   REV_ONLY=rv&&qs&&qs.startsWith("only=")?new Set(qs.slice(5).split(",")):null;
   if(!rv && TRK.id) trkStop();
   const p=rv?(REV_ONLY?["overview","Your plan","Study"]:["performance","Feedback","Progress"]):(PAGES.find(x=>x[0]===key)||PAGES[0]);
-  let groups={}; PAGES.forEach(x=>(groups[x[2]]=groups[x[2]]||[]).push(x));
-  $("nav").innerHTML=Object.entries(groups).map(([g,items])=>`<div class="nav-h">${g}</div>`+items.map(x=>`<a class="nav-a ${x[0]===p[0]?"on":""}" href="#${x[0]}">${icon(x[0])}${x[1]}</a>`).join("")).join("")+
-    `<div class="nav-h">Before a mock</div><a class="nav-a" href="check.html">${icon("check")}System check</a><a class="nav-a" href="mocks/MFM-DEMO.html">${icon("play")}Interface practice</a>`;
-  $("mobnav").innerHTML=PAGES.slice(0,5).map(x=>`<a class="${x[0]===p[0]?"on":""}" href="#${x[0]}">${icon(x[0])}${x[1].split(" ")[0]}</a>`).join("");
-  $("crumb").textContent=p[2]; $("ptitle").textContent=p[1];
-  $("cd").textContent=daysLeft()+" days to the GAT · Sun 10 Jan";
+  const home=p[0]==="overview"&&!rv&&!key.startsWith("learn/");
+  $("home").innerHTML=home?`<span class="mark"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M2 5h14M2 9h14M2 13h14M5 2v14M9 2v14M13 2v14" stroke="#1f2b5c" stroke-width="1.6"/></svg></span><b>The Atelier</b>`:`← Today`;
+  $("top").classList.toggle("hidden-top",home);
+  $("crumb").textContent=""; $("ptitle").textContent=p[1];
+  $("cd").innerHTML=`<span class="cd-l">${daysLeft()} days to the GAT · Sun 10 Jan</span><span class="cd-s">${daysLeft()} days to go</span>`;
   if(rv){ renderReview(rv); window.scrollTo(0,0); mntEval(); return; }
   if(key.startsWith("learn/")){ $("ptitle").textContent="Quick concepts"; $("page").innerHTML=`<div class="fade">${learnHTML(key.slice(6))}</div>`; window.scrollTo(0,0); mntEval(); return; }
   $("page").innerHTML=`<div class="fade">${R[p[0]]()}</div>`;
@@ -463,8 +503,11 @@ R.overview=()=>{
   const pr=(DATA.practice||[]).slice().reverse().slice(0,3).map(x=>{const ls=localState(x)||{}; const parent=x.for?((DATA.mocks.find(m=>m.id===x.for)||{}).title||(DATA.warmup&&DATA.warmup.id===x.for?"the warm-up":x.for)):"";
     const act=x.review?`<a class="btn btn-primary" href="#review/${x.id}">Read the feedback</a><a class="btn btn-ghost" href="mocks/${x.file}">See your answers</a>`:`<a class="btn btn-primary" href="mocks/${x.file}">${ls.submitted?"See your score and solutions":ls.startedAt?"Resume":"Start the practice set"}</a>`;
     return `<div class="card span-12 warm"><div class="wt"><b>${esc(x.title)}${parent?` · after ${esc(parent)}`:""}</b>${x.questions} questions · ${x.minutes} minutes · built from the topics your last test showed you need most: ${esc((x.topics||[]).join(", "))}. No start code needed: open it whenever you're ready. Your score, the key and full solutions appear the moment you submit.</div><div class="actions" style="margin:0">${act}</div></div>`;}).join("");
+  if(MNT.doc) return `<p class="hello">${greet}, Raina.</p><p class="hello-sub" id="hello-sub"></p>
+  <h2 class="sec-h">Today's path</h2><div class="card path" id="mnt"></div>
+  <div id="latest"></div><div id="season"></div>${footHTML()}`;
   return `<p class="hello">${greet}, Raina.</p><p class="hello-sub">${d.length?`You've completed ${d.length} of ${DATA.mocks.length} mocks.`:`Your first full mock is ${n?fmt(n.date,{weekday:"long"}):"coming up"}. Everything below fills in as you go.`}</p>
-  <div class="grid">${MNT.doc?`<div class="card span-12 mnt" id="mnt"></div>${nextCard}`:`${pr}${warm}${nextCard}`}
+  <div class="grid">${`${pr}${warm}${nextCard}`}
 ${MNT.doc?"":`    <div class="card span-5"><h3>Countdown</h3><div class="ring-wrap">${ring(elapsed)}<div><div class="big">${daysLeft()}<small>days</small></div><div style="color:var(--muted)">until the GAT on Sunday, 10 January 2027</div></div></div>
       <div class="phase-line"><div class="${ph>1?"done":"on"}"></div><div class="${ph>2?"done":ph===2?"on":""}"></div><div class="${ph===3?"on":""}"></div></div>
       <div class="phase-labels"><span>Find your level</span><span>Build &amp; sharpen</span><span>Exam rhythm</span></div></div>
@@ -472,8 +515,9 @@ ${MNT.doc?"":`    <div class="card span-5"><h3>Countdown</h3><div class="ring-wr
     <div class="card span-6"><h3>This week</h3><div class="agenda">${ag.length?ag.map(a=>`<div class="ag"><div class="d"><b>${fmt(a[0],{day:"numeric"})}</b><span>${fmt(a[0],{weekday:"short"})}</span></div><div><div class="t">${esc(a[1])}</div><div class="s">${a[2]}</div></div><span class="tag ${a[4]==="Today"?"today":a[3]}">${a[4]}</span></div>`).join(""):'<div class="s" style="color:var(--muted)">No mocks this week.</div>'}</div></div>
     <div class="card span-6"><h3>Syllabus coverage</h3><div class="cov">${DATA.syllabus.map(s=>{const c=s.topics.filter(x=>x.seen>0).length;return `<div class="cov-row"><span>${s.name}</span><div class="bar"><i style="width:${100*c/s.topics.length}%"></i></div><span style="text-align:right;color:var(--muted)">${c}/${s.topics.length}</span></div>`}).join("")}</div>
       <p style="font-size:13px;color:var(--muted);margin:14px 0 0">Topics you've met in reviewed mocks. <a href="#syllabus">See the full map →</a></p></div>
-`}  </div>`;
+`}  </div>${footHTML()}`;
 };
+function footHTML(){ return `<footer class="foot" id="foot"><span>Also here when you need it:</span>${[["#mocks","All mocks and feedback"],["#schedule","Schedule"],["#performance","Performance"],["#syllabus","Syllabus map"],["#walkthrough","Walkthrough"],["#notes","How answers are judged"],["#guide","Exam guide"],["check.html","System check"],["mocks/MFM-DEMO.html","Interface practice"]].map(([h,t])=>`<a href="${h}">${t}</a>`).join("")}</footer>`; }
 function ring(f){const r=34,c=2*Math.PI*r;return `<svg width="88" height="88" viewBox="0 0 88 88"><circle cx="44" cy="44" r="${r}" fill="none" stroke="#eeeae1" stroke-width="8"/><circle cx="44" cy="44" r="${r}" fill="none" stroke="#d49a1a" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-f)}" transform="rotate(-90 44 44)"/><text x="44" y="49" text-anchor="middle" style="font:600 14px Hanken Grotesk;fill:#1a1c22">${Math.round(f*100)}%</text></svg>`;}
 const covered=()=>DATA.syllabus.reduce((a,s)=>a+s.topics.filter(x=>x.seen>0).length,0);
 const totalTopics=()=>DATA.syllabus.reduce((a,s)=>a+s.topics.length,0);
@@ -485,9 +529,12 @@ R.mocks=()=>`<div class="toolbar">${[["all","All mocks"],["upcoming","Upcoming"]
    return `<div class="mrow"><div class="num ${m.phase===2?"p2":m.phase===3?"p3":""}">${n}</div><div><div class="tt">${esc(m.title)}</div><div class="ss"><span class="show-m">${fmt(m.date,{weekday:"short",day:"numeric",month:"short"})}${m.result?` · ${m.result.net.toFixed(2)} / 150`:""} · </span>${m.focus?esc(m.focus):(["","Find your level","Build & sharpen","Exam rhythm"][m.phase])}</div></div>
    <div class="hide-m"><div class="tt" style="font-weight:500">${fmt(m.date,{weekday:"short",day:"numeric",month:"short"})}</div><div class="ss">150 Q · 180 min</div></div>
    <div class="hide-m">${m.result?`<div class="tt">${m.result.net.toFixed(2)} <span class="ss">/ 150</span></div><div class="ss">${m.result.correct} right · ${m.result.wrong} wrong</div>`:'<div class="ss">—</div>'}</div>
-   <div class="act">${s.label?`<span class="tag ${s.k}">${s.label}</span>`:""}${act}</div></div>`.replace('<div class="mrow">',s.k==="next"?'<div class="mrow mrow-next">':'<div class="mrow">');}).join("")}</div>`;
+   <div class="act">${s.label?`<span class="tag ${s.k}">${s.label}</span>`:""}${act}</div></div>`.replace('<div class="mrow">',s.k==="next"?'<div class="mrow mrow-next">':'<div class="mrow">');}).join("")}</div>
+  ${(DATA.practice||[]).length?`<h2 class="sec-h">Practice sets</h2><div class="card list" id="practice-list">${DATA.practice.map(x=>{const ls=localState(x)||{};
+    const act=x.review?`<a class="btn btn-ghost" href="#review/${esc(x.id)}">Feedback</a>`:`<a class="btn btn-ghost" href="mocks/${esc(x.file)}">${ls.submitted?"Score and solutions":ls.startedAt?"Resume":"Start"}</a>`;
+    return `<div class="mrow"><div class="num p2">${+x.id.slice(1)}</div><div><div class="tt">${esc(x.title)}</div><div class="ss">${x.questions} questions · ${x.minutes} min${x.review?` · ${x.review.net} / ${x.review.sections.reduce((a,z)=>a+z.max,0)}`:""}</div></div><div class="hide-m"></div><div class="hide-m"></div><div class="act">${act}</div></div>`;}).join("")}</div>`:""}`;
 const H={};
-H.overview=()=>{ mntRender(); mntEval(); };
+H.overview=()=>{ mntRender(); mntEval(); fillToday(); };
 H.mocks=()=>document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{mockFilter=b.dataset.f;route();});
 
 R.schedule=()=>{
@@ -556,8 +603,7 @@ const mmss=s=>s>=60?`${Math.floor(s/60)}m ${String(s%60).padStart(2,"0")}s`:`${s
 let revFilter="todo";
 async function renderReview(id){
   $("page").innerHTML=`<div class="card">Loading your feedback…</div>`;
-  try{ if(!REV[id]){ const blob=await fetch(`data/review-${id}.json?ts=${Date.now()}`,{cache:"no-store"}).then(r=>r.json()); REV[id]=await decrypt(PW,blob); } }
-  catch(e){ $("page").innerHTML=`<div class="card">This feedback isn't ready yet. Daksh will let you know when it is.</div>`; return; }
+  if(!await loadReview(id)){ $("page").innerHTML=`<div class="card">This feedback isn't ready yet. Daksh will let you know when it is.</div>`; return; }
   const a=REV[id]; $("ptitle").textContent=REV_ONLY?"Today's step":"Feedback · "+a.title; $("page").innerHTML=`<div class="fade">${reviewHTML(a)}</div>`; bindReview(a); trkStart(a);
 }
 function reviewHTML(a){
@@ -578,30 +624,33 @@ function reviewHTML(a){
       ${a.plan.steps.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.sec)}</b><div class="fine show-s">${esc(x.tip)}</div></td><td style="white-space:nowrap">${x.mins} min</td><td style="white-space:nowrap"><b>${esc(byTxt(x.by))}</b></td><td class="hide-s">${esc(x.tip)}</td></tr>`).join("")}</table></div>
       ${a.plan.why?`<details class="more"><summary>Why this order</summary><p>${esc(a.plan.why)}</p></details>`:""}</div>`:"";
   const nx=MNT.doc&&MNT.st?MNT.doc.steps.find(x=>!(MNT.st.steps[x.id]||{}).done):null;
-  const cta=nx?`<div class="card span-12 cta"><div><span class="lbl">Your next step</span><b>${esc(nx.title)}</b> · about ${nx.minutes} min</div><a class="btn btn-primary" href="${esc(nx.link)}">Start</a></div>`:"";
+  const cta=nx?`<div class="card span-12 cta"><div><span class="lbl">When you are done here</span><b>${esc(nx.title)}</b> · about ${nx.minutes} min</div><a class="btn btn-primary" href="${esc(nx.link)}">Start</a></div>`:"";
   const sec=`<div class="card span-12"><h3>Section by section</h3><div style="overflow-x:auto"><table class="t"><tr><th>Section</th><th>Score</th><th>Right · wrong · left</th><th class="hide-s">Accuracy</th><th>Time vs. plan</th></tr>${secRows}</table></div>
     <p class="fine">The black line is the time planned for each section. A red bar means you went well over it.</p></div>
   <div class="card span-12"><h3>How you spent the time</h3><div class="strip">${lead>0.2?`<div style="width:${100*lead/a.duration}%;background:#cfc8b8"></div>`:""}${strip}</div>
     <div class="axis"><span>0 min</span><span>${Math.round(a.duration/2)} min</span><span>${a.duration} min</span></div>
     <div class="legend-s">${a.sections.map(s=>`<span style="--c:${SECC[s.id]}">${s.name}</span>`).join("")}</div></div>`;
-  const focus=a.focus&&a.focus.length?`<div class="card span-12"><h3>Topics to focus on next</h3><div class="fx">${a.focus.map(f=>`<div class="fx-i"><h4>${esc(f.name)}</h4><div class="sub">${esc(SECN[f.sec]||f.sec)} · <b>${f.stake.toFixed(1)} marks at stake</b> <span class="st-chip c-${f.status}">${STAT[f.status]}</span></div>
+  const focus=a.focus&&a.focus.length?`<div class="card span-12" id="focus"><h3>Topics to focus on next</h3><div class="fx">${a.focus.map(f=>`<div class="fx-i"><h4>${esc(f.name)}</h4><div class="sub">${esc(SECN[f.sec]||f.sec)} · <b>${f.stake.toFixed(1)} marks at stake</b> <span class="st-chip c-${f.status}">${STAT[f.status]}</span></div>
       <p><span class="lbl">What to do</span>${esc(f.do)}</p>
       <details class="more"><summary>Why, and where it is in your material</summary><p><span class="lbl">What we saw</span>${esc(f.seen?f.seen+" ":"")}${esc(f.evidence)}</p>
       ${f.material&&f.material.length&&!/^Not covered/.test(f.material[0])?`<p><span class="lbl">In your material</span>${f.material.map(esc).join("; ")}</p>`:""}
       ${f.method?`<p><span class="lbl">Method to use</span>${esc(f.method)}</p>`:""}</details></div>`).join("")}</div></div>`:"";
-  const workon=a.workon&&a.workon.length?`<div class="card span-12"><h3>What to work on</h3><div class="wo">${a.workon.map(w=>`<div class="wo-i"><h4>${esc(w.title)}</h4><p><span class="lbl">What to try</span>${esc(w.do)}</p><details class="more"><summary>What we saw</summary><p>${esc(w.seen)}</p></details></div>`).join("")}</div></div>`:"";
-  const habits=a.habits&&a.habits.length?`<div class="card span-12"><h3>Good habits to build</h3><ul class="ul">${a.habits.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:"";
+  const habits=a.habits&&a.habits.length?`<h4 class="hab-h">Good habits to keep</h4><ul class="ul">${a.habits.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:"";
+  const workon=a.workon&&a.workon.length?`<div class="card span-12" id="workon"><h3>What to change next time</h3>${workonHTML(a)}${habits}</div>`:(habits?`<div class="card span-12" id="workon">${habits}</div>`:"");
+  const qseam=`<div id="qseam" aria-label="Questions in order: green right, red wrong, open left">${a.questions.map(q=>`<i class="qm ${q.res==="right"?"r":q.res==="wrong"?"w":"l"}" title="Q${esc(String(q.n||""))}"></i>`).join("")}</div><p class="fine qs-l">Each question in order: <span class="qm r"></span> right · <span class="qm w"></span> wrong · <span class="qm l"></span> left</p>`;
   const topics=a.topics&&a.topics.length?`<div class="card span-12"><h3>Topic by topic</h3><div style="overflow-x:auto"><table class="t" style="min-width:560px"><tr><th>Topic</th><th>Section</th><th>This test (right · wrong · left)</th><th>All tests so far</th><th></th></tr>
       ${a.topics.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(SECN[t.sec]||t.sec)}</td><td>${t.here.right} · ${t.here.wrong} · ${t.here.left}</td><td>${t.all.right} of ${t.all.right+t.all.wrong} right${t.all.left?`, ${t.all.left} left`:""}</td><td><span class="st-chip c-${t.status}">${STAT[t.status]}</span></td></tr>`).join("")}</table></div></div>`:"";
   const marks=`<div class="card span-12"><h3>Where the marks went</h3><div class="etype">${["concept","slip","gap","time"].map(k=>`<div><b>${tags[k]||0}</b><span>${TAGS[k]}</span></div>`).join("")}</div></div>`;
   return `<div class="grid">
   ${cta}
   <div class="card span-12 an-head"><h2>${esc(a.headline)}</h2><p>${esc(a.summary)}</p>
-    <div class="an-meta"><b>${T.net.toFixed(2)} / ${T.max}</b> · ${T.correct} right · ${T.wrong} wrong · ${T.blank} left · ${T.accuracy}% accuracy · ${a.used} of ${a.duration} min</div>${dmHTML(a.id)}
+    ${qseam}<div class="an-meta"><b>${T.net.toFixed(2)} / ${T.max}</b> · ${T.correct} right · ${T.wrong} wrong · ${T.blank} left · ${T.accuracy}% accuracy · ${a.used} of ${a.duration} min</div>${dmHTML(a.id)}
     ${a.caveat?`<p class="fine">${esc(a.caveat)}</p>`:""}</div>
+  ${workon}
   ${planCard}
+  ${focus}
   <div class="card span-12"><h3>What went well</h3><ul class="ul">${a.strengths.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
-  <details class="span-12 bd" id="fullbd"><summary>Full breakdown: sections, time, topics, habits</summary><div class="grid">${sec}${focus}${workon}${habits}${topics}${marks}</div></details>
+  <details class="span-12 bd" id="fullbd"><summary>Section and time tables</summary><div class="grid">${sec}${topics}${marks}</div></details>
   <details class="span-12 bd" id="allq"><summary>All ${a.questions.length} questions, one by one</summary><div class="card" style="margin-top:14px"><div id="rvprog"></div><div class="toolbar">${[["todo","Still to go"],["all","All"],["wrong","Wrong"],["blank","Left"],["right","Right"]].map(f=>`<button class="seg ${revFilter===f[0]?"on":""}" data-rf="${f[0]}">${f[1]}${f[0]==="todo"?"":` (${f[0]==="all"?a.questions.length:a.questions.filter(q=>q.res===f[0]).length})`}</button>`).join("")}</div><div id="qlist"></div></div></details>
   </div>`;
 }
@@ -668,7 +717,7 @@ function bindReview(a){
 }
 
 /* ---------- feedback engagement: time on page, solutions read, got it / still unclear ---------- */
-const TRK={id:null,st:null,obs:null,vis:new Set(),last:Date.now(),tick:null,push:null,dirty:false};
+const TRK={id:null,st:null,obs:null,vis:new Set(),last:Date.now(),tick:null,push:null,dirty:false,gen:0,live:0};
 const DONE_SECS=20;   // a wrong/left question counts as gone through after 20 s on screen, or "Got it"
 const trkKey=id=>"atelier:rv:"+id;
 function trkLoad(id){ try{ return JSON.parse(localStorage.getItem(trkKey(id))||"null"); }catch(e){ return null; } }
@@ -695,18 +744,19 @@ function paintProgress(a){ const el=$("rvprog"); if(!el||!TRK.st) return; const 
     const nx=$("stepnext"); if(nx&&fin&&!nx.classList.contains("ready")){ nx.classList.add("ready"); $("stepnext-l").textContent="Step done ✓ · Next"; if(TRK.dirty) nx.scrollIntoView({behavior:"smooth",block:"center"}); }
     return; }
   el.innerHTML=`<div class="rvp"><div><b>${ids.length-done}</b> wrong or left still to go${unc?` · <b>${unc}</b> still unclear`:""}. Your plan gives them to you a few at a time.</div><div class="bar"><i style="width:${ids.length?100*done/ids.length:100}%"></i></div></div>`; }
-async function trkStart(a){ trkStop(); TRK.id=a.id; const now=Date.now();
+async function trkStart(a){ trkStop(); TRK.id=a.id; const gen=++TRK.gen, now=Date.now();
   let st=trkLoad(a.id)||{secs:0,sessions:0,first:now,last:now,q:{}};
-  st=trkMerge(st, await trkServer(a.id)); st.sessions=(st.sessions||0)+1; st.last=now; st.total=a.questions.filter(q=>q.res!=="right").length;
+  st=trkMerge(st, await trkServer(a.id)); if(gen!==TRK.gen||TRK.id!==a.id||!$("qlist")) return;   // she left (or came back) while it loaded
+  st.sessions=(st.sessions||0)+1; st.last=now; st.total=a.questions.filter(q=>q.res!=="right").length;
   TRK.st=st; TRK.dirty=true; trkSave(); trkPush();
   TRK.obs=new IntersectionObserver(es=>es.forEach(e=>{ const q=e.target.dataset.qid; if(e.isIntersecting&&e.intersectionRect.height>=0.5*Math.min(e.boundingClientRect.height,innerHeight)) TRK.vis.add(q); else TRK.vis.delete(q); }),{threshold:[0,0.5,1]});
   $("qlist").innerHTML=qlistHTML(a); observeCards(); paintProgress(a);
-  TRK.tick=setInterval(()=>{ if(VIEWER||document.visibilityState!=="visible"||Date.now()-TRK.last>60000||!location.hash.startsWith("#review/"+TRK.id)) return;
+  TRK.live++; TRK.tick=setInterval(()=>{ if(VIEWER||document.visibilityState!=="visible"||Date.now()-TRK.last>60000||!location.hash.startsWith("#review/"+TRK.id)) return;
     const s=TRK.st; s.secs+=5; s.last=Date.now(); TRK.vis.forEach(q=>{ const cc=document.querySelector(`.qcard[data-qid="${q}"]`); if(cc&&cc.classList.contains("hide-ans")) return; const r=s.q[q]=s.q[q]||{secs:0}; r.secs=(r.secs||0)+5;
       const c=document.querySelector(`.qcard[data-qid="${q}"]`); if(c) c.classList.toggle("done",qDone(s,q)); });
     TRK.dirty=true; trkSave(); paintProgress(a); },5000);
   TRK.push=setInterval(trkPush,120000); }
-function trkStop(){ clearInterval(TRK.tick); clearInterval(TRK.push); if(TRK.obs) TRK.obs.disconnect(); TRK.vis.clear(); if(TRK.st) trkPush(); TRK.st=null; TRK.id=null; }
+function trkStop(){ TRK.gen++; if(TRK.tick){ clearInterval(TRK.tick); TRK.live--; } clearInterval(TRK.push); TRK.tick=TRK.push=null; if(TRK.obs) TRK.obs.disconnect(); TRK.vis.clear(); if(TRK.st) trkPush(); TRK.st=null; TRK.id=null; }
 ["mousemove","scroll","keydown","touchstart","click"].forEach(e=>addEventListener(e,()=>{TRK.last=Date.now();},{passive:true}));
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden") trkPush(); });
 addEventListener("pagehide",()=>trkPush(true));
@@ -774,30 +824,101 @@ async function mntEval(o={}){
   } finally { MNT.busy=false; }
   mntRender(); }
 async function mntRefreshDoc(){ const d=await mntFetchDoc(); if(d&&MNT.doc&&d.version!==MNT.doc.version){ MNT.doc=d; MNT.ack=null; mntRender(); mntEval({silent:true}); } }
+const firstSentence=t=>{ const m=String(t||"").match(/^.*?[.!?](\s|$)/); return (m?m[0]:String(t||"")).trim(); };
+const nextMockLive=()=>{ const D=MNT.doc, skip=MNT.mockDone&&D&&D.nextMock?D.nextMock.id:null;   // submitted on another device
+  return DATA.mocks.find(m=>!m.result&&!(localState(m)||{}).submitted&&m.date>=todayIST()&&m.id!==skip); };
+const daysTo=d=>Math.round((Date.parse(d)-Date.parse(todayIST()))/864e5);
+function mockStopHTML(D,left){
+  const nm=nextMockLive(); if(!nm) return "";
+  const today=nm.date===todayIST(), n=daysTo(nm.date);
+  const when=today?`Today, any 3-hour slot · 180 minutes, 150 questions. Ask Daksh for your start code when you sit down.`
+    :`${fmt(nm.date,{weekday:"long",day:"numeric",month:"long"})} · ${n===1?"tomorrow":`in ${n} days`}`;
+  const gp=today&&(D.gameplan||[]).length?`<div class="gameplan" id="gameplan">${D.gameplan.map(g=>`<div><b>${esc(g.title)}</b><span>${esc(g.text)}</span></div>`).join("")}</div>`:"";
+  return `<div class="stop-k"><i class="dia"></i></div><div class="mockbox"><div class="mb-top"><div><div class="mb-t">${esc(nm.title)}</div><div class="mb-w">${when}</div></div>
+    <div class="mb-act">${today&&nm.released?`<a class="btn btn-light" href="mocks/${esc(nm.file)}">Open the test</a>`:""}<span><a href="check.html">System check first</a> · <a href="mocks/MFM-DEMO.html">Practice the interface</a></span></div></div>
+    ${gp}${today?`<div id="timing">${timingHTML()}</div>`:""}</div>`;
+}
+async function loadReview(id){ try{ if(!REV[id]){ const blob=await fetch(`data/review-${id}.json?ts=${Date.now()}`,{cache:"no-store"}).then(r=>r.json()); REV[id]=await decrypt(PW,blob); } return REV[id]; }catch(e){ return null; } }
+function latestOf(list){ const at=list.filter(x=>x.reviewedAt); return at.length?at.sort((a,b)=>b.reviewedAt-a.reviewedAt)[0]:(list.length?list[list.length-1]:null); }
+const latestReviewed=()=>latestOf([...(DATA.warmup&&DATA.warmup.review?[DATA.warmup]:[]),...(DATA.practice||[]).filter(x=>x.review),...DATA.mocks.filter(m=>m.result)]);   // with no dates at all, the last mock wins
+const latestMock=()=>latestOf(DATA.mocks.filter(m=>m.result));
+const pctChange=(cur,prev)=>(typeof prev==="number"&&prev>0&&typeof cur==="number")?Math.round(100*(cur-prev)/prev):null;
+const SECMAX={CAEC:50,QA:20,ALA:25,GKCA:25,CS:30};
+function chgHTML(cur,prev,first){ if(first) return `<span class="ch-first">First mock</span>`; const c=pctChange(cur,prev);
+  return c===null?`<span class="ch-first">New marks</span>`:c>0?`<b class="ch-up">Up ${c}%</b>`:c<0?`<b class="ch-down">Down ${-c}%</b>`:`<span class="ch-first">Level</span>`; }
+function seasonHTML(){
+  const D=MNT.doc; if(!D||!D.checkpoints) return ""; const done=D.checkpoints.filter(c=>c.actual).sort((a,b)=>a.id<b.id?-1:1); if(!done.length) return "";
+  const last=done[done.length-1], prev=done.length>1?done[done.length-2]:null, first=done[0], nm=nextMockLive();
+  const n=c=>+c.id.slice(1), fig=(k,v,sub,cls="")=>`<div class="fig"><span class="k">${k}</span><b class="${cls}">${v}</b>${sub?`<span class="s">${sub}</span>`:""}</div>`;
+  const pc=(a,b)=>{ const c=pctChange(a,b); return c===null?"New marks":c>0?`Up ${c}%`:c<0?`Down ${-c}%`:"Level"; };
+  const figs=prev?fig("Since your last mock",pc(last.actual.total,prev.actual.total),`${prev.actual.total} to ${last.actual.total} marks`,"pc")
+      +fig(`Since Mock ${n(first)}`,pc(last.actual.total,first.actual.total),`${first.actual.total} to ${last.actual.total} marks`,"pc")
+    :fig("Latest mock",`${last.actual.total}`,`of 150 · Mock ${n(last)}, ${fmt((DATA.mocks.find(m=>m.id===last.id)||{}).date||todayIST(),{day:"numeric",month:"short"})}`)+fig("Since your last mock","First mock","Your next mock sets the first change");
+  const next=nm?fig("Next",esc(nm.title),nm.date===todayIST()?"Today":fmt(nm.date,{weekday:"short",day:"numeric",month:"short"})):"";
+  const rows=Object.keys(SECMAX).map(k=>{ const v=last.actual.sections[k], mx=SECMAX[k], pct=Math.max(0,Math.round(100*v/mx));
+    const tg=VIEWER&&last.sections&&typeof last.sections[k]==="number"?` <span class="fine">target ${last.sections[k]}, scored ${v}</span>`:"";
+    return `<div class="secrow"><span class="sn">${SECN[k]} <span>of ${mx}</span></span><span class="sb"><span class="bar"><i style="width:${Math.min(100,pct)}%"></i></span><span class="sv"><b>${pct}%</b> · ${v} marks</span></span><span class="sc">${chgHTML(v,prev&&prev.actual.sections[k],!prev)}${tg}</span></div>`; }).join("");
+  return `<h2 class="sec-h">Your season</h2><div class="card season"><div class="figs">${figs}${next}</div>
+    <p class="sh">Your mock scores, in marks out of 150</p><div id="seam"></div>
+    <div class="sec-head"><span>By section</span><span>Latest mock, share of the section's marks</span><span>Since last mock</span></div>${rows}</div>`;
+}
+function drawSeam(){
+  const el=$("seam"), D=MNT.doc; if(!el||!D) return;
+  const W=Math.max(300,el.clientWidth), small=W<520, H=small?200:240, L=small?34:46, R=small?12:20, T=30, B=40;
+  const mocks=DATA.mocks.slice(0,20), sp=(W-L-R)/Math.max(1,mocks.length-1), X=i=>L+i*sp;
+  const done=(D.checkpoints||[]).filter(c=>c.actual), top=Math.max(120,Math.ceil((Math.max(0,...done.map(c=>c.actual.total))+15)/40)*40);
+  const Y=v=>T+(1-v/top)*(H-T-B), t=(x,y,s,a="middle",c="#6a6a72",w=400)=>`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${a}" fill="${c}" font-size="13" font-weight="${w}">${s}</text>`;
+  const tday=todayIST(), nm=nextMockLive(); let o="";
+  for(let g=40;g<=top;g+=40) o+=`<line x1="${L}" x2="${W-R}" y1="${Y(g)}" y2="${Y(g)}" stroke="#ece6da"/>`+t(L-8,Y(g)+4,g,"end");
+  o+=`<line x1="${L}" x2="${W-R}" y1="${Y(0)}" y2="${Y(0)}" stroke="#b8b0a0" stroke-width="1.5" stroke-dasharray="7 6"/>`+t(L-8,Y(0)+4,0,"end");
+  const pts=[];
+  mocks.forEach((m,i)=>{ const x=X(i), c=(D.checkpoints||[]).find(z=>z.id===m.id), isNext=nm&&nm.id===m.id;
+    if(isNext) o+=`<line x1="${x}" x2="${x}" y1="${T-8}" y2="${Y(0)}" stroke="#b5432c" stroke-width="1.5" stroke-dasharray="3 4"/>`+t(x,T-14,m.date===tday?"Today":"Next","middle","#b5432c",700);
+    if(VIEWER&&c&&typeof c.target==="number") o+=`<line class="tgt" x1="${x-7}" x2="${x+7}" y1="${Y(c.target)}" y2="${Y(c.target)}" stroke="#d49a1a" stroke-width="2.5"/>`;
+    if(c&&c.actual) pts.push([x,Y(c.actual.total),c.actual.total]);
+    if(!small||i%2===0||(c&&c.actual)||isNext) o+=t(x,Y(0)+22,i+1,"middle",c&&c.actual?"#1a1c22":isNext?"#b5432c":"#8a8272",c&&c.actual||isNext?700:400); });
+  if(pts.length>1) o+=`<path d="M${pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" L")}" fill="none" stroke="#1f2b5c" stroke-width="3" stroke-linejoin="round"/>`;
+  o+=pts.map(p=>`<circle class="knot-m" cx="${p[0]}" cy="${p[1]}" r="7" fill="#1f2b5c"/><circle cx="${p[0]}" cy="${p[1]}" r="2.5" fill="#fffdf9"/>`+t(p[0],p[1]-13,p[2],"middle","#1a1c22",700)).join("");
+  o+=t(L,H-4,"Mock","start","#8a8272");
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Mock scores so far" style="display:block;font-family:'Hanken Grotesk',sans-serif">${o}</svg>`;
+}
+function renderSeason(){ const el=$("season"); if(!el) return; el.innerHTML=seasonHTML(); drawSeam(); }
+window.addEventListener("resize",()=>{ clearTimeout(window.__sz); window.__sz=setTimeout(drawSeam,150); });
+function timingHTML(){ const m=latestMock(), a=m&&REV[m.id]; if(!a||!a.plan) return "";
+  return `<b>Your section order:</b> ${a.plan.steps.map(x=>`${esc(x.sec)} ${x.mins} min${x.by&&x.by!=="0:00"?` (move on at ${esc(planBy(x.by))})`:""}`).join(" → ")}`; }
+function workonHTML(a){ return `<div class="wo">${a.workon.map(w=>`<div class="wo-i"><h4>${esc(w.title)}</h4><p>${esc(w.do)}</p><p class="seen">${esc(w.seen)}</p></div>`).join("")}</div>`; }
+async function fillToday(){
+  const t=latestReviewed(); if(t){ const a=await loadReview(t.id); const el=$("latest");
+    if(a&&el) el.innerHTML=`<div class="sec-row"><h2 class="sec-h">From your latest feedback</h2><a href="#review/${esc(t.id)}">Read the full feedback</a></div>
+      <div class="card latest"><p class="lt-h"><b>${esc(a.title)}:</b> ${esc(a.headline)}</p>${(a.workon||[]).length?workonHTML(a):""}</div>`; }
+  const m=latestMock(), tm=$("timing"); if(m&&tm){ await loadReview(m.id); const t2=$("timing"); if(t2) t2.innerHTML=timingHTML(); } }
 function mntRender(){
   const el=$("mnt"); if(!el||!MNT.doc||!MNT.st) return; const D=MNT.doc, st=MNT.st;
   const isDone=x=>!!(st.steps[x.id]||{}).done;
   const left=MNT.mockDone?[]:D.steps.filter(x=>!isDone(x)), now=left[0], fin=D.steps.filter(isDone);
-  const nm=D.nextMock&&DATA.mocks.find(m=>m.id===D.nextMock.id);
+  const nm=nextMockLive(), mockDay=!!(nm&&nm.date===todayIST());
   MNT.shownNow=now?now.id:null;
-  const card=now?`<div class="lbl">Now · step ${fin.length+1} of ${D.steps.length}</div><div class="tt">${esc(now.title)}</div><p>${esc(now.why)}</p>
-      <div class="go"><a class="btn btn-primary btn-big" href="${esc(now.link)}" data-step="${esc(now.id)}">Start</a><span>about ${now.minutes} min</span></div>`
-    :MNT.mockDone&&nm?`<div class="lbl">Now</div><div class="tt">All done for now</div><p>${esc(nm.title)} is done. Your feedback and your next steps are on their way.</p>`
-    :`<div class="lbl">Now</div><div class="tt">All done for now</div><p>That's everything on your plan until the next update.</p>`;
+  const sub=$("hello-sub");
+  if(sub) sub.textContent=mockDay?`${nm.title} is today. ${left.length?`${left.length===1?"One short step":`${left.length} short steps`} first, then the mock.`:"Take it in any 3-hour slot today."}`
+    :now?`Your next step: ${now.title}.${nm?` ${nm.title} is on ${fmt(nm.date,{weekday:"long"})}.`:""}`:nm?`${nm.title} is on ${fmt(nm.date,{weekday:"long",day:"numeric",month:"long"})}.`:"";
+  const nowHTML=now?`<div class="stop-k"><i class="knot now"></i></div><div class="mnt-now" id="mnt-now"><div class="lbl">Now · step ${fin.length+1} of ${D.steps.length}</div><div class="tt">${esc(now.title)}</div><p>${esc(now.why)}</p>
+      ${now.tip?`<p class="tip"><b>Tip:</b> ${esc(now.tip)}</p>`:""}
+      <div class="go"><a class="btn btn-primary btn-big" href="${esc(now.link)}" data-step="${esc(now.id)}">Start · ${now.minutes} min</a></div></div>`
+    :`<div class="stop-k"><i class="knot"></i></div><div class="mnt-now" id="mnt-now"><div class="tt">All done for now</div><p>${MNT.mockDone&&D.nextMock?`${esc((DATA.mocks.find(m=>m.id===D.nextMock.id)||{}).title||"The mock")} is done. Your feedback and your next steps are on their way.`:"That's everything on your plan until the next update."}</p></div>`;
+  const rest=left.slice(1).map(x=>`<div class="stop-k"><i class="knot"></i></div><a class="stop" href="${esc(x.link)}" data-step="${esc(x.id)}"><span class="st-t">${esc(x.title)}</span><span class="st-s">${esc(x.teaser||firstSentence(x.why))}</span><em>${x.minutes} min</em></a>`).join("");
   const cps=(D.checkpoints||[]).filter(c=>c.milestone), nextM=cps.find(c=>!c.actual), last=[...cps].reverse().find(c=>c.actual);
-  el.innerHTML=`<div class="mnt-top"><p class="mnt-h">${esc(D.headline)}</p></div>
+  el.innerHTML=`<p class="mnt-h">${esc(D.headline)}</p>
     ${MNT.ack?`<p class="mnt-ack" role="status">Nice. That's "${esc(MNT.ack.title)}" done.</p>`:""}
-    ${fin.length?`<div class="mnt-done">${fin.map(x=>`<div>✓ ${esc(x.title)}</div>`).join("")}</div>`:""}
-    <div class="mnt-prog"><div class="bar"><i style="width:${100*fin.length/D.steps.length}%"></i></div><span>${fin.length} of ${D.steps.length} done${nm?` before ${esc(nm.title.replace(/^MFM GAT\s*[–-]\s*/,""))}`:""}</span></div>
-    <div class="mnt-now" id="mnt-now">${card}</div>
-    ${left.length>1?`<div class="mnt-next">${left.slice(1,3).map(x=>`<a href="${esc(x.link)}" data-step="${esc(x.id)}"><b>NEXT</b><span>${esc(x.title)}</span><em>${x.minutes} min</em></a>`).join("")}</div>`:""}
-    ${left.length>3||(D.later||[]).length?`<details class="more"><summary>${left.length>3?`${left.length-3} more step${left.length>4?"s":""} and what comes after`:"What comes after"}</summary><ul>${left.slice(3).map(x=>`<li>${esc(x.title)} · ${x.minutes} min</li>`).concat((D.later||[]).map(x=>`<li>${esc(x)}</li>`)).join("")}</ul></details>`:""}
+    ${fin.length?`<p class="mnt-done">✓ ${fin.length} done: ${fin.map(x=>esc(x.title)).join(" · ")}</p>`:""}
+    <div class="path-grid" id="path-stops">${nowHTML}${rest}</div>
+    <div class="path-grid" id="mockstop">${mockStopHTML(D,left)}</div>
+    ${(D.later||[]).length?`<div id="later"><span class="lbl">Coming up after</span><ul>${D.later.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
     ${st.noticeAck?"":`<div class="mnt-notice" id="mnt-notice"><span>${MNT_NOTICE}</span><button class="btn btn-ghost">Okay</button></div>`}
-    ${VIEWER&&nextM?`<p class="mnt-target">Next target: <b>${nextM.target}</b> at Mock ${+nextM.id.slice(1)}${last?` · you: ${last.actual.total}`:""} <span class="fine">(mentor view only)</span></p>`:last?`<p class="mnt-target">Latest mock: <b>${last.actual.total}</b>${(()=>{const b=Math.max(...cps.filter(x=>x.actual).map(x=>x.actual.total));return b>last.actual.total?` · best so far: ${b}`:"";})()}</p>`:""}
-    ${cps.length?`<details class="more" id="mnt-goal"><summary>${VIEWER?"All milestones and the goal":"Your mocks so far"}</summary>
-      <div class="mnt-ms" id="mnt-ms">${cps.map((c,i)=>`${i?'<span class="ln"></span>':""}<span class="m${c.actual?" hit":""}"><b>M${+c.id.slice(1)}</b><i></i>${c.actual?c.actual.total:(VIEWER?c.target:"")}</span>`).join("")}</div>
-      ${VIEWER&&D.goal?`<p><b>Goal by Mock 20: ${D.goal.total}.</b> That's about what Delhi, Mumbai or Bengaluru has needed.<br>About <b>${D.goal.seatLine}</b> has been enough for a top-7 campus. The interview adds 30%.</p>
-      <details class="more"><summary>Where these numbers come from</summary><p>${esc(D.goal.why||"")}</p></details>`:""}</details>`:""}`;
+    ${VIEWER&&nextM?`<p class="mnt-target">Next target: <b>${nextM.target}</b> at Mock ${+nextM.id.slice(1)}${last?` · you: ${last.actual.total}`:""} <span class="fine">(mentor view only)</span></p>`:""}
+    ${VIEWER&&D.goal?`<details class="more" id="mnt-goal"><summary>The goal and milestones (mentor view only)</summary><p><b>Goal by Mock 20: ${D.goal.total}.</b> That's about what Delhi, Mumbai or Bengaluru has needed. About <b>${D.goal.seatLine}</b> has been enough for a top-7 campus.</p>
+      <div class="mnt-ms" id="mnt-ms">${cps.map((c,i)=>`${i?'<span class="ln"></span>':""}<span class="m${c.actual?" hit":""}"><b>M${+c.id.slice(1)}</b><i></i>${c.actual?c.actual.total:c.target}</span>`).join("")}</div>
+      <p class="fine">${esc(D.goal.why||"")}</p></details>`:""}`;
+  renderSeason();
   const nb=el.querySelector("#mnt-notice button"); if(nb) nb.onclick=()=>{ st.noticeAck=true; MNT.dirty=true; mntSave(); mntPush(); mntRender(); };
   el.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{ const r=st.steps[b.dataset.step]=st.steps[b.dataset.step]||{}; r.opened=r.opened||Date.now(); MNT.dirty=true; mntSave(); }));
 }
@@ -806,7 +927,8 @@ function dmHTML(id){
   const cps=MNT.doc&&MNT.doc.checkpoints; if(!cps) return ""; const c=cps.find(x=>x.id===id); if(!c||!c.actual) return "";
   const nextM=cps.find(x=>x.milestone&&!x.actual);
   if(!VIEWER){ const prev=cps.filter(x=>x.actual&&x.id<c.id).pop();
-    return `<div class="dm" id="dm">${!c.review?"Baseline for your plan.":prev?`${c.actual.total>=prev.actual.total?"Up":"Down"} ${Math.abs(c.actual.total-prev.actual.total).toFixed(2)} from Mock ${+prev.id.slice(1)} (${prev.actual.total}).`:""}</div>`; }
+    const pc=prev?pctChange(c.actual.total,prev.actual.total):null;
+    return `<div class="dm" id="dm">${!prev?"Baseline for your plan.":pc===null?`Mock ${+prev.id.slice(1)}: ${prev.actual.total}.`:`${pc>=0?"Up":"Down"} ${Math.abs(pc)}% on Mock ${+prev.id.slice(1)} (${prev.actual.total} to ${c.actual.total}).`}</div>`; }
   if(!c.review) return `<div class="dm" id="dm">Baseline for your plan.${nextM?` Next target: <b>${nextM.target}</b> at Mock ${+nextM.id.slice(1)}.`:""} <span class="fine">(Targets show only in mentor view.)</span></div>`;
   return `<div class="dm" id="dm">Target ${c.target}, you scored ${c.actual.total}: <span class="v-${c.review.total.replace(" ","-")}">${VERD[c.review.total]}</span>.
     <div style="overflow-x:auto"><table class="t" style="margin-top:8px"><tr><th>Section</th><th>Target</th><th>Scored</th><th></th></tr>${Object.keys(c.sections).map(k=>`<tr><td>${esc(SECN[k]||k)}</td><td>${c.sections[k]}</td><td>${c.actual.sections[k]}</td><td class="v-${c.review.sections[k].replace(" ","-")}">${VERD[c.review.sections[k]]}</td></tr>`).join("")}</table></div></div>`; }
