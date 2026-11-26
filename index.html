@@ -712,7 +712,7 @@ function bindReview(a){
     r.ut=Date.now(); TRK.dirty=true; trkSave(); trkPush();
     const card=g.closest(".qcard"); card.querySelector("[data-got]").classList.toggle("on",!!r.got); const u=card.querySelector("[data-unc]"); u.classList.toggle("on",!!r.unclear); u.classList.toggle("warn",!!r.unclear);
     card.classList.toggle("done",qDone(TRK.st,id)); paintProgress(a);
-    if(r.got||r.unclear){ const nx=[...document.querySelectorAll(".qcard[data-qid]")].find(c=>c.compareDocumentPosition(card)&Node.DOCUMENT_POSITION_PRECEDING&&!c.classList.contains("done")); if(nx) setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"start"}),450); } };
+    if(r.got||r.unclear){ const nx=[...document.querySelectorAll(".qcard[data-qid]")].find(c=>c.compareDocumentPosition(card)&Node.DOCUMENT_POSITION_PRECEDING); if(nx) setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"start"}),450); } };
   $("rvnext")&&($("rvnext").onclick=()=>{ revFilter="todo"; document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x.dataset.rf==="todo")); draw(); const c=document.querySelector(".qcard[data-qid]:not(.done)"); c&&c.scrollIntoView({behavior:"smooth",block:"start"}); });
 }
 
