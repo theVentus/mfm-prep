@@ -261,6 +261,8 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .show-m{display:none}.mrow-next{border-left:4px solid var(--indigo);background:#f6f5fb}.tag.next{background:var(--indigo);color:#fff}
 .qcard.hide-ans .op{background:none!important;border-color:var(--line)!important;color:var(--ink)!important}.qcard.hide-ans .op small,.qcard.hide-ans .qnote,.qcard.hide-ans .sol,.qcard.hide-ans .qact{display:none!important}
 .reveal{margin-top:10px}
+.qcard [data-pick]{cursor:pointer}.qcard [data-pick]:hover{border-color:var(--indigo)!important}.op.picked{outline:2px solid var(--indigo);outline-offset:1px}
+.retry{font-weight:600;margin:10px 0 0}.retry.ok{color:var(--sage)}.retry.no{color:#b5432c}.pick-hint{margin:10px 0 0}
 .rvp.sticky{position:sticky;top:0;z-index:5;padding:8px 12px;margin:0}
 .stepv .step-h,.stepv #stepnext,.stepv #rvprog,.stepv .step-tip{max-width:780px}
 .cta.ready{box-shadow:0 0 0 3px var(--sage-soft);position:sticky;bottom:12px;z-index:6}
@@ -622,13 +624,14 @@ function qlistHTML(a){
     if(q.sec!==cur&&!REV_ONLY){cur=q.sec; h+=`<div style="font:600 12px Hanken Grotesk;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px">${esc(a.sections.find(s=>s.id===q.sec).full)}</div>`;}
     if(q.pid&&!shown.has(q.pid)&&a.passages[q.pid]){shown.add(q.pid); h+=`<details class="pas"><summary style="cursor:pointer;font-weight:600">${esc(a.passages[q.pid].title||"Passage")} (tap to read)</summary>\n${a.passages[q.pid].text}</details>`;}
     const res={right:"Right",wrong:"Wrong",blank:q.status==="mr"?"Marked, no answer saved":"Left"}[q.res];
-    const tr=q.res!=="right", rec=(TRK.st&&TRK.st.q||{})[q.id]||{}, dn=tr&&qDone(TRK.st,q.id), hide=REV_ONLY&&tr&&!dn;
+    const tr=q.res!=="right", rec=(TRK.st&&TRK.st.q||{})[q.id]||{}, dn=tr&&qDone(TRK.st,q.id), hide=tr&&!dn&&(REV_ONLY||q.res==="blank");
     const tg=q.res==="blank"&&q.secs<15?"Skipped":q.tag==="time"&&q.secs<120?"":q.tag?TAGS[q.tag]:"";
     const nb=q.note?(m=>m?`<b>${esc(m[1])}</b>${esc(q.note.slice(m[1].length))}`:esc(q.note))(q.note.match(/^(.+?[.!?])(\s|$)/)):"";
     return h+`<div class="qcard${dn?" done":""}${hide?" hide-ans":""}"${tr?` data-qid="${q.id}"`:""}><div class="qh"><b>Q${q.n}</b><span>${esc(q.topic)}</span><span>·</span><span>${mmss(q.secs)}</span><span style="flex:1"></span><span class="tag ${q.res}">${res}${tg?` · ${tg}`:""}</span></div>
       <div class="qt">${q.text}</div>
-      ${q.options.map((o,k)=>`<div class="op ${k===q.key?"key":""} ${k===q.yours?"mine":""}">${k+1}. ${o}${k===q.key?"<small style='color:var(--sage)'>Correct</small>":""}${k===q.yours&&k!==q.key?"<small style='color:var(--madder)'>Your answer</small>":""}${k===q.yours&&k===q.key?"<small style='color:var(--sage)'>Your answer</small>":""}</div>`).join("")}
-      ${hide?`<button class="btn btn-ghost reveal" data-reveal="${q.id}">Show answer</button>`:""}
+      ${q.options.map((o,k)=>`<div class="op ${k===q.key?"key":""} ${k===q.yours?"mine":""} ${rec.try&&rec.try.pick===k?"picked":""}"${hide?` data-pick="${q.id}|${k}" role="button" tabindex="0"`:""}>${k+1}. ${o}${k===q.key?"<small style='color:var(--sage)'>Correct</small>":""}${k===q.yours&&k!==q.key?"<small style='color:var(--madder)'>Your answer</small>":""}${k===q.yours&&k===q.key?"<small style='color:var(--sage)'>Your answer</small>":""}</div>`).join("")}
+      ${hide?`<p class="fine pick-hint">Tap the answer you'd choose now, or</p><button class="btn btn-ghost reveal" data-reveal="${q.id}">Show answer</button>`:""}
+      ${rec.try?`<p class="retry ${rec.try.right?"ok":"no"}">${rec.try.right?"Second try: right ✓":"Second try: not yet. Read the note below."}</p>`:""}
       ${q.note?`<div class="qnote"><span class="lbl">Note for you</span>${nb}</div>`:""}
       ${q.note?`<details class="sol"><summary>Full solution · answer ${q.key+1}</summary>${q.expl}</details>`:`<div class="sol"><span class="lbl">Full solution · answer ${q.key+1}</span>${q.expl}</div>`}
       ${tr?`<div class="qact"><span>How did that go?</span><button class="seg ${rec.got?"on":""}" data-got="${q.id}" aria-pressed="${!!rec.got}">✓ Got it</button><button class="seg ${rec.unclear?"on warn":""}" data-unc="${q.id}" aria-pressed="${!!rec.unclear}">Still unclear</button></div>`:""}</div>`;}).join("")||`<p style="color:var(--muted)">${revFilter==="todo"?"All done: you've gone through every question you got wrong or left.":"Nothing here."}</p>`;
@@ -637,7 +640,14 @@ function bindReview(a){
   const draw=()=>{ $("qlist").innerHTML=qlistHTML(a); observeCards(); paintProgress(a); };
   draw();
   document.querySelectorAll("[data-rf]").forEach(b=>b.onclick=()=>{revFilter=b.dataset.rf;document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x===b));draw();});
-  $("qlist").onclick=e=>{ const rv=e.target.closest("[data-reveal]"); if(rv){ rv.closest(".qcard").classList.remove("hide-ans"); rv.remove(); return; }
+  $("qlist").onclick=e=>{ const pk=e.target.closest("[data-pick]");
+    if(pk){ const [qid,k]=pk.dataset.pick.split("|"), q=a.questions.find(x=>x.id===qid), card=pk.closest(".qcard"), right=+k===q.key;
+      card.classList.remove("hide-ans"); card.querySelectorAll("[data-pick]").forEach(x=>x.removeAttribute("data-pick")); pk.classList.add("picked");
+      card.querySelectorAll(".reveal,.pick-hint").forEach(x=>x.remove());
+      const msg=document.createElement("p"); msg.className="retry "+(right?"ok":"no"); msg.textContent=right?"Second try: right ✓":"Second try: not yet. Read the note below."; pk.parentNode.insertBefore(msg,card.querySelector(".qnote,.sol,details.sol"));
+      if(!VIEWER&&TRK.st){ const r=TRK.st.q[qid]=TRK.st.q[qid]||{secs:0}; r.try={pick:+k,right,at:Date.now()}; r.ut=Date.now(); TRK.dirty=true; trkSave(); trkPush(); card.classList.toggle("done",qDone(TRK.st,qid)); paintProgress(a); }
+      return; }
+    const rv=e.target.closest("[data-reveal]"); if(rv){ const c=rv.closest(".qcard"); c.classList.remove("hide-ans"); c.querySelectorAll("[data-pick]").forEach(x=>x.removeAttribute("data-pick")); c.querySelectorAll(".pick-hint").forEach(x=>x.remove()); rv.remove(); return; }
     const g=e.target.closest("[data-got],[data-unc]"); if(VIEWER||!g||!TRK.st) return;
     const id=g.dataset.got||g.dataset.unc, r=TRK.st.q[id]=TRK.st.q[id]||{secs:0};
     if(g.dataset.got){ r.got=!r.got; if(r.got) r.unclear=false; } else { r.unclear=!r.unclear; if(r.unclear) r.got=false; }
@@ -654,16 +664,18 @@ const DONE_SECS=20;   // a wrong/left question counts as gone through after 20 s
 const trkKey=id=>"atelier:rv:"+id;
 function trkLoad(id){ try{ return JSON.parse(localStorage.getItem(trkKey(id))||"null"); }catch(e){ return null; } }
 function trkSave(){ if(VIEWER) return; try{ if(TRK.id&&TRK.st) localStorage.setItem(trkKey(TRK.id),JSON.stringify(TRK.st)); }catch(e){} }
-function qDone(st,qid){ const r=st&&st.q&&st.q[qid]; return !!(r&&(r.got||r.unclear||(r.secs||0)>=DONE_SECS)); }
+function qDone(st,qid){ const r=st&&st.q&&st.q[qid]; return !!(r&&(r.got||r.unclear||r.try||(r.secs||0)>=DONE_SECS)); }
 function trkMerge(a,b){ if(!b) return a; const o={...b,...a, secs:Math.max(a.secs||0,b.secs||0), sessions:Math.max(a.sessions||0,b.sessions||0),
     first:Math.min(a.first||Infinity,b.first||Infinity), last:Math.max(a.last||0,b.last||0), q:{...(b.q||{})}};
   for(const [k,v] of Object.entries(a.q||{})){ const w=o.q[k]||{}; const newer=(v.ut||0)>=(w.ut||0)?v:w;
-    o.q[k]={secs:Math.max(v.secs||0,w.secs||0), got:!!newer.got, unclear:!!newer.unclear, ut:Math.max(v.ut||0,w.ut||0)}; }
+    o.q[k]={secs:Math.max(v.secs||0,w.secs||0), got:!!newer.got, unclear:!!newer.unclear, ut:Math.max(v.ut||0,w.ut||0)}; const tr=v.try||w.try; if(tr) o.q[k].try=tr; }
   return o; }
 async function trkServer(id){ const s=DATA.sync; if(!s) return null;
   try{ const j=await withTimeout(fetch(`${s.endpoint}?action=attempt&mockId=REV-${id}&key=${encodeURIComponent(s.key)}`).then(r=>r.json()),5000);
        return (j&&j.attempt&&j.attempt.snapshot&&j.attempt.snapshot.trk)||null; }catch(e){ return null; } }
-function trkPush(){ const s=DATA&&DATA.sync; if(VIEWER||!s||!TRK.st||!TRK.dirty) return; TRK.dirty=false; const st=TRK.st;
+async function trkPush(fast){ const s=DATA&&DATA.sync; if(VIEWER||!s||!TRK.st||!TRK.dirty) return; TRK.dirty=false;
+  if(!fast){ const id=TRK.id, srv=await trkServer(id); if(TRK.id===id&&TRK.st){ TRK.st=trkMerge(TRK.st,srv); trkSave(); } }   // keep reading done on the test's results screen
+  const st=TRK.st; if(!st) return;
   const msg={kind:"snapshot",mockId:"REV-"+TRK.id,candidate:"Raina",attemptId:"review",rev:Date.now(),sentAt:Date.now(),key:s.key,data:{startedAt:st.first,trk:st}};
   fetch(s.endpoint,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(msg),keepalive:true}).catch(()=>{TRK.dirty=true;}); }
 function observeCards(){ if(!TRK.obs) return; TRK.obs.disconnect(); TRK.vis.clear(); document.querySelectorAll(".qcard[data-qid]").forEach(el=>TRK.obs.observe(el)); }
@@ -688,7 +700,7 @@ async function trkStart(a){ trkStop(); TRK.id=a.id; const now=Date.now();
 function trkStop(){ clearInterval(TRK.tick); clearInterval(TRK.push); if(TRK.obs) TRK.obs.disconnect(); TRK.vis.clear(); if(TRK.st) trkPush(); TRK.st=null; TRK.id=null; }
 ["mousemove","scroll","keydown","touchstart","click"].forEach(e=>addEventListener(e,()=>{TRK.last=Date.now();},{passive:true}));
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden") trkPush(); });
-addEventListener("pagehide",trkPush);
+addEventListener("pagehide",()=>trkPush(true));
 
 /* ---------- the plan: the mentor's next steps (docs/superpowers/specs/2026-11-25-mentor-engine-design.md) ---------- */
 const MNT={doc:null,st:null,dirty:false,ack:null,srv:{},busy:false,lastSync:0,shownNow:null,mockDone:false};
