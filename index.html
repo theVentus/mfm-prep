@@ -48,7 +48,12 @@ label.f{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;text-t
 .btn-block{width:100%;justify-content:center;padding:13px}
 .err{color:var(--madder);font-size:14px;min-height:20px;margin-top:10px}
 /* ---------- shell ---------- */
-#app{min-height:100vh}
+#app{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}
+#side{position:sticky;top:0;height:100vh;background:var(--indigo);color:#e9e6f2;display:flex;flex-direction:column;overflow:hidden}
+#side .weave{opacity:.08}
+.side-cd{font-size:13px;color:#dfe2f0;margin:0 0 12px}
+.topbar,.foot{display:none!important}
+@media(max-width:980px){#app{display:block}#side{display:none}.topbar{display:flex!important}.foot{display:flex!important}}
 .topbar{position:relative;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px max(4vw,18px);overflow:hidden}
 .topbar .weave{opacity:.08}
 .tb-home{position:relative;display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;font-weight:600;min-height:44px}
@@ -370,6 +375,12 @@ details.sol summary{cursor:pointer;font-weight:600;color:var(--indigo);font-size
 
 <!-- ============ APP ============ -->
 <div id="app" class="hidden">
+  <aside id="side"><div class="weave"></div>
+    <div class="side-brand"><div class="mark"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M2 5h14M2 9h14M2 13h14M5 2v14M9 2v14M13 2v14" stroke="#1f2b5c" stroke-width="1.6"/></svg></div><div><b>The Atelier</b><span>MFM 2027 preparation</span></div></div>
+    <nav id="nav"></nav>
+    <div class="side-foot"><div class="side-cd" id="side-cd"></div><div class="who"><div class="avatar">R</div><div><div style="color:#fff;font-weight:600">Raina</div><div style="opacity:.6;font-size:12px">Candidate · MFM</div></div><button id="logout2">Lock</button></div></div>
+  </aside>
+  <div class="body">
   <header class="topbar"><div class="weave"></div>
     <a class="tb-home" id="home" href="#overview"></a>
     <div class="tb-right"><span id="cd"></span><div class="avatar" aria-hidden="true">R</div><button id="logout">Lock</button></div>
@@ -378,6 +389,7 @@ details.sol summary{cursor:pointer;font-weight:600;color:var(--indigo);font-size
     <div class="top" id="top"><div><div class="crumb" id="crumb"></div><h1 id="ptitle"></h1></div></div>
     <div class="page" id="page"></div>
   </main>
+  </div>
 </div>
 
 <script>
@@ -433,7 +445,7 @@ async function unlock(pw){
 }
 $("go").onclick=()=>unlock($("pw").value);
 $("pw").addEventListener("keydown",e=>{if(e.key==="Enter")unlock($("pw").value)});
-$("logout").onclick=()=>{try{sessionStorage.removeItem("atelier:pw")}catch(e){} location.hash=""; location.reload();};
+$("logout2").onclick=$("logout").onclick=()=>{try{sessionStorage.removeItem("atelier:pw")}catch(e){} location.hash=""; location.reload();};
 try{const p=sessionStorage.getItem("atelier:pw"); if(p) unlock(p);}catch(e){}
 window.addEventListener("hashchange",()=>DATA&&route());
 
@@ -463,6 +475,11 @@ function route(){
   const home=p[0]==="overview"&&!rv&&!key.startsWith("learn/");
   $("home").innerHTML=home?`<span class="mark"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M2 5h14M2 9h14M2 13h14M5 2v14M9 2v14M13 2v14" stroke="#1f2b5c" stroke-width="1.6"/></svg></span><b>The Atelier</b>`:`← Today`;
   $("top").classList.toggle("hidden-top",home);
+  const NAV=[["Study",[["#overview","Today","overview"],["#mocks","Mock tests","mocks"],["#schedule","Schedule","schedule"]]],["Progress",[["#performance","Performance","performance"],["#syllabus","Syllabus map","syllabus"]]],
+    ["Learn",[["#walkthrough","Walkthrough","walkthrough"],["#notes","How answers are judged","notes"],["#guide","Exam guide","guide"]]],["Before a mock",[["check.html","System check","check"],["mocks/MFM-DEMO.html","Interface practice","play"]]]];
+  const cur=rv?(REV_ONLY?"#overview":"#performance"):key.startsWith("learn/")?"#overview":"#"+p[0];
+  $("nav").innerHTML=NAV.map(([g,items])=>`<div class="nav-h">${g}</div>`+items.map(([h,t,ic])=>`<a class="nav-a${h===cur?" on":""}" href="${h}">${icon(ic)}${t}</a>`).join("")).join("");
+  $("side-cd").textContent=daysLeft()+" days to the GAT · Sun 10 Jan";
   $("crumb").textContent=""; $("ptitle").textContent=p[1];
   $("cd").innerHTML=`<span class="cd-l">${daysLeft()} days to the GAT · Sun 10 Jan</span><span class="cd-s">${daysLeft()} days to go</span>`;
   if(rv){ renderReview(rv); window.scrollTo(0,0); mntEval(); return; }
