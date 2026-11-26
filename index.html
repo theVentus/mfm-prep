@@ -843,12 +843,15 @@ async function mntEval(o={}){
 async function mntRefreshDoc(){ const d=await mntFetchDoc(); if(d&&MNT.doc&&d.version!==MNT.doc.version){ MNT.doc=d; MNT.ack=null; mntRender(); mntEval({silent:true}); } }
 const firstSentence=t=>{ const m=String(t||"").match(/^.*?[.!?](\s|$)/); return (m?m[0]:String(t||"")).trim(); };
 const nextMockLive=()=>{ const D=MNT.doc, skip=MNT.mockDone&&D&&D.nextMock?D.nextMock.id:null;   // submitted on another device
-  return DATA.mocks.find(m=>!m.result&&!(localState(m)||{}).submitted&&m.date>=todayIST()&&m.id!==skip); };
+  const open=m=>!m.result&&!(localState(m)||{}).submitted&&m.id!==skip;
+  const carried=DATA.mocks.find(m=>open(m)&&m.date<todayIST()&&(((localState(m)||{}).startedAt)||(D&&D.nextMock&&D.nextMock.id===m.id)));   // paused, resumes after its day
+  return carried||DATA.mocks.find(m=>open(m)&&m.date>=todayIST()); };
+const isMockDay=m=>!!m&&(m.date<=todayIST());
 const daysTo=d=>Math.round((Date.parse(d)-Date.parse(todayIST()))/864e5);
 function mockStopHTML(D,left){
   const nm=nextMockLive(); if(!nm) return "";
-  const today=nm.date===todayIST(), n=daysTo(nm.date);
-  const when=today?`Today, any 3-hour slot · 180 minutes, 150 questions. Ask Daksh for your start code when you sit down.`
+  const today=isMockDay(nm), late=nm.date<todayIST(), n=daysTo(nm.date);
+  const when=late?`Paused · pick up where you left off whenever you're ready. 180 minutes in all, 150 questions.`:today?`Today, any 3-hour slot · 180 minutes, 150 questions. Ask Daksh for your start code when you sit down.`
     :`${fmt(nm.date,{weekday:"long",day:"numeric",month:"long"})} · ${n===1?"tomorrow":`in ${n} days`}`;
   const gp=today&&(D.gameplan||[]).length?`<div class="gameplan" id="gameplan">${D.gameplan.map(g=>`<div><b>${esc(g.title)}</b><span>${esc(g.text)}</span></div>`).join("")}</div>`:"";
   return `<div class="stop-k"><i class="dia"></i></div><div class="mockbox"><div class="mb-top"><div><div class="mb-t">${esc(nm.title)}</div><div class="mb-w">${when}</div></div>
@@ -915,10 +918,10 @@ function mntRender(){
   const el=$("mnt"); if(!el||!MNT.doc||!MNT.st) return; const D=MNT.doc, st=MNT.st;
   const isDone=x=>!!(st.steps[x.id]||{}).done;
   const left=MNT.mockDone?[]:D.steps.filter(x=>!isDone(x)), now=left[0], fin=D.steps.filter(isDone);
-  const nm=nextMockLive(), mockDay=!!(nm&&nm.date===todayIST());
+  const nm=nextMockLive(), mockDay=isMockDay(nm);
   MNT.shownNow=now?now.id:null;
   const sub=$("hello-sub");
-  if(sub) sub.textContent=mockDay?`${nm.title} is today. ${left.length?`${left.length===1?"One short step":`${left.length} short steps`} first, then the mock.`:"Take it in any 3-hour slot today."}`
+  if(sub) sub.textContent=mockDay&&nm.date<todayIST()?`${nm.title} is waiting for you to finish. ${left.length?`${left.length===1?"One short step":`${left.length} short steps`} first, then resume it.`:"Resume it whenever you're ready."}`:mockDay?`${nm.title} is today. ${left.length?`${left.length===1?"One short step":`${left.length} short steps`} first, then the mock.`:"Take it in any 3-hour slot today."}`
     :now?`Your next step: ${now.title}.${nm?` ${nm.title} is on ${fmt(nm.date,{weekday:"long"})}.`:""}`:nm?`${nm.title} is on ${fmt(nm.date,{weekday:"long",day:"numeric",month:"long"})}.`:"";
   const nowHTML=now?`<div class="stop-k"><i class="knot now"></i></div><div class="mnt-now" id="mnt-now"><div class="lbl">Now · step ${fin.length+1} of ${D.steps.length}</div><div class="tt">${esc(now.title)}</div><p>${esc(now.why)}</p>
       ${now.tip?`<p class="tip"><b>Tip:</b> ${esc(now.tip)}</p>`:""}
