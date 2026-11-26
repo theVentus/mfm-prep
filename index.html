@@ -532,7 +532,7 @@ R.mocks=()=>`<div class="toolbar">${[["all","All mocks"],["upcoming","Upcoming"]
    <div class="act">${s.label?`<span class="tag ${s.k}">${s.label}</span>`:""}${act}</div></div>`.replace('<div class="mrow">',s.k==="next"?'<div class="mrow mrow-next">':'<div class="mrow">');}).join("")}</div>
   ${(DATA.practice||[]).length?`<h2 class="sec-h">Practice sets</h2><div class="card list" id="practice-list">${DATA.practice.map(x=>{const ls=localState(x)||{};
     const act=x.review?`<a class="btn btn-ghost" href="#review/${esc(x.id)}">Feedback</a>`:`<a class="btn btn-ghost" href="mocks/${esc(x.file)}">${ls.submitted?"Score and solutions":ls.startedAt?"Resume":"Start"}</a>`;
-    return `<div class="mrow"><div class="num p2">${+x.id.slice(1)}</div><div><div class="tt">${esc(x.title)}</div><div class="ss">${x.questions} questions · ${x.minutes} min${x.review?` · ${x.review.net} / ${x.review.sections.reduce((a,z)=>a+z.max,0)}`:""}</div></div><div class="hide-m"></div><div class="hide-m"></div><div class="act">${act}</div></div>`;}).join("")}</div>`:""}`;
+    return `<div class="mrow"><div class="num p2">${+x.id.slice(1)}</div><div><div class="tt">${esc(x.title)}</div><div class="ss">${esc(x.questions)} questions · ${esc(x.minutes)} min${x.review?` · ${esc(x.review.net)} / ${esc(x.review.sections.reduce((a,z)=>a+z.max,0))}`:""}</div></div><div class="hide-m"></div><div class="hide-m"></div><div class="act">${act}</div></div>`;}).join("")}</div>`:""}`;
 const H={};
 H.overview=()=>{ mntRender(); mntEval(); fillToday(); };
 H.mocks=()=>document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{mockFilter=b.dataset.f;route();});
@@ -656,7 +656,7 @@ function reviewHTML(a){
 }
 function learnHTML(id){
   const p=(DATA.practice||[]).find(x=>x.id===id); if(!p||!p.concepts) return `<div class="card">No concept cards for this set.</div>`;
-  return `<div class="grid stepv"><div class="card span-12 step-h"><a class="back" href="#overview">← Overview</a><h2>Before ${esc(p.title)}</h2>
+  return `<div class="grid stepv"><div class="card span-12 step-h"><a class="back" href="#overview">← Today</a><h2>Before ${esc(p.title)}</h2>
     <p>A few minutes on the ideas this set practises. It's a quick refresh, not a replacement for your books.</p></div>
     ${p.concepts.map(c=>`<div class="card span-12 concept"><h3>${esc(c.title)}</h3><ul class="ul">${c.points.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
       <p><span class="lbl">Example</span>${esc(c.example)}</p><p><span class="lbl">Watch out</span>${esc(c.trap)}</p><p class="fine">More: ${esc(c.material)}</p></div>`).join("")}
@@ -666,13 +666,13 @@ function stepHTML(a){
   const D=MNT.doc, st=MNT.st, step=D&&D.steps.find(x=>x.link===location.hash), n=REV_ONLY.size;
   const after=D?D.steps.slice(D.steps.indexOf(step)+1).concat(D.steps).find(x=>x!==step&&!(st.steps[x.id]||{}).done):null;
   return `<div class="grid stepv">
-  <div class="card span-12 step-h"><a class="back" href="#overview">← Overview</a><h2>${step?esc(step.title):`${n} questions from ${esc(a.title)}`}</h2>
+  <div class="card span-12 step-h"><a class="back" href="#overview">← Today</a><h2>${step?esc(step.title):`${n} questions from ${esc(a.title)}`}</h2>
     <p>${n} questions · about ${step?step.minutes:n*2} min. Try each one first, then tap <b>Show answer</b>, read the note, and tap <b>Got it</b> or <b>Still unclear</b>.</p></div>
   <div class="span-12" id="rvprog"></div>
   <div class="span-12" id="qlist"></div>
   ${step&&step.tip?`<p class="span-12 fine step-tip">Tip: ${esc(step.tip)}</p>`:""}
   <div class="card span-12 cta" id="stepnext"><div><span class="lbl" id="stepnext-l">Next</span>${after?`<b>${esc(after.title)}</b> · about ${after.minutes} min`:`<b>That's everything on your plan for now.</b>`}</div>
-    <div class="actions" style="margin:0">${after?`<a class="btn btn-primary" href="${esc(after.link)}">Start</a>`:""}<a class="btn btn-ghost" href="#overview">Back to the overview</a></div></div>
+    <div class="actions" style="margin:0">${after?`<a class="btn btn-primary" href="${esc(after.link)}">Start</a>`:""}<a class="btn btn-ghost" href="#overview">Back to Today</a></div></div>
   </div>`;
 }
 function qlistHTML(a){
@@ -835,11 +835,13 @@ function mockStopHTML(D,left){
     :`${fmt(nm.date,{weekday:"long",day:"numeric",month:"long"})} · ${n===1?"tomorrow":`in ${n} days`}`;
   const gp=today&&(D.gameplan||[]).length?`<div class="gameplan" id="gameplan">${D.gameplan.map(g=>`<div><b>${esc(g.title)}</b><span>${esc(g.text)}</span></div>`).join("")}</div>`:"";
   return `<div class="stop-k"><i class="dia"></i></div><div class="mockbox"><div class="mb-top"><div><div class="mb-t">${esc(nm.title)}</div><div class="mb-w">${when}</div></div>
-    <div class="mb-act">${today&&nm.released?`<a class="btn btn-light" href="mocks/${esc(nm.file)}">Open the test</a>`:""}<span><a href="check.html">System check first</a> · <a href="mocks/MFM-DEMO.html">Practice the interface</a></span></div></div>
+    <div class="mb-act">${today&&nm.released?`<a class="btn btn-light" href="mocks/${esc(nm.file)}">${(localState(nm)||{}).startedAt?"Resume the test":"Open the test"}</a>`:""}<span><a href="check.html">System check first</a> · <a href="mocks/MFM-DEMO.html">Practice the interface</a></span></div></div>
     ${gp}${today?`<div id="timing">${timingHTML()}</div>`:""}</div>`;
 }
 async function loadReview(id){ try{ if(!REV[id]){ const blob=await fetch(`data/review-${id}.json?ts=${Date.now()}`,{cache:"no-store"}).then(r=>r.json()); REV[id]=await decrypt(PW,blob); } return REV[id]; }catch(e){ return null; } }
-function latestOf(list){ const at=list.filter(x=>x.reviewedAt); return at.length?at.sort((a,b)=>b.reviewedAt-a.reviewedAt)[0]:(list.length?list[list.length-1]:null); }
+function latestOf(list){   // reviewedAt when known, else the end of the test's own day; ties go to the later entry
+  const k=x=>x.reviewedAt||(x.date?Date.parse(x.date+"T23:59:59+05:30"):0); let best=null;
+  list.forEach(x=>{ if(!best||k(x)>=k(best)) best=x; }); return best; }
 const latestReviewed=()=>latestOf([...(DATA.warmup&&DATA.warmup.review?[DATA.warmup]:[]),...(DATA.practice||[]).filter(x=>x.review),...DATA.mocks.filter(m=>m.result)]);   // with no dates at all, the last mock wins
 const latestMock=()=>latestOf(DATA.mocks.filter(m=>m.result));
 const pctChange=(cur,prev)=>(typeof prev==="number"&&prev>0&&typeof cur==="number")?Math.round(100*(cur-prev)/prev):null;
@@ -857,7 +859,7 @@ function seasonHTML(){
   const next=nm?fig("Next",esc(nm.title),nm.date===todayIST()?"Today":fmt(nm.date,{weekday:"short",day:"numeric",month:"short"})):"";
   const rows=Object.keys(SECMAX).map(k=>{ const v=last.actual.sections[k], mx=SECMAX[k], pct=Math.max(0,Math.round(100*v/mx));
     const tg=VIEWER&&last.sections&&typeof last.sections[k]==="number"?` <span class="fine">target ${last.sections[k]}, scored ${v}</span>`:"";
-    return `<div class="secrow"><span class="sn">${SECN[k]} <span>of ${mx}</span></span><span class="sb"><span class="bar"><i style="width:${Math.min(100,pct)}%"></i></span><span class="sv"><b>${pct}%</b> · ${v} marks</span></span><span class="sc">${chgHTML(v,prev&&prev.actual.sections[k],!prev)}${tg}</span></div>`; }).join("");
+    return `<div class="secrow"><span class="sn">${SECN[k]} <span>of ${mx}</span></span><span class="sb"><span class="bar"><i style="width:${Math.min(100,pct)}%"></i></span><span class="sv"><b>${esc(pct)}%</b> · ${esc(v)} marks</span></span><span class="sc">${chgHTML(v,prev&&prev.actual.sections[k],!prev)}${tg}</span></div>`; }).join("");
   return `<h2 class="sec-h">Your season</h2><div class="card season"><div class="figs">${figs}${next}</div>
     <p class="sh">Your mock scores, in marks out of 150</p><div id="seam"></div>
     <div class="sec-head"><span>By section</span><span>Latest mock, share of the section's marks</span><span>Since last mock</span></div>${rows}</div>`;
@@ -885,7 +887,7 @@ function drawSeam(){
 function renderSeason(){ const el=$("season"); if(!el) return; el.innerHTML=seasonHTML(); drawSeam(); }
 window.addEventListener("resize",()=>{ clearTimeout(window.__sz); window.__sz=setTimeout(drawSeam,150); });
 function timingHTML(){ const m=latestMock(), a=m&&REV[m.id]; if(!a||!a.plan) return "";
-  return `<b>Your section order:</b> ${a.plan.steps.map(x=>`${esc(x.sec)} ${x.mins} min${x.by&&x.by!=="0:00"?` (move on at ${esc(planBy(x.by))})`:""}`).join(" → ")}`; }
+  return `<b>Your section order:</b> ${a.plan.steps.map(x=>`${esc(x.sec)} ${esc(x.mins)} min${x.by&&x.by!=="0:00"?` (move on at ${esc(planBy(x.by))})`:""}`).join(" → ")}`; }
 function workonHTML(a){ return `<div class="wo">${a.workon.map(w=>`<div class="wo-i"><h4>${esc(w.title)}</h4><p>${esc(w.do)}</p><p class="seen">${esc(w.seen)}</p></div>`).join("")}</div>`; }
 async function fillToday(){
   const t=latestReviewed(); if(t){ const a=await loadReview(t.id); const el=$("latest");
@@ -903,9 +905,9 @@ function mntRender(){
     :now?`Your next step: ${now.title}.${nm?` ${nm.title} is on ${fmt(nm.date,{weekday:"long"})}.`:""}`:nm?`${nm.title} is on ${fmt(nm.date,{weekday:"long",day:"numeric",month:"long"})}.`:"";
   const nowHTML=now?`<div class="stop-k"><i class="knot now"></i></div><div class="mnt-now" id="mnt-now"><div class="lbl">Now · step ${fin.length+1} of ${D.steps.length}</div><div class="tt">${esc(now.title)}</div><p>${esc(now.why)}</p>
       ${now.tip?`<p class="tip"><b>Tip:</b> ${esc(now.tip)}</p>`:""}
-      <div class="go"><a class="btn btn-primary btn-big" href="${esc(now.link)}" data-step="${esc(now.id)}">Start · ${now.minutes} min</a></div></div>`
+      <div class="go"><a class="btn btn-primary btn-big" href="${esc(now.link)}" data-step="${esc(now.id)}">Start · ${esc(now.minutes)} min</a></div></div>`
     :`<div class="stop-k"><i class="knot"></i></div><div class="mnt-now" id="mnt-now"><div class="tt">All done for now</div><p>${MNT.mockDone&&D.nextMock?`${esc((DATA.mocks.find(m=>m.id===D.nextMock.id)||{}).title||"The mock")} is done. Your feedback and your next steps are on their way.`:"That's everything on your plan until the next update."}</p></div>`;
-  const rest=left.slice(1).map(x=>`<div class="stop-k"><i class="knot"></i></div><a class="stop" href="${esc(x.link)}" data-step="${esc(x.id)}"><span class="st-t">${esc(x.title)}</span><span class="st-s">${esc(x.teaser||firstSentence(x.why))}</span><em>${x.minutes} min</em></a>`).join("");
+  const rest=left.slice(1).map(x=>`<div class="stop-k"><i class="knot"></i></div><a class="stop" href="${esc(x.link)}" data-step="${esc(x.id)}"><span class="st-t">${esc(x.title)}</span><span class="st-s">${esc(x.teaser||firstSentence(x.why))}</span><em>${esc(x.minutes)} min</em></a>`).join("");
   const cps=(D.checkpoints||[]).filter(c=>c.milestone), nextM=cps.find(c=>!c.actual), last=[...cps].reverse().find(c=>c.actual);
   el.innerHTML=`<p class="mnt-h">${esc(D.headline)}</p>
     ${MNT.ack?`<p class="mnt-ack" role="status">Nice. That's "${esc(MNT.ack.title)}" done.</p>`:""}
