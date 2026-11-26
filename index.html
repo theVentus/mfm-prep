@@ -261,6 +261,7 @@ table.t td{border-bottom:1px solid var(--line);padding:10px}
 .show-m{display:none}.mrow-next{border-left:4px solid var(--indigo);background:#f6f5fb}.tag.next{background:var(--indigo);color:#fff}
 .qcard.hide-ans .op{background:none!important;border-color:var(--line)!important;color:var(--ink)!important}.qcard.hide-ans .op small,.qcard.hide-ans .qnote,.qcard.hide-ans .sol,.qcard.hide-ans .qact{display:none!important}
 .reveal{margin-top:10px}
+.concept h3{font:500 22px Newsreader,serif;text-transform:none;letter-spacing:0;color:var(--ink);margin:0 0 8px}.concept p{max-width:72ch}
 .qcard [data-pick]{cursor:pointer}.qcard [data-pick]:hover{border-color:var(--indigo)!important}.op.picked{outline:2px solid var(--indigo);outline-offset:1px}
 .retry{font-weight:600;margin:10px 0 0}.retry.ok{color:var(--sage)}.retry.no{color:#b5432c}.pick-hint{margin:10px 0 0}
 .rvp.sticky{position:sticky;top:0;z-index:5;padding:8px 12px;margin:0}
@@ -425,6 +426,7 @@ function route(){
   $("crumb").textContent=p[2]; $("ptitle").textContent=p[1];
   $("cd").textContent=daysLeft()+" days to the GAT · Sun 10 Jan";
   if(rv){ renderReview(rv); window.scrollTo(0,0); mntEval(); return; }
+  if(key.startsWith("learn/")){ $("ptitle").textContent="Quick concepts"; $("page").innerHTML=`<div class="fade">${learnHTML(key.slice(6))}</div>`; window.scrollTo(0,0); mntEval(); return; }
   $("page").innerHTML=`<div class="fade">${R[p[0]]()}</div>`;
   (H[p[0]]||(()=>{}))(); window.scrollTo(0,0);
 }
@@ -603,6 +605,13 @@ function reviewHTML(a){
   <details class="span-12 bd" id="allq"><summary>All ${a.questions.length} questions, one by one</summary><div class="card" style="margin-top:14px"><div id="rvprog"></div><div class="toolbar">${[["todo","Still to go"],["all","All"],["wrong","Wrong"],["blank","Left"],["right","Right"]].map(f=>`<button class="seg ${revFilter===f[0]?"on":""}" data-rf="${f[0]}">${f[1]}${f[0]==="todo"?"":` (${f[0]==="all"?a.questions.length:a.questions.filter(q=>q.res===f[0]).length})`}</button>`).join("")}</div><div id="qlist"></div></div></details>
   </div>`;
 }
+function learnHTML(id){
+  const p=(DATA.practice||[]).find(x=>x.id===id); if(!p||!p.concepts) return `<div class="card">No concept cards for this set.</div>`;
+  return `<div class="grid stepv"><div class="card span-12 step-h"><a class="back" href="#overview">← Overview</a><h2>Before ${esc(p.title)}</h2>
+    <p>A few minutes on the ideas this set practises. It's a quick refresh, not a replacement for your books.</p></div>
+    ${p.concepts.map(c=>`<div class="card span-12 concept"><h3>${esc(c.title)}</h3><ul class="ul">${c.points.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+      <p><span class="lbl">Example</span>${esc(c.example)}</p><p><span class="lbl">Watch out</span>${esc(c.trap)}</p><p class="fine">More: ${esc(c.material)}</p></div>`).join("")}
+    <div class="card span-12 cta"><div><span class="lbl">Next</span><b>${esc(p.title)}</b> · ${p.questions} questions · ${p.minutes} min</div><a class="btn btn-primary" href="mocks/${esc(p.file)}">Start the practice set</a></div></div>`; }
 function planBy(b){ if(!/^\d+:\d\d$/.test(b)) return b+" left"; const [h,m]=b.split(":").map(Number); return h===0&&m===0?"to the end":(h?`${h} h `:"")+(m?`${m} m`:"")+" left"; }
 function stepHTML(a){
   const D=MNT.doc, st=MNT.st, step=D&&D.steps.find(x=>x.link===location.hash), n=REV_ONLY.size;
