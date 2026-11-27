@@ -351,6 +351,8 @@ details.sol summary{cursor:pointer;font-weight:600;color:var(--indigo);font-size
 #qseam{display:flex;flex-wrap:wrap;gap:4px;margin:14px 0 4px}.qm{display:inline-block;width:14px;height:6px;border-radius:3px;background:var(--sage);vertical-align:middle}
 .qm.w{width:10px;height:10px;border-radius:50%;background:var(--madder)}.qm.l{width:10px;height:10px;border-radius:50%;background:var(--paper);border:1.5px solid #b8b0a0;box-sizing:border-box}
 .qs-l{margin:0 0 6px}.hab-h{font:500 18px Newsreader,serif;margin:16px 0 4px}
+.startwin{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18);font-size:15px}.startwin label{display:block;margin-top:6px;color:#dfe2f0}
+.startwin select{margin-left:8px;font:600 15px 'Hanken Grotesk';padding:8px 10px;border-radius:8px;min-height:40px}
 </style>
 </head>
 <body>
@@ -788,6 +790,8 @@ function mntMerge(a,b){ if(!b) return a; if(!a) return b;
   const o={first:lo(a.first,b.first), last:Math.max(a.last||0,b.last||0), noticeAck:!!(a.noticeAck||b.noticeAck), steps:{...(b.steps||{})}};
   for(const [k,v] of Object.entries(a.steps||{})){ const w=o.steps[k]||{};
     o.steps[k]={done:!!(v.done||w.done), openSecs:Math.max(v.openSecs||0,w.openSecs||0), opened:lo(v.opened,w.opened), doneAt:lo(v.doneAt,w.doneAt)}; }
+  const sa={...(b.startAt||{})}; for(const [k,v] of Object.entries(a.startAt||{})) if(!sa[k]||(v.at||0)>=(sa[k].at||0)) sa[k]=v;
+  if(Object.keys(sa).length) o.startAt=sa;
   return o; }
 function withTimeout(pr,ms){ return Promise.race([pr,new Promise(r=>setTimeout(()=>r(null),ms))]); }
 async function srvGet(mockId){ const s=DATA&&DATA.sync; if(!s) return null;
@@ -856,7 +860,7 @@ function mockStopHTML(D,left){
   const gp=today&&(D.gameplan||[]).length?`<div class="gameplan" id="gameplan">${D.gameplan.map(g=>`<div><b>${esc(g.title)}</b><span>${esc(g.text)}</span></div>`).join("")}</div>`:"";
   return `<div class="stop-k"><i class="dia"></i></div><div class="mockbox"><div class="mb-top"><div><div class="mb-t">${esc(nm.title)}</div><div class="mb-w">${when}</div></div>
     <div class="mb-act">${today&&nm.released?`<a class="btn btn-light" href="mocks/${esc(nm.file)}">${(localState(nm)||{}).startedAt?"Resume the test":"Open the test"}</a>`:""}<span><a href="check.html">System check first</a> · <a href="mocks/MFM-DEMO.html">Practice the interface</a></span></div></div>
-    ${gp}${today?`<div id="timing">${timingHTML()}</div>`:""}</div>`;
+    ${today?windowHTML(nm):""}${gp}${today?`<div id="timing">${timingHTML()}</div>`:""}</div>`;
 }
 async function loadReview(id){ try{ if(!REV[id]){ const blob=await fetch(`data/review-${id}.json?ts=${Date.now()}`,{cache:"no-store"}).then(r=>r.json()); REV[id]=await decrypt(PW,blob); } return REV[id]; }catch(e){ return null; } }
 function latestOf(list){   // reviewedAt when known, else the end of the test's own day; ties go to the later entry
@@ -906,6 +910,15 @@ function drawSeam(){
 }
 function renderSeason(){ const el=$("season"); if(!el) return; el.innerHTML=seasonHTML(); drawSeam(); }
 window.addEventListener("resize",()=>{ clearTimeout(window.__sz); window.__sz=setTimeout(drawSeam,150); });
+const hm12=t=>{ const [h,m]=t.split(":").map(Number); return `${h%12||12}:${String(m).padStart(2,"0")} ${h<12?"am":"pm"}`; };
+function windowHTML(nm){ const w=nm.window; if(!w) return ""; const pick=((MNT.st&&MNT.st.startAt)||{})[nm.id];
+  const opts=[]; let [h,m]=w[0].split(":").map(Number); const [eh,em]=w[1].split(":").map(Number);
+  while(h*60+m<=eh*60+em){ opts.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`); m+=30; if(m>=60){h++;m-=60;} }
+  return `<div class="startwin"><b>Start between ${hm12(w[0]).replace(" pm","").replace(" am","")} and ${hm12(w[1])}.</b>
+    <label>${pick?`Your start: <b>${hm12(pick.time)}</b>. Daksh will have your code ready. Change it:`:"Pick your start time:"}
+    <select id="startpick"${VIEWER?" disabled":""}><option value="">Choose…</option>${opts.map(o=>`<option value="${o}"${pick&&pick.time===o?" selected":""}>${hm12(o)}</option>`).join("")}</select></label></div>`; }
+function bindStartPick(){ const s=$("startpick"); if(!s||VIEWER) return; s.onchange=()=>{ const nm=nextMockLive(); if(!nm||!s.value) return;
+  MNT.st.startAt=MNT.st.startAt||{}; MNT.st.startAt[nm.id]={time:s.value,at:Date.now()}; MNT.dirty=true; mntSave(); mntPush(); mntRender(); }; }
 function timingHTML(){ const m=latestMock(), a=m&&REV[m.id]; if(!a||!a.plan) return "";
   return `<b>Your section order:</b> ${a.plan.steps.map(x=>`${esc(x.sec)} ${esc(x.mins)} min${x.by&&x.by!=="0:00"?` (move on at ${esc(planBy(x.by))})`:""}`).join(" → ")}`; }
 function workonHTML(a){ return `<div class="wo">${a.workon.map(w=>`<div class="wo-i"><h4>${esc(w.title)}</h4><p>${esc(w.do)}</p><p class="seen">${esc(w.seen)}</p></div>`).join("")}</div>`; }
@@ -940,7 +953,7 @@ function mntRender(){
     ${VIEWER&&D.goal?`<details class="more" id="mnt-goal"><summary>The goal and milestones (mentor view only)</summary><p><b>Goal by Mock 20: ${D.goal.total}.</b> That's about what Delhi, Mumbai or Bengaluru has needed. About <b>${D.goal.seatLine}</b> has been enough for a top-7 campus.</p>
       <div class="mnt-ms" id="mnt-ms">${cps.map((c,i)=>`${i?'<span class="ln"></span>':""}<span class="m${c.actual?" hit":""}"><b>M${+c.id.slice(1)}</b><i></i>${c.actual?c.actual.total:c.target}</span>`).join("")}</div>
       <p class="fine">${esc(D.goal.why||"")}</p></details>`:""}`;
-  renderSeason();
+  renderSeason(); bindStartPick();
   const nb=el.querySelector("#mnt-notice button"); if(nb) nb.onclick=()=>{ st.noticeAck=true; MNT.dirty=true; mntSave(); mntPush(); mntRender(); };
   el.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{ const r=st.steps[b.dataset.step]=st.steps[b.dataset.step]||{}; r.opened=r.opened||Date.now(); MNT.dirty=true; mntSave(); }));
 }
