@@ -860,7 +860,7 @@ function mockStopHTML(D,left){
   const gp=today&&(D.gameplan||[]).length?`<div class="gameplan" id="gameplan">${D.gameplan.map(g=>`<div><b>${esc(g.title)}</b><span>${esc(g.text)}</span></div>`).join("")}</div>`:"";
   return `<div class="stop-k"><i class="dia"></i></div><div class="mockbox"><div class="mb-top"><div><div class="mb-t">${esc(nm.title)}</div><div class="mb-w">${when}</div></div>
     <div class="mb-act">${today&&nm.released?`<a class="btn btn-light" href="mocks/${esc(nm.file)}">${(localState(nm)||{}).startedAt?"Resume the test":"Open the test"}</a>`:""}<span><a href="check.html">System check first</a> · <a href="mocks/MFM-DEMO.html">Practice the interface</a></span></div></div>
-    ${today?windowHTML(nm):""}${gp}${today?`<div id="timing">${timingHTML()}</div>`:""}</div>`;
+    ${today||n===1?windowHTML(nm):""}${gp}${today?`<div id="timing">${timingHTML()}</div>`:""}</div>`;
 }
 async function loadReview(id){ try{ if(!REV[id]){ const blob=await fetch(`data/review-${id}.json?ts=${Date.now()}`,{cache:"no-store"}).then(r=>r.json()); REV[id]=await decrypt(PW,blob); } return REV[id]; }catch(e){ return null; } }
 function latestOf(list){   // reviewedAt when known, else the end of the test's own day; ties go to the later entry
